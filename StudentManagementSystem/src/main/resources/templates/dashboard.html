@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head}"></head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <!-- Navbar -->
+            <div th:replace="~{fragments/layout :: navbar}"></div>
+				
+
+            <!-- Main Content -->
+            <div class="container-fluid px-4 py-4">
+                <h2 class="mb-4">Dashboard</h2>
+
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title mb-0">Total Students</h6>
+                                        <h2 class="my-2">1,250</h2>
+                                    </div>
+                                    <i class="bi bi-people fs-1 opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title mb-0">Total Courses</h6>
+                                        <h2 class="my-2">42</h2>
+                                    </div>
+                                    <i class="bi bi-book fs-1 opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-dark h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title mb-0">Top Performing Courses</h6>
+                                        <h2 class="my-2">CS101</h2>
+                                    </div>
+                                    <i class="bi bi-trophy fs-1 opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-secondary text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title mb-0">Students Enrolled This Month</h6>
+                                        <h2 class="my-2">37</h2>
+                                    </div>
+                                    <i class="bi bi-person-check fs-1 opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <i class="bi bi-table me-1"></i>
+                        Recent Student Registrations
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Course</th>
+                                        <th>Enroll Date</th>
+                                        <th>Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="ID">#STU001</td>
+                                        <td data-label="Name">John Doe</td>
+                                        <td data-label="Course">Computer Science</td>
+                                        <td data-label="Enroll Date">2023-10-05</td>
+                                        <td data-label="Duration">6 Months</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="ID">#STU002</td>
+                                        <td data-label="Name">Jane Smith</td>
+                                        <td data-label="Course">Mathematics</td>
+                                        <td data-label="Enroll Date">2023-10-02</td>
+                                        <td data-label="Duration">5 Months</td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label="ID">#STU003</td>
+                                        <td data-label="Name">Mike Johnson</td>
+                                        <td data-label="Course">Physics</td>
+                                        <td data-label="Enroll Date">2023-10-04</td>
+                                        <td data-label="Duration">6 Months</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="py-4 bg-light mt-auto border-top">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Student Management System 2023</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Sidebar Toggle Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', event => {
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

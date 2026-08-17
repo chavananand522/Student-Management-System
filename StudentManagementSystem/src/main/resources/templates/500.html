@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<input type="hidden"
+       th:name="${_csrf.parameterName}"
+       th:value="${_csrf.token}" />
+<body class="login-body">
+    <div class="text-center">
+        <h1 class="display-1 fw-bold text-danger" style="font-size: 8rem;">500</h1>
+        <p class="fs-2 fw-bold text-dark">Internal Server Error</p>
+        <p class="lead text-muted mb-4">
+            Something went wrong on our end. Please try again later.
+        </p>
+        <a href="dashboard.html" class="btn btn-primary btn-lg px-4"><i class="bi bi-house-door me-2"></i>Back to
+            Home</a>
+    </div>
+</body>
+
+</html>

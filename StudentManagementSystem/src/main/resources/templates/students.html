@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}"></head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+      
+		  <!-- Sidebar -->
+        <div th:replace ="~{fragments/layout::sidebar}">   </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+			
+			<div th:replace ="~{fragments/layout::navbar}">   </div>		
+					
+            <div class="container-fluid px-4 py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Students</h2>
+                    <a th:href="@{/students/new}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add New
+                        Student</a>
+                </div>
+				
+				<div th:if="${message}" class="alert alert-success text-center" role="alert" th:text="${message}"></div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <i class="bi bi-table me-1"></i> Student List
+                    </div>
+                    <div class="card-body">
+						<div class="text-muted" th:if="${students.content.isEmpty()}">No Course Found</div>
+                        <div class="table-responsive" th:if="${!students.content.isEmpty()}" >
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+										<th>Phone</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+									<tr th:each="student : ${students.content}">
+									    <td data-label="ID" th:text="${student.id}"></td>
+									    <td data-label="Name" th:text="|${student.firstName} ${student.lastName}|"></td>
+									    <td data-label="Email" th:text="${student.email}"></td>
+									    <td data-label="Phone" th:text="${student.phoneNumber}"></td>
+                                       
+										 <td data-label="Actions">
+                                            <a href="view-student.html" class="btn btn-sm btn-info text-white me-1"
+                                                title="View"><i class="bi bi-eye"></i></a>
+                                            <a href="edit-student.html" class="btn btn-sm btn-warning text-white me-1"
+                                                title="Edit"><i class="bi bi-pencil"></i></a>
+                                        </td>
+										
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+						<nav aria-label="Course pagination">
+						    <ul class="pagination justify-content-end">
+						
+						        <!-- Previous -->
+						        <li class="page-item" th:classAppend="${students.first}?'disabled'">
+						            <a class="page-link" th:href="@{/students/list(page=${students.first ? 0 : students.number - 1}, size=${students.size})}">Previous</a>
+						        </li>
+						
+						        <!-- Page numbers -->
+						        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0,students.totalPages-1)}"
+									th:classappend="${pageNum}==${students.number}?'active':''">
+						            <a class="page-link" th:href="@{/students/list(page=${pageNum}, size=${students.size})}" th:text="${pageNum+1}">
+										</a>
+						        </li>
+						
+						        
+						
+						        <!-- Next -->
+						        <li class="page-item" th:classAppend="${students.last}?'disabled'">
+						            <a class="page-link" th:href="@{/students/list(page=${students.number + 1}, size=${students.size})}">Next</a>
+						        </li>
+						
+						    </ul>
+						</nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div th:replace ="~{fragments/layout::scripts}">   </div>
+</body>
+
+</html>
