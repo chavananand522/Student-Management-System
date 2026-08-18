@@ -2,12 +2,16 @@ package com.itvedant.StudentManagement.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -38,6 +42,9 @@ public class Courses {
 	
 	@Column(nullable=false,updatable=false)
 	private LocalDateTime createdAt;
+	
+	@OneToMany(mappedBy="course", cascade =CascadeType.ALL, orphanRemoval=true)
+	private Set<Enrollment> enrollments =new HashSet<>(); 
 	
 	@PrePersist
 	public void onCreate() {
@@ -106,6 +113,14 @@ public class Courses {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public Set<Enrollment> getEnrollments() {
+		return enrollments;
+	}
+
+	public void setEnrollments(Set<Enrollment> enrollments) {
+		this.enrollments = enrollments;
 	}
 	
 	

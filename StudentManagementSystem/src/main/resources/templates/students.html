@@ -49,9 +49,9 @@
 									    <td data-label="Phone" th:text="${student.phoneNumber}"></td>
                                        
 										 <td data-label="Actions">
-                                            <a href="view-student.html" class="btn btn-sm btn-info text-white me-1"
+                                            <a th:href="@{/students/{id}(id=${student.id})}" class="btn btn-sm btn-info text-white me-1"
                                                 title="View"><i class="bi bi-eye"></i></a>
-                                            <a href="edit-student.html" class="btn btn-sm btn-warning text-white me-1"
+                                            <a th:href="@{/students/{id}/edit(id=${student.id})}"s class="btn btn-sm btn-warning text-white me-1"
                                                 title="Edit"><i class="bi bi-pencil"></i></a>
                                         </td>
 										

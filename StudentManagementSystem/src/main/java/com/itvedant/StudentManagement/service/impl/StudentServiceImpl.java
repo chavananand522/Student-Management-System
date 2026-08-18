@@ -8,12 +8,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+
+import com.itvedant.StudentManagement.dto.CourseDTO;
 import com.itvedant.StudentManagement.dto.StudentDTO;
+import com.itvedant.StudentManagement.model.Courses;
 import com.itvedant.StudentManagement.model.Students;
 import com.itvedant.StudentManagement.reposatory.StudentRepositiry;
 import com.itvedant.StudentManagement.services.StudentService;
-
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -45,11 +47,32 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public Page<StudentDTO> getStudents(int page, int size) {
 		log.info("List of Students from {}", page);
-
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "id"));
-
 		return studentRepository.findByActiveTrue(pageRequest).map(student -> mapper.map(student, StudentDTO.class));
+	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public StudentDTO getStudentById(Long id) {
+		Students student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("No Student Found"));
+		return mapper.map(student, StudentDTO.class);
+		
+	}
+
+	@Override
+	public boolean existsByEmailIgnoreCaseAndIdNot(String email,Long id) {
+		log.info("Email from Update student");
+		return studentRepository.existsByEmailIgnoreCaseAndIdNot(email,id);
+	}
+
+	@Override
+	public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
+		Students student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("No Student Found"));
+
+		mapper.map(studentDTO, student);
+		Students updated = studentRepository.save(student);
+		
+		return mapper.map(updated,StudentDTO .class);
 	}
 
 }

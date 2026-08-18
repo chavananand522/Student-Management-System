@@ -9,6 +9,9 @@ public interface StudentRepositiry extends JpaRepository<Students, Long> {
 
 	boolean existsByEmailIgnoreCase(String email);
 	
+	boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+	
 	Page<Students>findByActiveTrue(Pageable pageable);
+	
 	
 }
