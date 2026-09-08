@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}"></head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/layout::sidebar}"></div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <div th:replace="~{fragments/layout::navbar}"></div>
+
+            <div class="container-fluid px-4 py-4">
+
+                <div class="bg-primary text-white rounded-3 p-4 mb-4">
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div>
+                            <h2 class="mb-1">Students Enrolled in Courses</h2>
+                            <p class="mb-0 opacity-75">
+                                Track enrollment coverage, fees, and quick access to details.
+                            </p>
+                        </div>
+
+                        <a href="/enrollments/showEnroll"
+                           class="btn btn-light text-primary fw-semibold">
+                            <i class="bi bi-plus-lg me-1"></i> Enroll Student
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${message}"
+                     class="alert alert-success text-center"
+                     role="alert"
+                     th:text="${message}">
+                </div>
+
+                <div class="card mb-4">
+
+                    <div class="card-header bg-white">
+                        <i class="bi bi-table me-1"></i> Enrolled Students
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="text-muted"
+                             th:if="${students.content.isEmpty()}">
+                            No Course Found
+                        </div>
+
+                        <div class="table-responsive"
+                             th:if="${!students.content.isEmpty()}">
+
+                            <table class="table table-hover table-striped align-middle">
+
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Student Name</th>
+                                        <th>Email</th>
+                                        <th>Courses Count</th>
+                                        <th>Total Fee</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="student, stat : ${students.content}">
+
+                                        <td th:text="${(students.number * students.size) + stat.count}"></td>
+
+                                        <td data-label="Student Name"
+                                            th:text="${student.studentName}">
+                                        </td>
+
+                                        <td data-label="Email"
+                                            th:text="${student.email}">
+                                        </td>
+
+                                        <td data-label="Courses Count"
+                                            th:text="${student.courseCount}">
+                                        </td>
+
+                                        <td data-label="Total Fee"
+                                            th:text="${student.totalFee}">
+                                        </td>
+
+                                        <td data-label="Actions">
+											<a th:href="@{/enrollments/getStudentEnrollmentDetails/{id}(id=${student.studentId}, source='enrollments')}"
+											   class="btn btn-sm btn-info text-white"
+											   title="View">
+											    <i class="bi bi-eye"></i>
+											</a>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <nav aria-label="Course pagination"
+                             th:if="${students.totalPages > 1}">
+
+                            <ul class="pagination justify-content-end">
+
+                                <!-- Previous -->
+                                <li class="page-item"
+                                    th:classappend="${students.first} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/enrollments/enrollmentList'(page=${students.number - 1}, size=${students.size})}">
+                                        Previous
+                                    </a>
+                                </li>
+
+                                <!-- Page numbers -->
+                                <li class="page-item"
+                                    th:each="pageNum : ${#numbers.sequence(0, students.totalPages - 1)}"
+                                    th:classappend="${pageNum == students.number} ? 'active'">
+                                    <a class="page-link"
+                                       th:href="@{'/enrollments/enrollmentList'(page=${pageNum}, size=${students.size})}"
+                                       th:text="${pageNum + 1}">
+                                    </a>
+                                </li>
+
+                                <!-- Next -->
+                                <li class="page-item"
+                                    th:classappend="${students.last} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/enrollments/enrollmentList'(page=${students.number + 1}, size=${students.size})}">
+                                        Next
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </nav>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/layout::scripts}"></div>
+
+</body>
+
+</html>

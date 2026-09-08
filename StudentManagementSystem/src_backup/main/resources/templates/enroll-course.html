@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}"></head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/layout::sidebar}"></div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <div th:replace="~{fragments/layout::navbar}"></div>
+
+            <div class="container-fluid px-4 py-4">
+
+                <div class="bg-primary text-white rounded-3 p-4 mb-4">
+
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+
+                        <div>
+                            <h2 class="mb-1">Enroll Student to Courses</h2>
+                        </div>
+
+                        <a th:href="@{/students/list}"
+                           class="btn btn-light text-primary fw-semibold">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back to Students
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <form th:action="@{/enrollments/enrollCourse}"
+                      th:object="${enrollmentDto}"
+                      method="post">
+
+                    <div class="row g-4">
+
+                        <!-- Course selection -->
+                        <div class="col-lg-8">
+
+                            <div class="card h-100">
+
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                                    <span>
+                                        <i class="bi bi-list-check me-1"></i>
+                                        Course Selection
+                                    </span>
+
+                                    <span class="text-muted small">
+                                        Multi-select allowed
+                                    </span>
+
+                                </div>
+
+                                <div class="card-body">
+									<div class="invalid-feedback"
+									th:if="${#fields.hasErrors('courseIds')}"
+									             th:errors="*{courseIds}">
+									     </div>
+
+                                    <div class="table-responsive">
+
+                                        <table class="table table-hover align-middle">
+
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 60px;">Select</th>
+                                                    <th>Course Name</th>
+                                                    <th class="text-end">Fee</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                                <tr th:each="course : ${courseList}">
+
+                                                    <td data-label="Select">
+
+                                                        <div class="form-check">
+
+                                                            <input class="form-check-input course-checkbox"
+                                                                   type="checkbox"
+                                                                   th:field="*{courseIds}"
+                                                                   th:value="${course.id}"
+                                                                   th:id="|course-${course.id}|"
+                                                                   th:data-fee="${course.fee}"
+                                                                   th:data-name="${course.courseName}">
+
+                                                        </div>
+
+                                                    </td>
+
+                                                    <td data-label="Course Name"
+                                                        th:text="${course.courseName}">
+                                                    </td>
+
+                                                    <td data-label="Fee"
+                                                        class="text-end"
+                                                        th:text="${'Rs ' + #numbers.formatDecimal(course.fee, 1, 'COMMA', 2, 'POINT')}">
+                                                    </td>
+
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Student details and summary -->
+                        <div class="col-lg-4">
+
+                            <div class="card h-100">
+
+                                <div class="card-header bg-white">
+
+                                    <i class="bi bi-person-check me-1"></i>
+                                    Student & Summary
+
+                                </div>
+
+                                <div class="card-body d-flex flex-column gap-3">
+
+                                    <div>
+
+                                        <label for="studentSelect" class="form-label">
+                                            Select Student
+                                        </label>
+
+                                        <select id="studentSelect"
+                                                class="form-select mb-2"
+                                                th:field="*{studentId}"								
+											    th:classappend="${#fields.hasErrors('studentId')} ? 'is-invalid' : ''">
+
+                                            <option value="">
+                                                Select a student
+                                            </option>
+
+                                            <option th:each="student : ${studentList}"
+                                                    th:value="${student.id}"
+                                                    th:data-name="${student.firstName + ' ' + student.lastName}"
+                                                    th:data-email="${student.email}"
+                                                    th:text="${student.firstName + ' ' + student.lastName + ' (' + student.email + ')'}">
+                                            </option>
+
+                                        </select>
+
+										<div class="invalid-feedback"
+																			th:if="${#fields.hasErrors('studentId')}"
+																			             th:errors="*{studentId}">
+																			     </div>
+										
+                                        <div class="p-3 bg-light border rounded">
+
+                                            <div class="text-muted small">
+                                                Selected Student
+                                            </div>
+
+                                            <div class="fw-semibold mb-0"
+                                                 id="selectedStudent">
+                                            </div>
+
+                                            <div class="small text-muted"
+                                                 id="selectedEmail">
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="p-3 bg-light border rounded">
+
+                                        <div class="d-flex justify-content-between mb-1">
+
+                                            <span class="text-muted">
+                                                Courses Selected
+                                            </span>
+
+                                            <strong id="selectedCourseCount">
+                                                0
+                                            </strong>
+
+                                        </div>
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <span class="text-muted">
+                                                Total Fee
+                                            </span>
+
+                                            <strong class="text-primary"
+                                                    id="totalFees">
+                                                Rs.0
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="text-muted small mb-1">
+                                            Selected Courses
+                                        </div>
+
+                                        <ul class="mb-3" id="selectedCourses">
+                                            <li>No-Course selected</li>
+                                        </ul>
+
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary flex-grow-1">
+                                                <i class="bi bi-arrow-left me-1"></i>
+                                                Cancel
+                                            </button>
+
+                                            <button type="submit"
+                                                    class="btn btn-primary flex-grow-1">
+                                                <i class="bi bi-check2-circle me-1"></i>
+                                                Enroll
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/layout::scripts}"></div>
+
+    <script th:inline="javascript">
+
+        const checkboxes = document.querySelectorAll(".course-checkbox");
+        const selectedCourseCount = document.getElementById("selectedCourseCount");
+        const totalFees = document.getElementById("totalFees");
+        const selectedCourses = document.getElementById("selectedCourses");
+        const studentSelect = document.getElementById("studentSelect");
+        const selectedStudent = document.getElementById("selectedStudent");
+        const selectedEmail = document.getElementById("selectedEmail");
+
+        function updateSummery() {
+            let selected = [];
+            let total = 0;
+
+            checkboxes.forEach(cb => {
+
+                if (cb.checked) {
+
+                    const fee = parseFloat(cb.dataset.fee || "0");
+
+                    selected.push({
+                        name: cb.dataset.name,
+                        fee: fee
+                    });
+
+                    total = total + fee;
+                }
+
+            });
+
+            selectedCourseCount.textContent = selected.length;
+            totalFees.textContent = "Rs. " + total.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+            selectedCourses.innerHTML = "";
+
+            if (selected.length === 0) {
+
+                selectedCourses.innerHTML = "<li>No-Course selected</li>";
+
+            } else {
+
+                selected.forEach(item => {
+
+                    const li = document.createElement("li");
+
+                    li.textContent = `${item.name} - Rs. ${item.fee.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+                    selectedCourses.appendChild(li);
+
+                });
+            }
+        }
+
+        function updateStudentInfo() {
+            const selectedOption = studentSelect.options[studentSelect.selectedIndex];
+
+            if (studentSelect.value) {
+                selectedStudent.textContent = selectedOption.dataset.name || "";
+                selectedEmail.textContent = selectedOption.dataset.email || "";
+            } else {
+                selectedStudent.textContent = "";
+                selectedEmail.textContent = "";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            checkboxes.forEach(cb => cb.addEventListener("change", updateSummery));
+
+            if (studentSelect) {
+                studentSelect.addEventListener("change", updateStudentInfo);
+            }
+
+            // In case the page re-renders with previously checked boxes
+            updateSummery();
+            updateStudentInfo();
+        });
+
+    </script>
+
+</body>
+
+</html>

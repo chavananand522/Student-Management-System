@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}"></head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/layout::sidebar}"></div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <!-- Navbar -->
+            <div th:replace="~{fragments/layout::navbar}"></div>
+
+            <div class="container-fluid px-4 py-4">
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <h2>Add New Course</h2>
+
+                    <a th:href="@{/course/list}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Back to List
+                    </a>
+
+                </div>
+
+                <!-- Course Card -->
+                <div class="card mb-4">
+
+                    <div class="card-header bg-white">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Course Details
+                    </div>
+
+                    <div class="card-body">
+
+                        <!-- Course Form -->
+						<form th:action="@{/course/{id}/update(id=${courseDto.id})}"
+						      th:object="${courseDto}"
+						      method="post">
+							  
+                            <!-- Course Name & Course Code -->
+                            <div class="row mb-3">
+
+                                <!-- Course Name -->
+                                <div class="col-md-6">
+
+                                    <label for="courseName" class="form-label">
+                                        Course Name
+                                    </label>
+
+                                    <input type="text"
+                                           th:field="*{courseName}"
+                                           class="form-control"
+                                           th:classappend="${#fields.hasErrors('courseName')} ? 'is-invalid' : ''"
+                                           id="courseName"
+                                           placeholder="e.g. Web Development">
+
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('courseName')}"
+                                         th:errors="*{courseName}">
+                                    </div>
+
+                                </div>
+
+                                <!-- Course Code -->
+                                <div class="col-md-6">
+
+                                    <label for="courseCode" class="form-label">
+                                        Course Code
+                                    </label>
+
+                                    <input type="text"
+                                           id="courseCode"
+                                           th:field="*{courseCode}"
+                                           class="form-control"
+                                           th:classappend="${#fields.hasErrors('courseCode')} ? 'is-invalid' : ''"
+                                           placeholder="e.g. SB101">
+
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('courseCode')}"
+                                         th:errors="*{courseCode}">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Duration & Fee -->
+                            <div class="row mb-3">
+
+                                <!-- Duration -->
+                                <div class="col-md-6">
+
+                                    <label for="duration" class="form-label">
+                                        Duration
+                                    </label>
+
+                                    <input type="text"
+                                           th:field="*{duration}"
+                                           class="form-control"
+                                           th:classappend="${#fields.hasErrors('duration')} ? 'is-invalid' : ''"
+                                           id="duration"
+                                           placeholder="e.g. 6 Months">
+
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('duration')}"
+                                         th:errors="*{duration}">
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Course Fee -->
+                                <div class="col-md-6">
+
+                                    <label for="courseFee" class="form-label">
+                                        Course Fee
+                                    </label>
+
+                                    <input type="number"
+                                           th:field="*{fee}"
+                                           class="form-control"
+                                           th:classappend="${#fields.hasErrors('fee')} ? 'is-invalid' : ''"
+                                           id="courseFee"
+                                           step="0.01"
+                                           min="0"
+                                           placeholder="e.g. 1200">
+
+                                    <div class="invalid-feedback"
+                                         th:if="${#fields.hasErrors('fee')}"
+                                         th:errors="*{fee}">
+                                    </div>
+
+                                </div>
+
+                            </div>
+							
+							<div class="row mb-3">
+							                              <div class="col-md-6">
+							                                  <label for="isActive" class="form-label">Is Active</label>
+							                                  <select id="isActive" class="form-select"   th:field="*{active}"  >
+							                                      <option th:value="true">Yes</option>
+							                                      <option th:value="false">No</option>
+							                                  </select>
+							                              </div>
+							                          </div>
+
+
+                            <!-- Description -->
+                            <div class="mb-3">
+
+                                <label for="description" class="form-label">
+                                    Description
+                                </label>
+
+                                <textarea th:field="*{description}"
+                                          class="form-control"
+                                          th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                                          id="description"
+                                          rows="4"
+                                          placeholder="Enter course description...">
+                                </textarea>
+
+                                <div class="invalid-feedback"
+                                     th:if="${#fields.hasErrors('description')}"
+                                     th:errors="*{description}">
+                                </div>
+
+                            </div>
+
+
+                            <!-- Buttons -->
+                            <div class="d-flex justify-content-end">
+
+                                <button type="reset"
+                                        class="btn btn-light me-2">
+                                    Reset
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+
+                                    <i class="bi bi-save me-1"></i>
+                                    Update Course
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/layout::scripts}"></div>
+
+</body>
+</html>

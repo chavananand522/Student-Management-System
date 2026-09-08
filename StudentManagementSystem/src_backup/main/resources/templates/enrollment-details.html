@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}"></head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+       <div th:replace ="~{fragments/layout::sidebar}">   </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+             <div th:replace ="~{fragments/layout::navbar}">   </div>	
+
+            <div class="container-fluid px-4 py-4">
+                <div class="bg-primary text-white rounded-3 p-4 mb-4">
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                        <div>
+                            <h2 class="mb-1">Enrollment Details</h2>
+                            <p class="mb-0 opacity-75">Overview of courses, fees, and student information.</p>
+                        </div>
+                        <a th:if="${param.source != null and param.source[0]=='dashboard'}"
+                           th:href="@{/dashboard}"
+                           class="btn btn-light text-primary fw-semibold">
+                           <i class="bi bi-arrow-left me-1"></i> Back to Dashboard</a>
+                        <a th:unless="${param.source != null and param.source[0]=='dashboard'}"
+                           th:href="@{/enrollments/enrollmentList}"
+                           class="btn btn-light text-primary fw-semibold">
+                           <i class="bi bi-arrow-left me-1"></i> Back to Enrolled Students</a>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Section 1 + 3: Student info and summary -->
+                    <div class="col-lg-4">
+                        <div class="card h-100 mb-3 mb-lg-4">
+                            <div class="card-header bg-white">
+                                <i class="bi bi-person-badge me-1"></i> Student Information
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2"><strong>Name:</strong> <span th:text="${enrollmentSummeryDTO.studentName}"></span></p>
+                                <p class="mb-2"><strong>Email:</strong> <span th:text="${enrollmentSummeryDTO.email}"></span></p>
+                                <div class="p-3 bg-light border rounded">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Total Courses</span>
+                                        <strong th:text="${enrollmentSummeryDTO.courseCount}"></strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Total Fee</span>Rs.
+                                        <strong th:text="${enrollmentSummeryDTO.totalFee}"></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Courses table -->
+                    <div class="col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-journal-check me-1"></i> Enrolled Courses</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Course Name</th>
+                                                <th>Description</th>
+                                                <th class="text-end">Fee</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="course : ${enrollmentSummeryDTO.courseList}">
+                                                <td data-label="Course Name" th:text="${course.courseName}"></td>
+                                                <td data-label="Description"th:text="${course.description}"></td>
+                                                <td data-label="Fee" class="text-end" th:text="${course.fee}"></td>
+                                            </tr>
+                                         
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<div th:replace ="~{fragments/layout::scripts}">   </div>
+
+</body>
+
+</html>
