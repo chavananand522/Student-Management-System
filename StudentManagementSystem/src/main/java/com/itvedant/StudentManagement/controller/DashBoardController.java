@@ -14,20 +14,23 @@ public class DashBoardController {
 	
 	private static final Logger log = LoggerFactory.getLogger(EnrollmentController.class);
 
-	
 	private final EnrollmentService enrollmentService;
 	private final DashboardService dashboardService;
 	
-	
-	public DashBoardController (EnrollmentService enrollmentService, DashboardService dashboardService) {
-		this.enrollmentService= enrollmentService;
-		this.dashboardService= dashboardService;
+	public DashBoardController(EnrollmentService enrollmentService, DashboardService dashboardService) {
+		this.enrollmentService = enrollmentService;
+		this.dashboardService = dashboardService;
+	}
+
+	@GetMapping("/")
+	public String home() {
+		return "redirect:/dashboard";
 	}
 
 	@GetMapping("/dashboard")
 	public String dashboard(Model model) {
 		model.addAttribute("dashboardStats", dashboardService.getDashboardStats());
-		model.addAttribute("students",enrollmentService.getRecentlyEnrolledStudents(0, 5));
-		return"dashboard";
+		model.addAttribute("students", enrollmentService.getRecentlyEnrolledStudents(0, 5));
+		return "dashboard";
 	}
 }
