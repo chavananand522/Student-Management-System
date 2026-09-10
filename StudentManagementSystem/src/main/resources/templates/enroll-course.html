@@ -67,7 +67,7 @@
 
                                     <div class="table-responsive">
 
-                                        <table class="table table-hover align-middle">
+                                        <table class="table table-hover align-middle" id="courseTable">
 
                                             <thead>
                                                 <tr>
@@ -77,9 +77,9 @@
                                                 </tr>
                                             </thead>
 
-                                            <tbody>
+                                            <tbody id="courseTableBody">
 
-                                                <tr th:each="course : ${courseList}">
+                                                <tr th:each="course : ${courseList}" class="course-row">
 
                                                     <td data-label="Select">
 
@@ -113,6 +113,13 @@
                                         </table>
 
                                     </div>
+
+                                    <!-- Pagination -->
+                                    <nav aria-label="Course pagination" th:if="${not #lists.isEmpty(courseList)}">
+                                        <ul class="pagination justify-content-end mb-0" id="coursePagination">
+                                            <!-- Filled in by JavaScript -->
+                                        </ul>
+                                    </nav>
 
                                 </div>
 
@@ -159,9 +166,9 @@
                                         </select>
 
 										<div class="invalid-feedback"
-																			th:if="${#fields.hasErrors('studentId')}"
-																			             th:errors="*{studentId}">
-																			     </div>
+																					th:if="${#fields.hasErrors('studentId')}"
+																					             th:errors="*{studentId}">
+																					     </div>
 										
                                         <div class="p-3 bg-light border rounded">
 
@@ -321,6 +328,73 @@
             }
         }
 
+        // ================= CLIENT-SIDE PAGINATION =================
+        // Keeps every checkbox in the form (so multi-select selections
+        // are never lost across pages) while only showing one page of
+        // rows at a time.
+
+        const PAGE_SIZE = 10;
+
+        const rows = Array.from(document.querySelectorAll("#courseTableBody .course-row"));
+        const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+        const paginationEl = document.getElementById("coursePagination");
+
+        let currentPage = 0;
+
+        function showPage(page) {
+
+            currentPage = Math.min(Math.max(page, 0), totalPages - 1);
+
+            rows.forEach((row, index) => {
+                const rowPage = Math.floor(index / PAGE_SIZE);
+                row.style.display = (rowPage === currentPage) ? "" : "none";
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+
+            if (!paginationEl || totalPages <= 1) {
+                if (paginationEl) paginationEl.innerHTML = "";
+                return;
+            }
+
+            paginationEl.innerHTML = "";
+
+            // Previous
+            const prevLi = document.createElement("li");
+            prevLi.className = "page-item" + (currentPage === 0 ? " disabled" : "");
+            prevLi.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+            prevLi.querySelector("a").addEventListener("click", (e) => {
+                e.preventDefault();
+                showPage(currentPage - 1);
+            });
+            paginationEl.appendChild(prevLi);
+
+            // Page numbers
+            for (let i = 0; i < totalPages; i++) {
+                const li = document.createElement("li");
+                li.className = "page-item" + (i === currentPage ? " active" : "");
+                li.innerHTML = `<a class="page-link" href="#">${i + 1}</a>`;
+                li.querySelector("a").addEventListener("click", (e) => {
+                    e.preventDefault();
+                    showPage(i);
+                });
+                paginationEl.appendChild(li);
+            }
+
+            // Next
+            const nextLi = document.createElement("li");
+            nextLi.className = "page-item" + (currentPage === totalPages - 1 ? " disabled" : "");
+            nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+            nextLi.querySelector("a").addEventListener("click", (e) => {
+                e.preventDefault();
+                showPage(currentPage + 1);
+            });
+            paginationEl.appendChild(nextLi);
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             checkboxes.forEach(cb => cb.addEventListener("change", updateSummery));
 
@@ -331,6 +405,9 @@
             // In case the page re-renders with previously checked boxes
             updateSummery();
             updateStudentInfo();
+
+            // Initialize pagination
+            showPage(0);
         });
 
     </script>
