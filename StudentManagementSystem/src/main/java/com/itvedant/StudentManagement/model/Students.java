@@ -1,8 +1,8 @@
 package com.itvedant.StudentManagement.model;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,7 +43,7 @@ public class Students {
 	private LocalDateTime createdAt;
 
 	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<Enrollment> enrollments = new HashSet<>();
+	private List<Enrollment> enrollments = new ArrayList<>();
 
 	@PrePersist
 	public void onCreate() {
@@ -115,11 +115,11 @@ public class Students {
 		this.createdAt = createdAt;
 	}
 
-	public Set<Enrollment> getEnrollments() {
+	public List<Enrollment> getEnrollments() {
 		return enrollments;
 	}
 
-	public void setEnrollments(Set<Enrollment> enrollments) {
+	public void setEnrollments(List<Enrollment> enrollments) {
 		this.enrollments = enrollments;
 	}
 

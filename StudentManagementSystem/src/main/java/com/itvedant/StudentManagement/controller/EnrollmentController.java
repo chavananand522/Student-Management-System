@@ -48,12 +48,12 @@ public class EnrollmentController {
 	}
 
 	@GetMapping("/enrollmentList")
-	public String enrollmentList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size,
-			Model model, @RequestParam(value = "message", required = false) String message) {
+	public String enrollmentList(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size,
+			Model model) {
 		log.info("GET /enrollmentList - showing enrolled student list page");
 		Page<EnrollmentSummeryDTO> students = enrollmentService.getEnrolledStudents(page, size);
 		model.addAttribute("students", students);
-		model.addAttribute("message", message);
 		return "enrolled-students";
 	}
 
@@ -75,18 +75,15 @@ public class EnrollmentController {
 		return "redirect:/enrollments/enrollmentList";
 
 	}
-	
+
 	@GetMapping("/getStudentEnrollmentDetails/{id}")
 	public String getStudentEnrollmentDetails(@PathVariable Long id, Model model,
-			@RequestParam(defaultValue="enrollments")String source) {
-		EnrollmentSummeryDTO enrollmentSummeryDTO= enrollmentService.findEnrolledStudentCourseDetails(id);
+			@RequestParam(defaultValue = "enrollments") String source) {
+		EnrollmentSummeryDTO enrollmentSummeryDTO = enrollmentService.findEnrolledStudentCourseDetails(id);
 		model.addAttribute("enrollmentSummeryDTO", enrollmentSummeryDTO);
-		model.addAttribute("source",source);
-		
+		model.addAttribute("source", source);
+
 		return "enrollment-details";
 	}
-	
-	
-	
 
 }

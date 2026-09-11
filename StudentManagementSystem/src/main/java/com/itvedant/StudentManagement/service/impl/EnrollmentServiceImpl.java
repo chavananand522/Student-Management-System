@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itvedant.StudentManagement.dto.CourseDTO;
 import com.itvedant.StudentManagement.dto.EnrollmentDTO;
@@ -55,6 +56,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    @Transactional
     public void enrollStudentToCourses(EnrollmentDTO enrollmentDTO) {
 
         log.info("Request from enrollStudentToCourses");
@@ -86,13 +88,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                     "Multiple course enrollment is disabled for this student.");
         }
 
-        for (Long courseId : enrollmentDTO.getCourseIds()) {
+        // Pre-check: count how many NEW (non-duplicate) courses are actually
+        // being requested, so we fail fast BEFORE saving anything.
+        long newCoursesToAdd = enrollmentDTO.getCourseIds().stream()
+                .filter(courseId -> !preventDuplicateEnrollment
+                        || !enrollmentRepository.existsByStudentIdAndCourseId(
+                                enrollmentDTO.getStudentId(), courseId))
+                .count();
 
-            if (currentCourseCount >= maxCoursesPerStudent) {
-                throw new RuntimeException(
-                        "Student cannot enroll in more than "
-                                + maxCoursesPerStudent + " courses.");
-            }
+        if (currentCourseCount + newCoursesToAdd > maxCoursesPerStudent) {
+            throw new RuntimeException(
+                    "Cannot enroll: student would exceed the maximum of "
+                            + maxCoursesPerStudent + " courses (currently enrolled in "
+                            + currentCourseCount + ", requested " + newCoursesToAdd + " new).");
+        }
+
+        for (Long courseId : enrollmentDTO.getCourseIds()) {
 
             Courses course = courseRepository
                     .findById(courseId)
