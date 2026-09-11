@@ -28,7 +28,7 @@ body {
 
 #sidebar-wrapper {
     min-height: 100vh;
-    margin-left: calc(var(--sidebar-width) * -1);
+    margin-left: 0;
     width: var(--sidebar-width);
     background-color: var(--sidebar-bg);
     transition: margin .25s ease-out;
@@ -603,22 +603,872 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     font-weight: 700;
 }
 .dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: px; /* space between icon and text */
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .system-tools-icon {
-  display: flex;              /* keep it centered */
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid #212529;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+}
 
-  width: 22px;
-  height: 22px;
 
-  border: 2.5px solid #212529;
-  border-radius: 50%;
+/* =========================
+   Leadership Board
+   ========================= */
 
-  font-size: 12px;
-  font-weight: 800;
+.leadership-container {
+    padding: 25px;
+}
+
+.leadership-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.leadership-title i {
+    margin-right: 8px;
+    color: #f4b400 !important;
+}
+
+/* Top Leaders */
+
+.top-leaders {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.leader-card {
+    width: 220px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.leader-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.leader-card.first {
+    width: 240px;
+    padding-top: 30px;
+}
+
+.leader-rank {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.leader-icon {
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+.leader-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.leader-points {
+    font-size: 15px;
+    color: #6c757d;
+}
+
+/* Ranking */
+
+.ranking-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.ranking-title {
+    font-size: 21px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ranking-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.ranking-table td {
+    padding: 15px 16px;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 15px;
+}
+
+.ranking-table tr {
+    transition: background 0.2s ease;
+}
+
+.ranking-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.rank-number {
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.student-name {
+    font-weight: 600;
+}
+
+.student-points {
+    font-weight: 600;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+    .leadership-container {
+        padding: 15px;
+    }
+
+    .top-leaders {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .leader-card,
+    .leader-card.first {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .ranking-card {
+        padding: 15px;
+        overflow-x: auto;
+    }
+
+    .ranking-table {
+        min-width: 600px;
+    }
+
+    .leadership-title {
+        font-size: 24px;
+    }
+}
+
+/* =========================
+   Animated Trophy
+   ========================= */
+
+.animated-trophy {
+    width: 75px;
+    height: 75px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    vertical-align: middle;
+    animation: trophyFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 5px 8px rgba(196, 135, 0, 0.25));
+}
+
+.animated-trophy svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+@keyframes trophyFloat {
+
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-4px) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-7px) rotate(0deg);
+    }
+
+    75% {
+        transform: translateY(-4px) rotate(2deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+}
+
+.trophy-shine {
+    animation: trophyShine 3s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes trophyShine {
+
+    0% {
+        transform: translateX(-70px);
+        opacity: 0;
+    }
+
+    35% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    65% {
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(70px);
+        opacity: 0;
+    }
+
+}
+
+/* =========================
+   Admin ID Card Page
+   ========================= */
+
+.id-card-page {
+    padding: 25px;
+}
+
+
+/* =========================
+   Page Title
+   ========================= */
+
+.id-card-page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #292b45;
+    margin: 0 0 30px 0;
+}
+
+.id-card-page-title i {
+    color: #f4b400;
+    font-size: 30px;
+}
+
+
+/* =========================
+   ID Card Wrapper
+   ========================= */
+
+.id-card-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 5px 0 35px;
+}
+
+
+/* =========================
+   Main ID Card
+   ========================= */
+
+.student-id-card {
+    width: 560px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    border: 1px solid #eeeeee;
+    transition: all 0.3s ease;
+}
+
+.student-id-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================
+   ID Card Header
+   ========================= */
+
+.id-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 19px 24px;
+    background: #292b45;
+    color: #ffffff;
+}
+
+.id-card-logo {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f4b400;
+    color: #ffffff;
+    font-size: 25px;
+}
+
+.id-card-header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.id-card-system-name {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+
+.id-card-type {
+    margin-top: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    opacity: 0.75;
+}
+
+
+/* =========================
+   ID Card Body
+   ========================= */
+
+.id-card-body {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 30px 25px;
+}
+
+
+/* =========================
+   Admin Profile Photo
+   ========================= */
+
+.id-card-photo {
+    width: 135px;
+    height: 155px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f3f6;
+    border: 2px solid #e0e3e7;
+    border-radius: 10px;
+    overflow: hidden;
+    color: #292b45;
+}
+
+.id-card-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.id-card-photo i {
+    font-size: 78px;
+}
+
+
+/* =========================
+   Admin Details
+   ========================= */
+
+.id-card-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.id-student-name {
+    margin: 0 0 17px;
+    color: #292b45;
+    font-size: 25px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+
+/* Detail Row */
+
+.id-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 9px;
+    font-size: 13px;
+}
+
+.id-detail-row span {
+    color: #777777;
+    white-space: nowrap;
+}
+
+.id-detail-row strong {
+    color: #292b45;
+    font-weight: 600;
+    text-align: right;
+}
+
+.active-status {
+    color: #198754 !important;
+}
+
+
+/* =========================
+   Card Bottom
+   ========================= */
+
+.id-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 25px;
+    background: #f8f9fa;
+    border-top: 1px solid #eeeeee;
+}
+
+
+/* Validity */
+
+.id-card-validity {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.id-card-validity span {
+    font-size: 9px;
+    color: #777777;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+}
+
+.id-card-validity strong {
+    font-size: 13px;
+    color: #292b45;
+    font-weight: 600;
+}
+
+
+/* QR */
+
+.id-card-qr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    color: #292b45;
+}
+
+
+/* =========================
+   Card Footer
+   ========================= */
+
+.id-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+    background: #292b45;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.id-card-footer i {
+    margin-right: 5px;
+    color: #f4b400;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 768px) {
+
+    .id-card-page {
+        padding: 18px;
+    }
+
+    .id-card-page-title {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+    .id-card-page-title i {
+        font-size: 26px;
+    }
+
+    .student-id-card {
+        width: 100%;
+        max-width: 560px;
+    }
+
+    .id-card-body {
+        gap: 20px;
+        padding: 25px 20px;
+    }
+
+    .id-card-photo {
+        width: 115px;
+        height: 135px;
+    }
+
+    .id-card-photo i {
+        font-size: 65px;
+    }
+
+    .id-student-name {
+        font-size: 22px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .id-card-page {
+        padding: 15px;
+    }
+
+    .id-card-header {
+        padding: 15px;
+    }
+
+    .id-card-logo {
+        width: 45px;
+        height: 45px;
+        font-size: 21px;
+    }
+
+    .id-card-system-name {
+        font-size: 11px;
+    }
+
+    .id-card-type {
+        font-size: 8px;
+    }
+
+    .id-card-body {
+        gap: 15px;
+        padding: 20px 15px;
+    }
+
+    .id-card-photo {
+        width: 95px;
+        height: 115px;
+    }
+
+    .id-card-photo i {
+        font-size: 55px;
+    }
+
+    .id-student-name {
+        font-size: 19px;
+        margin-bottom: 12px;
+    }
+
+    .id-detail-row {
+        font-size: 11px;
+        gap: 8px;
+        margin-bottom: 7px;
+    }
+
+    .id-card-bottom {
+        padding: 11px 15px;
+    }
+
+    .id-card-footer {
+        padding: 9px 15px;
+    }
+
+}}
+
+/* =================================
+   SYSTEM TOOLS PAGE
+================================= */
+
+.settings-page {
+    padding: 30px 60px 40px;
+    background: #f0f2f5;
+}
+
+.settings-container {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto 40px;
+    padding: 32px 38px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* =================================
+   PAGE HEADER
+================================= */
+
+.settings-header {
+    padding: 0;
+    margin: 0 0 40px 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.settings-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 8px 0;
+    color: #292b45;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.settings-title i {
+    color: #292b45;
+    font-size: 38px;
+}
+
+.settings-subtitle {
+    margin: 0;
+    color: #292b45;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+/* =================================
+   STUDENT DATA SECTION
+================================= */
+
+.settings-section {
+    width: 100%;
+}
+
+.settings-section-title {
+    margin: 0 0 20px 0;
+    color: #292b45;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+/* =================================
+   EXPORT STUDENT DATA
+================================= */
+
+.settings-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.settings-card-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #198754;
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 25px;
+}
+
+.settings-card-content {
+    flex: 1;
+}
+
+.settings-card-content h3 {
+    margin: 0 0 8px 0;
+    color: #292b45;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.settings-card-content p {
+    margin: 0 0 15px 0;
+    color: #292b45;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.settings-card-content ul {
+    margin: 0 0 22px 0;
+    padding-left: 22px;
+    color: #292b45;
+}
+
+.settings-card-content li {
+    margin-bottom: 5px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* =================================
+   DOWNLOAD BUTTON
+================================= */
+
+.settings-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.settings-download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(25, 135, 84, 0.25);
+}
+
+/* =================================
+   DROPDOWN
+================================= */
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.system-tools-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid #212529;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* =================================
+   FOOTER
+================================= */
+
+#page-content-wrapper footer {
+    margin-top: 0 !important;
+    padding: 24px 25px !important;
+}
+
+#page-content-wrapper footer .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+#page-content-wrapper footer .d-flex {
+    gap: 30px;
+}
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 768px) {
+    .settings-page {
+        padding: 20px 15px 30px;
+    }
+
+    .settings-container {
+        padding: 25px 20px;
+        margin-bottom: 30px;
+    }
+
+    .settings-header {
+        margin-bottom: 30px;
+    }
+
+    .settings-title {
+        font-size: 27px;
+    }
+
+    .settings-title i {
+        font-size: 32px;
+    }
+
+    .settings-subtitle {
+        font-size: 15px;
+    }
+
+    .settings-card {
+        gap: 15px;
+    }
+
+    .settings-card-content h3 {
+        font-size: 21px;
+    }
+
+    #page-content-wrapper footer .d-flex {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .settings-card {
+        flex-direction: column;
+    }
+
+    .settings-download-btn {
+        width: 100%;
+    }
+
+    #page-content-wrapper footer .d-flex {
+        flex-direction: column;
+        align-items: center !important;
+        gap: 8px;
+    }
 }

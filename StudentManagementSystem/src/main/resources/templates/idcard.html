@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head}">
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+        <!-- Navbar -->
+        <div th:replace="~{fragments/layout :: navbar}"></div>
+
+        <!-- ID Card Page -->
+        <div class="container-fluid id-card-page">
+
+            <!-- Page Title -->
+            <h1 class="id-card-page-title">
+                <i class="bi bi-person-vcard-fill"></i>
+                Admin ID Card
+            </h1>
+
+            <!-- Admin ID Card -->
+            <div class="id-card-wrapper">
+
+                <div class="student-id-card">
+
+                    <!-- Card Header -->
+                    <div class="id-card-header">
+
+                        <div class="id-card-logo">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+
+                        <div class="id-card-header-text">
+
+                            <div class="id-card-system-name">
+                                STUDENT MANAGEMENT SYSTEM
+                            </div>
+
+                            <div class="id-card-type">
+                                ADMIN IDENTITY CARD
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="id-card-body">
+
+                        <!-- Admin Profile Image -->
+                        <div class="id-card-photo">
+
+                            <img th:src="@{/profile/image}"
+                                 alt="Admin Profile"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+
+                            <i class="bi bi-person-fill"
+                               style="display: none;">
+                            </i>
+
+                        </div>
+
+                        <!-- Admin Details -->
+                        <div class="id-card-details">
+
+                            <!-- Admin Name -->
+                            <h2 class="id-student-name"
+                                th:text="${adminName}">
+                                Admin User
+                            </h2>
+
+                            <!-- Admin ID -->
+                            <div class="id-detail-row">
+
+                                <span>Admin ID</span>
+
+                                <strong>
+                                    ADMIN001
+                                </strong>
+
+                            </div>
+
+                            <!-- Role -->
+                            <div class="id-detail-row">
+
+                                <span>Role</span>
+
+                                <strong>
+                                    Administrator
+                                </strong>
+
+                            </div>
+
+                            <!-- Department -->
+                            <div class="id-detail-row">
+
+                                <span>Department</span>
+
+                                <strong>
+                                    Management
+                                </strong>
+
+                            </div>
+
+                            <!-- Status -->
+                            <div class="id-detail-row">
+
+                                <span>Status</span>
+
+                                <strong class="active-status">
+                                    Active
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Card Bottom -->
+                    <div class="id-card-bottom">
+
+                        <div class="id-card-validity">
+
+                            <span>
+                                VALIDITY
+                            </span>
+
+                            <strong>
+                                2026 - 2027
+                            </strong>
+
+                        </div>
+
+                        <div class="id-card-qr">
+
+                            <i class="bi bi-qr-code"></i>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="id-card-footer">
+
+                        <span>
+
+                            <i class="bi bi-shield-check"></i>
+                            Official Admin Card
+
+                        </span>
+
+                        <span>
+                            SMS ADMIN
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div th:replace="~{fragments/layout :: footer}"></div>
+
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+
+</html>
