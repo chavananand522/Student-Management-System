@@ -1,16 +1,16 @@
 package com.itvedant.StudentManagement.services;
 
-import com.itvedant.StudentManagement.entities.Study;
-
 import java.util.List;
+
+import com.itvedant.StudentManagement.model.Study;
 
 public interface StudyService {
 
-    List<Study> getAllSubjects();
+	List<Study> getAllSubjects();
 
-    Study getSubjectByName(String subject);
+	Study getSubjectByName(String subject);
 
-    Study saveSubject(Study study);
+	Study saveSubject(Study study);
 
-    void deleteSubject(Long id);
+	void deleteSubject(Long id);
 }

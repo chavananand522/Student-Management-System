@@ -1,4 +1,4 @@
-package com.itvedant.StudentManagement.entities;
+package com.itvedant.StudentManagement.model;
 
 import jakarta.persistence.*;
 

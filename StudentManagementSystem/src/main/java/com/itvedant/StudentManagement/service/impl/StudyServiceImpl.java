@@ -1,7 +1,8 @@
-package com.itvedant.StudentManagement.services;
+package com.itvedant.StudentManagement.service.impl;
 
-import com.itvedant.StudentManagement.entities.Study;
+import com.itvedant.StudentManagement.model.Study;
 import com.itvedant.StudentManagement.reposatory.StudyRepository;
+import com.itvedant.StudentManagement.services.StudyService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public Study getSubjectByName(String subject) {
         return studyRepository.findBySubjectIgnoreCase(subject)
-                .orElseThrow(() -> new RuntimeException("Subject not found: " + subject));
+                .orElse(null);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.itvedant.StudentManagement.reposatory;
 
-import com.itvedant.StudentManagement.entities.Study;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.itvedant.StudentManagement.model.Study;
 
 public interface StudyRepository extends JpaRepository<Study, Long> {
 

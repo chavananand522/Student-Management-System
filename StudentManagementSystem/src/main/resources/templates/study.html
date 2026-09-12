@@ -2,56 +2,211 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/layout :: head}"></head>
+<head th:replace="~{fragments/layout::head}">
+</head>
 
 <body>
 
-<div class="app-container">
+<div class="d-flex" id="wrapper">
 
-    <!-- EXISTING SIDEBAR -->
-    <div th:replace="~{fragments/layout :: sidebar}"></div>
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
 
-        <!-- EXISTING NAVBAR -->
-        <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-        <main class="study-content">
+    <!-- ================================================= -->
+    <!-- PAGE CONTENT -->
+    <!-- ================================================= -->
 
-            <div class="study-header">
+    <div id="page-content-wrapper">
+
+        <!-- ================================================= -->
+        <!-- NAVBAR -->
+        <!-- ================================================= -->
+
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN CONTENT -->
+        <!-- ================================================= -->
+
+        <div class="container-fluid px-4 py-4">
+
+
+            <!-- ================================================= -->
+            <!-- SUCCESS MESSAGE -->
+            <!-- ================================================= -->
+
+            <div th:if="${message}"
+                 class="alert alert-success text-center"
+                 role="alert"
+                 th:text="${message}">
+
+                Module is created successfully
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- SUBJECT HEADER -->
+            <!-- ================================================= -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+
+                        <!-- ================================================= -->
+                        <!-- SUBJECT INFORMATION -->
+                        <!-- ================================================= -->
+
+                        <div>
+
+                            <!-- Breadcrumb -->
+
+                            <div class="mb-2">
+
+                                <a th:href="@{/study}"
+                                   class="text-primary text-decoration-none">
+
+                                    Study
+
+                                </a>
+
+                                <span class="mx-2">
+                                    ›
+                                </span>
+
+                                <span th:text="${subjectName}">
+                                    Physics
+                                </span>
+
+                            </div>
+
+
+                            <!-- Subject Name -->
+
+                            <h1 class="fw-bold mb-1"
+                                th:text="${subjectName}">
+
+                                Physics
+
+                            </h1>
+
+
+                            <!-- Subject Description -->
+
+                            <p class="text-muted mb-0">
+
+                                Explore modules, concepts and previous year questions
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- SUBJECT ICON -->
+                        <!-- ================================================= -->
+
+                        <div class="d-flex align-items-center justify-content-center"
+                             style="width:52px;
+                                    height:52px;
+                                    background:#eaf2ff;
+                                    border-radius:14px;">
+
+
+                            <!-- PHYSICS -->
+
+                            <i th:if="${'Physics'.equalsIgnoreCase(subjectName)}"
+                               class="bi bi-atom fs-3 text-primary">
+                            </i>
+
+
+                            <!-- CHEMISTRY -->
+
+                            <i th:if="${'Chemistry'.equalsIgnoreCase(subjectName)}"
+                               class="bi bi-flask fs-3 text-primary">
+                            </i>
+
+
+                            <!-- BIOLOGY -->
+
+                            <i th:if="${'Biology'.equalsIgnoreCase(subjectName)}"
+                               class="bi bi-heart-pulse fs-3 text-primary">
+                            </i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- MODULE HEADER -->
+            <!-- ================================================= -->
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
                 <div>
 
-                    <div class="breadcrumb">
-                        <a th:href="@{/study}">Study</a>
-                    </div>
+                    <h3 class="fw-bold mb-1"
+                        th:text="${subjectName + ' Modules'}">
 
-                    <h1>Study</h1>
+                        Physics Modules
 
-                    <p>
-                        Choose a subject to start learning
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Select a module to start learning
+
                     </p>
 
                 </div>
 
-                <div class="subject-icon">
 
-                    <i class="bi bi-book"></i>
+                <!-- ================================================= -->
+                <!-- ADD NEW MODULE -->
+                <!-- ================================================= -->
 
-                </div>
+                <a th:href="@{/module/new(subject=${subjectName})}"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+
+                    Add New Module
+
+                </a>
 
             </div>
 
 
-            <div class="section-title">
 
-                <div>
+            <!-- ================================================= -->
+            <!-- NO MODULES -->
+            <!-- ================================================= -->
 
-                    <h2>Subjects</h2>
+            <div th:if="${modules == null || modules.isEmpty()}"
+                 class="card border-0 shadow-sm">
 
-                    <p>
-                        Select a subject to view chapters
+                <div class="card-body text-center py-4">
+
+                    <p class="text-muted mb-0">
+
+                        No modules available for this subject.
+
                     </p>
 
                 </div>
@@ -59,102 +214,146 @@
             </div>
 
 
-            <div class="chapter-list">
 
-                <!-- PHYSICS -->
-                <a th:href="@{/study/physics}"
-                   class="chapter-card">
+            <!-- ================================================= -->
+            <!-- MODULE LIST -->
+            <!-- ================================================= -->
 
-                    <div class="chapter-number">
-                        1
-                    </div>
+            <div th:if="${modules != null && !modules.isEmpty()}">
 
-                    <div class="chapter-info">
+                <div class="row g-3">
 
-                        <h3>Physics</h3>
 
-                        <div class="chapter-meta">
+                    <!-- ================================================= -->
+                    <!-- EACH MODULE -->
+                    <!-- ================================================= -->
 
-                            <span>
-                                <i class="bi bi-lightning-charge"></i>
-                                Physics Chapters
-                            </span>
+                    <div class="col-12"
+                         th:each="module : ${modules}">
+
+                        <div class="card border-0 shadow-sm">
+
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+
+                                    <!-- ================================================= -->
+                                    <!-- MODULE INFORMATION -->
+                                    <!-- ================================================= -->
+
+                                    <div>
+
+
+                                        <!-- MODULE NUMBER -->
+
+                                        <div class="d-flex align-items-center mb-2">
+
+                                            <span class="badge bg-primary me-2"
+                                                  th:text="${'Module ' + module.moduleNumber}">
+
+                                                Module 1
+
+                                            </span>
+
+                                        </div>
+
+
+                                        <!-- MODULE NAME -->
+
+                                        <h5 class="fw-bold mb-1"
+                                            th:text="${module.name}">
+
+                                            Units and Measurements
+
+                                        </h5>
+
+                                    </div>
+
+
+
+                                    <!-- ================================================= -->
+                                    <!-- ACTION BUTTONS -->
+                                    <!-- ================================================= -->
+
+                                    <div class="d-flex gap-2">
+
+
+                                        <!-- ================================================= -->
+                                        <!-- VIEW -->
+                                        <!-- ================================================= -->
+
+                                        <a th:href="@{/module/{id}(id=${module.id})}"
+                                           class="btn btn-sm btn-info text-white"
+                                           title="View">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+
+                                        <!-- ================================================= -->
+                                        <!-- EDIT -->
+                                        <!-- ================================================= -->
+
+                                        <a th:href="@{/module/{id}/edit(id=${module.id})}"
+                                           class="btn btn-sm btn-warning text-white"
+                                           title="Edit">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+                                        <!-- ================================================= -->
+                                        <!-- DELETE -->
+                                        <!-- ================================================= -->
+
+                                        <form th:action="@{/module/{id}/delete(id=${module.id})}"
+                                              method="post"
+                                              style="display:inline;">
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    title="Delete"
+                                                    onclick="return confirm('Are you sure you want to delete this module?');">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                    <i class="bi bi-chevron-right chapter-arrow"></i>
-
-                </a>
-
-
-                <!-- CHEMISTRY -->
-                <a th:href="@{/study/chemistry}"
-                   class="chapter-card">
-
-                    <div class="chapter-number">
-                        2
-                    </div>
-
-                    <div class="chapter-info">
-
-                        <h3>Chemistry</h3>
-
-                        <div class="chapter-meta">
-
-                            <span>
-                                <i class="bi bi-droplet"></i>
-                                Chemistry Chapters
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <i class="bi bi-chevron-right chapter-arrow"></i>
-
-                </a>
-
-
-                <!-- BIOLOGY -->
-                <a th:href="@{/study/biology}"
-                   class="chapter-card">
-
-                    <div class="chapter-number">
-                        3
-                    </div>
-
-                    <div class="chapter-info">
-
-                        <h3>Biology</h3>
-
-                        <div class="chapter-meta">
-
-                            <span>
-                                <i class="bi bi-heart-pulse"></i>
-                                Biology Chapters
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <i class="bi bi-chevron-right chapter-arrow"></i>
-
-                </a>
+                </div>
 
             </div>
 
-        </main>
 
-        <footer th:replace="~{fragments/layout :: footer}"></footer>
+        </div>
 
     </div>
 
 </div>
 
-<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+
+<!-- ================================================= -->
+<!-- SCRIPTS -->
+<!-- ================================================= -->
+
+<div th:replace="~{fragments/layout::scripts}">
+</div>
+
 
 </body>
 
