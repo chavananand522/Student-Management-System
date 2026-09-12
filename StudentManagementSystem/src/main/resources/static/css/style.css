@@ -20,6 +20,7 @@ body {
 }
 
 /* Wrapper & Sidebar */
+
 #wrapper {
     display: flex;
     width: 100%;
@@ -75,6 +76,7 @@ body {
 }
 
 /* Content Area */
+
 #page-content-wrapper {
     width: 100%;
     min-width: 0;
@@ -85,6 +87,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 @media (min-width: 768px) {
+
     #sidebar-wrapper {
         margin-left: 0;
     }
@@ -99,6 +102,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Navbar */
+
 .navbar {
     background-color: #fff !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -111,6 +115,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Cards */
+
 .card {
     border: none;
     border-radius: 1rem;
@@ -138,6 +143,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Stats Cards Specifics */
+
 .bg-primary {
     background-color: var(--primary-color) !important;
 }
@@ -156,6 +162,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Buttons */
+
 .btn {
     border-radius: 0.5rem;
     padding: 0.5rem 1.2rem;
@@ -177,6 +184,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Tables */
+
 .table {
     vertical-align: middle;
 }
@@ -196,7 +204,9 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Responsive Tables (Card View on Mobile) */
+
 @media (max-width: 768px) {
+
     .table thead {
         display: none;
     }
@@ -239,14 +249,15 @@ body.sb-sidenav-toggled #sidebar-wrapper {
         border-bottom: 0;
     }
 
-    /* Adjust padding/alignment for specific cell types if needed */
-.table td {
-    padding: 0.75rem 1rem;
-}
+    .table td {
+        padding: 0.75rem 1rem;
+    }
 }
 
 /* Mobile adjustments */
+
 @media (max-width: 991.98px) {
+
     .sticky-summary {
         position: static;
         top: auto;
@@ -262,6 +273,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Login Page Specifics */
+
 .login-body {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     height: 100vh;
@@ -282,6 +294,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Form Controls */
+
 .form-control,
 .form-select {
     border-radius: 0.5rem;
@@ -300,7 +313,9 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     background-color: #f8f9fa;
     border: 1px solid #e2e8f0;
 }
+
 /* Logout Button */
+
 .logout-form {
     margin-top: auto;
     border-top: 1px solid rgba(255, 255, 255, 0.3);
@@ -346,6 +361,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Navbar profile icon */
+
 .navbar-profile-img {
     width: 28px;
     height: 28px;
@@ -353,6 +369,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Profile page large image */
+
 .profile-page-img {
     width: 150px;
     height: 150px;
@@ -360,16 +377,20 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 /* Scale down on small screens */
+
 @media (max-width: 576px) {
+
     .navbar-profile-img {
         width: 22px;
         height: 22px;
     }
+
     .profile-page-img {
         width: 100px;
         height: 100px;
     }
 }
+
 /* =========================================================
    SIDEBAR LINK ANIMATION
    ========================================================= */
@@ -378,18 +399,14 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     display: flex;
     align-items: center;
     gap: 12px;
-
     padding: 12px 20px;
-
     color: #ffffff;
     text-decoration: none;
-
     transition:
         transform 0.2s ease,
         background-color 0.2s ease,
         color 0.2s ease;
 }
-
 
 /* Hover effect for ALL sidebar links */
 
@@ -399,12 +416,11 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     color: #ffffff;
 }
 
-
 /* Icon animation */
+
 .sidebar-link i {
     transition: transform 0.2s ease;
 }
-
 
 /* Icon moves slightly when hovering */
 
@@ -421,7 +437,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     border-radius: 6px;
 }
 
-
 /* Hover effect */
 
 .dropdown-menu .dropdown-item:hover {
@@ -430,13 +445,11 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     color: #212529;
 }
 
-
 /* Icon animation */
 
 .dropdown-menu .dropdown-item i {
     transition: transform 0.2s ease;
 }
-
 
 /* Icon moves/scales on hover */
 
@@ -446,7 +459,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* ================================
    System Tools Page Header
-================================ */
+   ================================ */
 
 .page-header {
     background: #ffffff;
@@ -461,7 +474,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     display: flex;
     align-items: center;
     gap: 14px;
-
     font-size: 48px;
     font-weight: 700;
     line-height: 1.2;
@@ -475,50 +487,39 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 .page-header p {
     margin: 20px 0 0 0;
-
     font-size: 24px;
     font-weight: 400;
     line-height: 1.5;
     color: #6c757d;
 }
 
-
 /* =================================
    SYSTEM TOOLS HEADER
-================================= */
+   ================================= */
 
 .page-header {
     width: calc(100% - 40px);
     margin: 20px auto 40px auto;
     padding: 30px 40px;
-
     background: #ffffff;
     border-radius: 18px;
-
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-
     box-sizing: border-box;
 }
-
 
 /* Title */
 
 .page-header h1 {
     display: flex;
     align-items: center;
-
     margin: 0;
     padding: 0;
-
     gap: 12px;
-
     font-size: 42px;
     font-weight: 700;
     line-height: 1.2;
-
     color: #212529;
 }
-
 
 /* Tools Icon */
 
@@ -526,38 +527,31 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 40px;
     line-height: 1;
-
     color: #212529;
 }
-
 
 /* Subtitle */
 
 .page-header p {
     margin: 14px 0 0 0;
     padding: 0;
-
     font-size: 22px;
     font-weight: 400;
     line-height: 1.5;
-
     color: #6c757d;
 }
 
-
 /* =================================
    SYSTEM TOOLS HEADER
-================================= */
+   ================================= */
 
 .page-header {
     width: 100%;
     margin: 30px 0 40px 0;
     padding: 0;
     text-align: center;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -568,11 +562,9 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     width: 100%;
     margin: 0 0 12px 0;
     padding: 0;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     text-align: center;
     font-size: 32px;
     font-weight: 800;
@@ -582,13 +574,10 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     width: 52px;
     height: 52px;
-
     border: 4px solid #212529;
     border-radius: 50%;
-
     font-size: 25px;
     font-weight: 900;
 }
@@ -597,11 +586,11 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     width: 100%;
     margin: 0;
     padding: 0;
-
     text-align: center;
     font-size: 17px;
     font-weight: 700;
 }
+
 .dropdown-item {
     display: flex;
     align-items: center;
@@ -619,7 +608,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     font-size: 12px;
     font-weight: 800;
 }
-
 
 /* =========================
    Leadership Board
@@ -825,7 +813,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     100% {
         transform: translateY(0) rotate(0deg);
     }
-
 }
 
 .trophy-shine {
@@ -856,7 +843,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
         transform: translateX(70px);
         opacity: 0;
     }
-
 }
 
 /* =========================
@@ -866,7 +852,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 .id-card-page {
     padding: 25px;
 }
-
 
 /* =========================
    Page Title
@@ -887,7 +872,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     font-size: 30px;
 }
 
-
 /* =========================
    ID Card Wrapper
    ========================= */
@@ -899,7 +883,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     width: 100%;
     padding: 5px 0 35px;
 }
-
 
 /* =========================
    Main ID Card
@@ -920,7 +903,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     transform: translateY(-5px);
     box-shadow: 0 14px 35px rgba(0, 0, 0, 0.16);
 }
-
 
 /* =========================
    ID Card Header
@@ -967,7 +949,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     opacity: 0.75;
 }
 
-
 /* =========================
    ID Card Body
    ========================= */
@@ -978,7 +959,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     gap: 28px;
     padding: 30px 25px;
 }
-
 
 /* =========================
    Admin Profile Photo
@@ -1009,7 +989,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     font-size: 78px;
 }
 
-
 /* =========================
    Admin Details
    ========================= */
@@ -1026,7 +1005,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     line-height: 1.2;
     font-weight: 700;
 }
-
 
 /* Detail Row */
 
@@ -1054,7 +1032,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     color: #198754 !important;
 }
 
-
 /* =========================
    Card Bottom
    ========================= */
@@ -1067,7 +1044,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     background: #f8f9fa;
     border-top: 1px solid #eeeeee;
 }
-
 
 /* Validity */
 
@@ -1090,7 +1066,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     font-weight: 600;
 }
 
-
 /* QR */
 
 .id-card-qr {
@@ -1100,7 +1075,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     font-size: 38px;
     color: #292b45;
 }
-
 
 /* =========================
    Card Footer
@@ -1122,7 +1096,6 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     margin-right: 5px;
     color: #f4b400;
 }
-
 
 /* =========================
    Responsive
@@ -1165,9 +1138,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     .id-student-name {
         font-size: 22px;
     }
-
 }
-
 
 @media (max-width: 500px) {
 
@@ -1225,12 +1196,11 @@ body.sb-sidenav-toggled #sidebar-wrapper {
     .id-card-footer {
         padding: 9px 15px;
     }
-
-}}
+}
 
 /* =================================
    SYSTEM TOOLS PAGE
-================================= */
+   ================================= */
 
 .settings-page {
     padding: 30px 60px 40px;
@@ -1249,7 +1219,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    PAGE HEADER
-================================= */
+   ================================= */
 
 .settings-header {
     padding: 0;
@@ -1282,7 +1252,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    STUDENT DATA SECTION
-================================= */
+   ================================= */
 
 .settings-section {
     width: 100%;
@@ -1297,7 +1267,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    EXPORT STUDENT DATA
-================================= */
+   ================================= */
 
 .settings-card {
     display: flex;
@@ -1355,7 +1325,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    DOWNLOAD BUTTON
-================================= */
+   ================================= */
 
 .settings-download-btn {
     display: inline-flex;
@@ -1376,7 +1346,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    DROPDOWN
-================================= */
+   ================================= */
 
 .dropdown-item {
     display: flex;
@@ -1398,7 +1368,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    FOOTER
-================================= */
+   ================================= */
 
 #page-content-wrapper footer {
     margin-top: 0 !important;
@@ -1416,9 +1386,10 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 
 /* =================================
    MOBILE
-================================= */
+   ================================= */
 
 @media (max-width: 768px) {
+
     .settings-page {
         padding: 20px 15px 30px;
     }
@@ -1458,6 +1429,7 @@ body.sb-sidenav-toggled #sidebar-wrapper {
 }
 
 @media (max-width: 500px) {
+
     .settings-card {
         flex-direction: column;
     }
@@ -1470,5 +1442,326 @@ body.sb-sidenav-toggled #sidebar-wrapper {
         flex-direction: column;
         align-items: center !important;
         gap: 8px;
+    }
+}
+
+.leader-attendance {
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.student-attendance {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   STUDY PAGE
+   ONLY STUDY RELATED CSS
+   ========================================================= */
+
+.app-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f0f2f5;
+}
+
+.main-content .navbar {
+    flex-shrink: 0;
+}
+
+.study-content {
+    flex: 1;
+    padding: 30px;
+    background: #f0f2f5;
+}
+
+/* =========================================================
+   STUDY HEADER
+   ========================================================= */
+
+.study-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 14px;
+    padding: 25px 30px;
+    margin-bottom: 25px;
+}
+
+.study-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #172b4d;
+}
+
+.study-header p {
+    margin-top: 7px;
+    margin-bottom: 0;
+    color: #7b8794;
+}
+
+.breadcrumb {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.breadcrumb a {
+    color: #2878f0;
+    text-decoration: none;
+}
+
+.subject-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: #eaf3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2878f0;
+    font-size: 27px;
+}
+
+/* =========================================================
+   PHYSICS / CHEMISTRY / BIOLOGY SUBJECT LINKS
+   ========================================================= */
+
+.study-sub-link {
+    padding-left: 45px !important;
+    font-size: 14px;
+}
+
+.study-sub-link i {
+    font-size: 15px;
+    margin-right: 0 !important;
+}
+
+/* Physics */
+
+.study-sub-link[href*="physics"]:hover {
+    border-left-color: #2878f0;
+}
+
+/* Chemistry */
+
+.study-sub-link[href*="chemistry"]:hover {
+    border-left-color: #20c997;
+}
+
+/* Biology */
+
+.study-sub-link[href*="biology"]:hover {
+    border-left-color: #198754;
+}
+
+/* Active subject link */
+
+.study-sub-link.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================================================
+   CHAPTER SECTION
+   ========================================================= */
+
+.section-title {
+    margin-bottom: 15px;
+}
+
+.section-title h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #172b4d;
+}
+
+.section-title p {
+    margin: 5px 0 0;
+    color: #7b8794;
+    font-size: 13px;
+}
+
+/* =========================================================
+   CHAPTER LIST
+   ========================================================= */
+
+.chapter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chapter-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.chapter-card:hover {
+    border-color: #2878f0;
+    box-shadow: 0 5px 18px rgba(40, 120, 240, 0.08);
+    transform: translateX(3px);
+}
+
+.chapter-number {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: #2878f0;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 17px;
+}
+
+.chapter-info {
+    flex: 1;
+}
+
+.chapter-info h3 {
+    margin: 0 0 8px;
+    color: #172b4d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.chapter-meta {
+    display: flex;
+    gap: 20px;
+    color: #7b8794;
+    font-size: 12px;
+}
+
+.chapter-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.chapter-meta i {
+    color: #2878f0;
+}
+
+.chapter-arrow {
+    color: #9aa7b5;
+    font-size: 18px;
+}
+
+/* =========================================================
+   SUBJECT DETAIL PAGE
+   PHYSICS / CHEMISTRY / BIOLOGY
+   ========================================================= */
+
+.subject-page {
+    padding: 30px;
+    background: #f0f2f5;
+    min-height: calc(100vh - 70px);
+}
+
+.subject-page .study-header {
+    margin-bottom: 25px;
+}
+
+.subject-page .subject-content {
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 14px;
+    padding: 30px;
+}
+
+.subject-page .subject-content h2 {
+    margin: 0 0 10px;
+    color: #172b4d;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.subject-page .subject-content p {
+    color: #7b8794;
+    line-height: 1.7;
+}
+
+.subject-page .subject-content ul {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+.subject-page .subject-content li {
+    margin-bottom: 10px;
+    color: #172b4d;
+}
+
+/* =========================================================
+   STUDY PAGE MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .study-content {
+        padding: 20px 15px;
+    }
+
+    .study-header {
+        padding: 20px;
+    }
+
+    .study-header h1 {
+        font-size: 24px;
+    }
+
+    .study-header p {
+        font-size: 13px;
+    }
+
+    .subject-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 23px;
+    }
+
+    .chapter-card {
+        padding: 15px;
+    }
+
+    .chapter-info h3 {
+        font-size: 14px;
+    }
+
+    .chapter-meta {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .subject-page {
+        padding: 20px 15px;
+    }
+
+    .subject-page .subject-content {
+        padding: 20px;
     }
 }

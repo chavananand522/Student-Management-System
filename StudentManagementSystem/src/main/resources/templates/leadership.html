@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/layout :: head}">
+
 </head>
 
 <body>
@@ -9,27 +11,34 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
+
     <div th:replace="~{fragments/layout :: sidebar}"></div>
 
     <!-- Page Content -->
+
     <div id="page-content-wrapper">
 
         <!-- Navbar -->
+
         <div th:replace="~{fragments/layout :: navbar}"></div>
 
         <!-- Leadership Board -->
+
         <div class="container-fluid leadership-container">
 
             <!-- Page Title -->
+
             <h1 class="leadership-title">
 
                 <span class="animated-trophy">
+
                     <svg viewBox="0 0 220 220"
                          xmlns="http://www.w3.org/2000/svg">
 
                         <defs>
 
                             <!-- Main Gold -->
+
                             <linearGradient id="goldTrophy"
                                             x1="0%"
                                             y1="0%"
@@ -37,15 +46,22 @@
                                             y2="100%">
 
                                 <stop offset="0%" stop-color="#fff3a6"/>
+
                                 <stop offset="20%" stop-color="#ffd700"/>
+
                                 <stop offset="45%" stop-color="#f5b400"/>
+
                                 <stop offset="70%" stop-color="#c88600"/>
+
                                 <stop offset="88%" stop-color="#ffd84d"/>
+
                                 <stop offset="100%" stop-color="#a96800"/>
 
                             </linearGradient>
 
+
                             <!-- Dark Gold -->
+
                             <linearGradient id="darkGold"
                                             x1="0%"
                                             y1="0%"
@@ -53,12 +69,16 @@
                                             y2="100%">
 
                                 <stop offset="0%" stop-color="#9b6200"/>
+
                                 <stop offset="50%" stop-color="#f6c438"/>
+
                                 <stop offset="100%" stop-color="#7d4c00"/>
 
                             </linearGradient>
 
+
                             <!-- Shine -->
+
                             <linearGradient id="shineGradient"
                                             x1="0%"
                                             y1="0%"
@@ -66,14 +86,20 @@
                                             y2="0%">
 
                                 <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+
                                 <stop offset="45%" stop-color="#ffffff" stop-opacity="0.1"/>
+
                                 <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9"/>
+
                                 <stop offset="55%" stop-color="#ffffff" stop-opacity="0.1"/>
+
                                 <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
 
                             </linearGradient>
 
+
                             <!-- Glow -->
+
                             <filter id="trophyGlow">
 
                                 <feGaussianBlur
@@ -81,13 +107,18 @@
                                     result="blur"/>
 
                                 <feMerge>
+
                                     <feMergeNode in="blur"/>
+
                                     <feMergeNode in="SourceGraphic"/>
+
                                 </feMerge>
 
                             </filter>
 
+
                             <!-- Shine Clip -->
+
                             <clipPath id="cupClip">
 
                                 <path d="M52 42
@@ -104,6 +135,7 @@
 
 
                         <!-- Trophy Glow -->
+
                         <ellipse
                             cx="110"
                             cy="202"
@@ -112,10 +144,12 @@
                             fill="#f4b400"
                             opacity="0.25"
                             filter="url(#trophyGlow)">
+
                         </ellipse>
 
 
                         <!-- Left Handle -->
+
                         <path
                             d="M55 48
                                C27 42 15 58 20 82
@@ -127,10 +161,12 @@
                             stroke="url(#goldTrophy)"
                             stroke-width="10"
                             stroke-linecap="round">
+
                         </path>
 
 
                         <!-- Right Handle -->
+
                         <path
                             d="M165 48
                                C193 42 205 58 200 82
@@ -142,10 +178,12 @@
                             stroke="url(#goldTrophy)"
                             stroke-width="10"
                             stroke-linecap="round">
+
                         </path>
 
 
                         <!-- Main Trophy Cup -->
+
                         <path
                             d="M52 42
                                L168 42
@@ -159,10 +197,12 @@
                             fill="url(#goldTrophy)"
                             stroke="#a96c00"
                             stroke-width="3">
+
                         </path>
 
 
                         <!-- Top Rim -->
+
                         <path
                             d="M48 40
                                Q110 30 172 40
@@ -172,10 +212,12 @@
                             fill="url(#darkGold)"
                             stroke="#9c6200"
                             stroke-width="2">
+
                         </path>
 
 
                         <!-- Decorative Band -->
+
                         <path
                             d="M59 73
                                Q110 82 161 73
@@ -183,10 +225,12 @@
                                Q110 95 61 86
                                Z"
                             fill="url(#darkGold)">
+
                         </path>
 
 
                         <!-- Trophy Star -->
+
                         <path
                             d="M110 88
                                L115 101
@@ -202,15 +246,18 @@
                             fill="#fff1a3"
                             stroke="#b97800"
                             stroke-width="2">
+
                         </path>
 
 
                         <!-- Cup Highlight Details -->
+
                         <path
                             d="M76 58 L82 127"
                             stroke="#fff0a0"
                             stroke-width="4"
                             opacity="0.65">
+
                         </path>
 
                         <path
@@ -218,6 +265,7 @@
                             stroke="#fff0a0"
                             stroke-width="3"
                             opacity="0.5">
+
                         </path>
 
                         <path
@@ -225,6 +273,7 @@
                             stroke="#9b6100"
                             stroke-width="4"
                             opacity="0.5">
+
                         </path>
 
                         <path
@@ -232,10 +281,12 @@
                             stroke="#9b6100"
                             stroke-width="3"
                             opacity="0.4">
+
                         </path>
 
 
                         <!-- Trophy Stem -->
+
                         <path
                             d="M94 153
                                Q110 163 126 153
@@ -243,10 +294,12 @@
                                Q110 187 94 180
                                Z"
                             fill="url(#darkGold)">
+
                         </path>
 
 
                         <!-- Trophy Base -->
+
                         <path
                             d="M82 178
                                Q110 170 138 178
@@ -256,10 +309,12 @@
                             fill="url(#goldTrophy)"
                             stroke="#9d6300"
                             stroke-width="3">
+
                         </path>
 
 
                         <!-- Base Shadow -->
+
                         <ellipse
                             cx="110"
                             cy="194"
@@ -267,10 +322,12 @@
                             ry="9"
                             fill="#8b5600"
                             opacity="0.45">
+
                         </ellipse>
 
 
                         <!-- Animated Shine -->
+
                         <rect
                             class="trophy-shine"
                             x="50"
@@ -279,9 +336,11 @@
                             height="125"
                             fill="url(#shineGradient)"
                             clip-path="url(#cupClip)">
+
                         </rect>
 
                     </svg>
+
                 </span>
 
                 Leadership Board
@@ -290,9 +349,11 @@
 
 
             <!-- Top 3 Students -->
+
             <div class="top-leaders">
 
                 <!-- Second Position -->
+
                 <div class="leader-card">
 
                     <div class="leader-rank">
@@ -307,14 +368,19 @@
                         Student 2
                     </div>
 
-                    <div class="leader-points">
-                        850 Points
+                    <div class="leader-marks">
+                        850 Marks
+                    </div>
+
+                    <div class="leader-attendance">
+                        92% Attendance
                     </div>
 
                 </div>
 
 
                 <!-- First Position -->
+
                 <div class="leader-card first">
 
                     <div class="leader-rank">
@@ -329,14 +395,19 @@
                         Student 1
                     </div>
 
-                    <div class="leader-points">
-                        950 Points
+                    <div class="leader-marks">
+                        950 Marks
+                    </div>
+
+                    <div class="leader-attendance">
+                        96% Attendance
                     </div>
 
                 </div>
 
 
                 <!-- Third Position -->
+
                 <div class="leader-card">
 
                     <div class="leader-rank">
@@ -351,8 +422,12 @@
                         Student 3
                     </div>
 
-                    <div class="leader-points">
-                        800 Points
+                    <div class="leader-marks">
+                        800 Marks
+                    </div>
+
+                    <div class="leader-attendance">
+                        89% Attendance
                     </div>
 
                 </div>
@@ -361,6 +436,7 @@
 
 
             <!-- Ranking Table -->
+
             <div class="ranking-card">
 
                 <div class="ranking-title">
@@ -373,9 +449,15 @@
                     <thead>
 
                         <tr>
+
                             <th>Rank</th>
+
                             <th>Student</th>
-                            <th>Points</th>
+
+                            <th>Marks</th>
+
+                            <th>Attendance</th>
+
                         </tr>
 
                     </thead>
@@ -384,6 +466,7 @@
                     <tbody>
 
                         <!-- Rank 1 -->
+
                         <tr>
 
                             <td class="rank-number">
@@ -394,14 +477,19 @@
                                 Student 1
                             </td>
 
-                            <td class="student-points">
+                            <td class="student-marks">
                                 950
+                            </td>
+
+                            <td class="student-attendance">
+                                96%
                             </td>
 
                         </tr>
 
 
                         <!-- Rank 2 -->
+
                         <tr>
 
                             <td class="rank-number">
@@ -412,14 +500,19 @@
                                 Student 2
                             </td>
 
-                            <td class="student-points">
+                            <td class="student-marks">
                                 850
+                            </td>
+
+                            <td class="student-attendance">
+                                92%
                             </td>
 
                         </tr>
 
 
                         <!-- Rank 3 -->
+
                         <tr>
 
                             <td class="rank-number">
@@ -430,14 +523,19 @@
                                 Student 3
                             </td>
 
-                            <td class="student-points">
+                            <td class="student-marks">
                                 800
+                            </td>
+
+                            <td class="student-attendance">
+                                89%
                             </td>
 
                         </tr>
 
 
                         <!-- Rank 4 -->
+
                         <tr>
 
                             <td class="rank-number">
@@ -448,14 +546,19 @@
                                 Student 4
                             </td>
 
-                            <td class="student-points">
+                            <td class="student-marks">
                                 750
+                            </td>
+
+                            <td class="student-attendance">
+                                94%
                             </td>
 
                         </tr>
 
 
                         <!-- Rank 5 -->
+
                         <tr>
 
                             <td class="rank-number">
@@ -466,8 +569,12 @@
                                 Student 5
                             </td>
 
-                            <td class="student-points">
+                            <td class="student-marks">
                                 700
+                            </td>
+
+                            <td class="student-attendance">
+                                87%
                             </td>
 
                         </tr>
@@ -482,6 +589,7 @@
 
 
         <!-- Footer -->
+
         <div th:replace="~{fragments/layout :: footer}"></div>
 
     </div>
@@ -490,7 +598,9 @@
 
 
 <!-- Scripts -->
+
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
+
 </html>

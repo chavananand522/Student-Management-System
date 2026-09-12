@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head}"></head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- EXISTING SIDEBAR -->
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- EXISTING NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+        <main class="study-content">
+
+            <!-- HEADER -->
+            <div class="study-header">
+
+                <div>
+
+                    <div class="breadcrumb">
+
+                        <a th:href="@{/study}">Study</a>
+
+                        <span>›</span>
+
+                        <span th:text="${subjectName}">
+                            Physics
+                        </span>
+
+                    </div>
+
+                    <h1 th:text="${subjectName}">
+                        Physics
+                    </h1>
+
+                    <p>
+                        Explore chapters, concepts and previous year questions
+                    </p>
+
+                </div>
+
+                <div class="subject-icon">
+
+                    <i th:if="${subjectName.equalsIgnoreCase('Physics')}"
+                       class="bi bi-atom">
+                    </i>
+
+                    <i th:if="${subjectName.equalsIgnoreCase('Chemistry')}"
+                       class="bi bi-flask">
+                    </i>
+
+                    <i th:if="${subjectName.equalsIgnoreCase('Biology')}"
+                       class="bi bi-heart-pulse">
+                    </i>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHAPTERS -->
+            <div class="section-title">
+
+                <div>
+
+                    <h2 th:text="${subjectName + ' Chapters'}">
+                        Physics Chapters
+                    </h2>
+
+                    <p>
+                        Select a chapter to start learning
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chapter-list">
+
+                <!-- CHAPTER 1 -->
+                <a href="#" class="chapter-card">
+
+                    <div class="chapter-number">
+                        1
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Physics')}">
+                            Units &amp; Measurements
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Chemistry')}">
+                            Some Basic Concepts of Chemistry
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Biology')}">
+                            The Living World
+                        </h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-lightbulb"></i>
+                                4 Concepts
+                            </span>
+
+                            <span>
+                                <i class="bi bi-file-text"></i>
+                                15 PYQs
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+
+                <!-- CHAPTER 2 -->
+                <a href="#" class="chapter-card">
+
+                    <div class="chapter-number">
+                        2
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Physics')}">
+                            Motion in a Straight Line
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Chemistry')}">
+                            Structure of Atom
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Biology')}">
+                            Biological Classification
+                        </h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-lightbulb"></i>
+                                5 Concepts
+                            </span>
+
+                            <span>
+                                <i class="bi bi-file-text"></i>
+                                20 PYQs
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+
+                <!-- CHAPTER 3 -->
+                <a href="#" class="chapter-card">
+
+                    <div class="chapter-number">
+                        3
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Physics')}">
+                            Laws of Motion
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Chemistry')}">
+                            Classification of Elements
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Biology')}">
+                            Plant Kingdom
+                        </h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-lightbulb"></i>
+                                5 Concepts
+                            </span>
+
+                            <span>
+                                <i class="bi bi-file-text"></i>
+                                18 PYQs
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+
+                <!-- CHAPTER 4 -->
+                <a href="#" class="chapter-card">
+
+                    <div class="chapter-number">
+                        4
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Physics')}">
+                            Work, Energy and Power
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Chemistry')}">
+                            Chemical Bonding
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Biology')}">
+                            Animal Kingdom
+                        </h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-lightbulb"></i>
+                                5 Concepts
+                            </span>
+
+                            <span>
+                                <i class="bi bi-file-text"></i>
+                                20 PYQs
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+
+                <!-- CHAPTER 5 -->
+                <a href="#" class="chapter-card">
+
+                    <div class="chapter-number">
+                        5
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Physics')}">
+                            System of Particles and Rotational Motion
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Chemistry')}">
+                            Thermodynamics
+                        </h3>
+
+                        <h3 th:if="${subjectName.equalsIgnoreCase('Biology')}">
+                            Morphology of Flowering Plants
+                        </h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-lightbulb"></i>
+                                6 Concepts
+                            </span>
+
+                            <span>
+                                <i class="bi bi-file-text"></i>
+                                25 PYQs
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+            </div>
+
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+
+</html>

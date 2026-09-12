@@ -46,7 +46,7 @@ public class CourseController {
 	}
 
 	@GetMapping("/list")
-	public String listCourses(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size,
+	public String listCourses(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7") int size,
 			Model model) {
 		log.info("Get /course/list - showing course list page.");
 

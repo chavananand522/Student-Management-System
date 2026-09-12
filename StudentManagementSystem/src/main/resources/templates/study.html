@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head}"></head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- EXISTING SIDEBAR -->
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- EXISTING NAVBAR -->
+        <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+        <main class="study-content">
+
+            <div class="study-header">
+
+                <div>
+
+                    <div class="breadcrumb">
+                        <a th:href="@{/study}">Study</a>
+                    </div>
+
+                    <h1>Study</h1>
+
+                    <p>
+                        Choose a subject to start learning
+                    </p>
+
+                </div>
+
+                <div class="subject-icon">
+
+                    <i class="bi bi-book"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>Subjects</h2>
+
+                    <p>
+                        Select a subject to view chapters
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chapter-list">
+
+                <!-- PHYSICS -->
+                <a th:href="@{/study/physics}"
+                   class="chapter-card">
+
+                    <div class="chapter-number">
+                        1
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3>Physics</h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-lightning-charge"></i>
+                                Physics Chapters
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+
+                <!-- CHEMISTRY -->
+                <a th:href="@{/study/chemistry}"
+                   class="chapter-card">
+
+                    <div class="chapter-number">
+                        2
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3>Chemistry</h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-droplet"></i>
+                                Chemistry Chapters
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+
+                <!-- BIOLOGY -->
+                <a th:href="@{/study/biology}"
+                   class="chapter-card">
+
+                    <div class="chapter-number">
+                        3
+                    </div>
+
+                    <div class="chapter-info">
+
+                        <h3>Biology</h3>
+
+                        <div class="chapter-meta">
+
+                            <span>
+                                <i class="bi bi-heart-pulse"></i>
+                                Biology Chapters
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-chevron-right chapter-arrow"></i>
+
+                </a>
+
+            </div>
+
+        </main>
+
+        <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+
+</html>

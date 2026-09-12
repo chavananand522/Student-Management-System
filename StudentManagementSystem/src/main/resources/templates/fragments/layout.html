@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:fragment="head">
@@ -11,14 +12,17 @@
     <title>Student Management System</title>
 
     <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
     <!-- Bootstrap Icons -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
           rel="stylesheet">
 
     <!-- Custom CSS -->
+
     <link th:href="@{/css/style.css}" rel="stylesheet">
 
 </head>
@@ -35,7 +39,9 @@
      class="bg-dark text-white"
      id="sidebar-wrapper">
 
+
     <!-- Logo / Heading -->
+
     <div class="sidebar-heading border-bottom border-secondary">
 
         <i class="bi bi-mortarboard-fill me-2"></i>
@@ -46,10 +52,12 @@
 
 
     <!-- Sidebar Links -->
+
     <div class="list-group list-group-flush">
 
 
         <!-- Dashboard -->
+
         <a th:href="@{/dashboard}"
            class="sidebar-link">
 
@@ -61,6 +69,7 @@
 
 
         <!-- Courses -->
+
         <a th:href="@{/course/list}"
            class="sidebar-link">
 
@@ -72,6 +81,7 @@
 
 
         <!-- Students -->
+
         <a th:href="@{/students/list}"
            class="sidebar-link">
 
@@ -82,7 +92,75 @@
         </a>
 
 
+        <!-- ================================================= -->
+        <!-- STUDY SECTION -->
+        <!-- ================================================= -->
+
+        <a class="sidebar-link study-main-link"
+           data-bs-toggle="collapse"
+           href="#studyMenu"
+           role="button"
+           aria-expanded="false"
+           aria-controls="studyMenu">
+
+            <i class="bi bi-mortarboard"></i>
+
+            <span>Study</span>
+
+            <i class="bi bi-chevron-down ms-auto"></i>
+
+        </a>
+
+
+        <!-- ================================================= -->
+        <!-- STUDY SUBJECTS -->
+        <!-- ================================================= -->
+
+        <div class="collapse"
+             id="studyMenu">
+
+
+            <!-- Physics -->
+
+            <a th:href="@{/study/physics}"
+               class="sidebar-link study-sub-link">
+
+                <i class="bi bi-lightning-charge"></i>
+
+                <span>Physics</span>
+
+            </a>
+
+
+            <!-- Chemistry -->
+
+            <a th:href="@{/study/chemistry}"
+               class="sidebar-link study-sub-link">
+
+                <i class="bi bi-droplet"></i>
+
+                <span>Chemistry</span>
+
+            </a>
+
+
+            <!-- Biology -->
+
+            <a th:href="@{/study/biology}"
+               class="sidebar-link study-sub-link">
+
+                <i class="bi bi-heart-pulse"></i>
+
+                <span>Biology</span>
+
+            </a>
+
+
+        </div>
+
+
         <!-- Enrolled Students -->
+
         <a th:href="@{/enrollments/enrollmentList}"
            class="sidebar-link">
 
@@ -94,6 +172,7 @@
 
 
         <!-- Enroll to Course -->
+
         <a th:href="@{/enrollments/showEnroll}"
            class="sidebar-link">
 
@@ -109,8 +188,6 @@
 </div>
 
 
-
-
 <!-- ========================================================= -->
 <!-- NAVBAR -->
 <!-- ========================================================= -->
@@ -123,6 +200,7 @@
 
 
         <!-- Sidebar Toggle -->
+
         <button class="btn btn-outline-secondary"
                 id="sidebarToggle"
                 type="button">
@@ -132,8 +210,8 @@
         </button>
 
 
-
         <!-- Mobile Navbar Toggle -->
+
         <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
@@ -147,8 +225,8 @@
         </button>
 
 
-
         <!-- Navbar Content -->
+
         <div class="collapse navbar-collapse"
              id="navbarSupportedContent">
 
@@ -157,10 +235,12 @@
 
 
                 <!-- USER DROPDOWN -->
+
                 <li class="nav-item dropdown">
 
 
                     <!-- User Button -->
+
                     <a class="nav-link dropdown-toggle d-flex align-items-center"
                        href="#"
                        id="navbarDropdown"
@@ -170,6 +250,7 @@
 
 
                         <!-- Profile Image -->
+
                         <img th:src="@{/profile/image}"
                              alt="Profile"
                              class="rounded-circle me-1 navbar-profile-img"
@@ -177,18 +258,19 @@
 
 
                         <!-- Default Icon -->
+
                         <i class="bi bi-person-circle me-1"
                            style="display:none;">
+
                         </i>
 
 
                         <!-- User Name -->
+
                         Admin User
 
 
                     </a>
-
-
 
 
                     <!-- ================================================= -->
@@ -200,6 +282,7 @@
 
 
                         <!-- PROFILE -->
+
                         <a class="dropdown-item"
                            th:href="@{/profile}">
 
@@ -210,8 +293,8 @@
                         </a>
 
 
-
                         <!-- SYSTEM TOOLS -->
+
                         <a class="dropdown-item"
                            th:href="@{/settings}">
 
@@ -222,8 +305,8 @@
                         </a>
 
 
-
                         <!-- LEADERSHIP BOARD -->
+
                         <a class="dropdown-item"
                            th:href="@{/leadership}">
 
@@ -234,8 +317,8 @@
                         </a>
 
 
-
                         <!-- ID CARD -->
+
                         <a class="dropdown-item"
                            th:href="@{/id-card}">
 
@@ -246,25 +329,27 @@
                         </a>
 
 
-
                         <!-- Divider -->
+
                         <div class="dropdown-divider"></div>
 
 
-
                         <!-- LOGOUT -->
+
                         <form method="post"
                               th:action="@{/logout}"
                               style="margin:0;">
 
 
                             <!-- CSRF -->
+
                             <input type="hidden"
                                    th:name="${_csrf.parameterName}"
                                    th:value="${_csrf.token}" />
 
 
                             <!-- Logout Button -->
+
                             <button type="submit"
                                     class="dropdown-item">
 
@@ -292,10 +377,7 @@
 
     </div>
 
-
 </nav>
-
-
 
 
 <!-- ========================================================= -->
@@ -335,8 +417,6 @@
 </footer>
 
 
-
-
 <!-- ========================================================= -->
 <!-- JAVASCRIPT -->
 <!-- ========================================================= -->
@@ -345,12 +425,14 @@
 
 
     <!-- Bootstrap JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+
     </script>
 
 
-
     <!-- Sidebar Toggle -->
+
     <script>
 
         window.addEventListener('DOMContentLoaded', event => {
