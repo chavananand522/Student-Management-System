@@ -1,433 +1,172 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/layout :: head}">
-
 </head>
 
 <body>
 
-<div id="wrapper">
+<div class="d-flex" id="wrapper">
 
-    <!-- Sidebar -->
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
 
-    <div th:replace="~{fragments/layout :: sidebar}"></div>
+    <div th:replace="~{fragments/layout :: sidebar}">
+    </div>
 
-    <!-- Page Content -->
 
-    <div id="page-content-wrapper">
+    <!-- ================================================= -->
+    <!-- PAGE CONTENT -->
+    <!-- ================================================= -->
 
-        <!-- Navbar -->
+    <div id="page-content-wrapper" class="w-100">
 
-        <div th:replace="~{fragments/layout :: navbar}"></div>
 
-        <!-- Leadership Board -->
+        <!-- ================================================= -->
+        <!-- NAVBAR -->
+        <!-- ================================================= -->
 
-        <div class="container-fluid leadership-container">
+        <div th:replace="~{fragments/layout :: navbar}">
+        </div>
 
-            <!-- Page Title -->
 
-            <h1 class="leadership-title">
+        <!-- ================================================= -->
+        <!-- MAIN CONTENT -->
+        <!-- ================================================= -->
 
-                <span class="animated-trophy">
+        <div class="container-fluid px-4 py-4">
 
-                    <svg viewBox="0 0 220 220"
-                         xmlns="http://www.w3.org/2000/svg">
 
-                        <defs>
+            <!-- ================================================= -->
+            <!-- TITLE -->
+            <!-- ================================================= -->
 
-                            <!-- Main Gold -->
+            <div class="d-flex align-items-center mb-4">
 
-                            <linearGradient id="goldTrophy"
-                                            x1="0%"
-                                            y1="0%"
-                                            x2="100%"
-                                            y2="100%">
+                <div class="trophy-icon">
+                    🏆
+                </div>
 
-                                <stop offset="0%" stop-color="#fff3a6"/>
+                <h1 class="leadership-title">
+                    Leadership Board
+                </h1>
 
-                                <stop offset="20%" stop-color="#ffd700"/>
+            </div>
 
-                                <stop offset="45%" stop-color="#f5b400"/>
 
-                                <stop offset="70%" stop-color="#c88600"/>
+            <!-- ================================================= -->
+            <!-- TOP 3 PODIUM -->
+            <!-- ================================================= -->
 
-                                <stop offset="88%" stop-color="#ffd84d"/>
+            <div class="podium-container">
 
-                                <stop offset="100%" stop-color="#a96800"/>
 
-                            </linearGradient>
+                <!-- ================================================= -->
+                <!-- RANK 2 - LEFT -->
+                <!-- ================================================= -->
 
+                <div class="podium-card rank-two">
 
-                            <!-- Dark Gold -->
-
-                            <linearGradient id="darkGold"
-                                            x1="0%"
-                                            y1="0%"
-                                            x2="100%"
-                                            y2="100%">
-
-                                <stop offset="0%" stop-color="#9b6200"/>
-
-                                <stop offset="50%" stop-color="#f6c438"/>
-
-                                <stop offset="100%" stop-color="#7d4c00"/>
-
-                            </linearGradient>
-
-
-                            <!-- Shine -->
-
-                            <linearGradient id="shineGradient"
-                                            x1="0%"
-                                            y1="0%"
-                                            x2="100%"
-                                            y2="0%">
-
-                                <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
-
-                                <stop offset="45%" stop-color="#ffffff" stop-opacity="0.1"/>
-
-                                <stop offset="50%" stop-color="#ffffff" stop-opacity="0.9"/>
-
-                                <stop offset="55%" stop-color="#ffffff" stop-opacity="0.1"/>
-
-                                <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-
-                            </linearGradient>
-
-
-                            <!-- Glow -->
-
-                            <filter id="trophyGlow">
-
-                                <feGaussianBlur
-                                    stdDeviation="3"
-                                    result="blur"/>
-
-                                <feMerge>
-
-                                    <feMergeNode in="blur"/>
-
-                                    <feMergeNode in="SourceGraphic"/>
-
-                                </feMerge>
-
-                            </filter>
-
-
-                            <!-- Shine Clip -->
-
-                            <clipPath id="cupClip">
-
-                                <path d="M52 42
-                                         L168 42
-                                         L158 112
-                                         C155 136 139 151 126 158
-                                         L94 158
-                                         C81 151 65 136 62 112
-                                         Z"/>
-
-                            </clipPath>
-
-                        </defs>
-
-
-                        <!-- Trophy Glow -->
-
-                        <ellipse
-                            cx="110"
-                            cy="202"
-                            rx="55"
-                            ry="7"
-                            fill="#f4b400"
-                            opacity="0.25"
-                            filter="url(#trophyGlow)">
-
-                        </ellipse>
-
-
-                        <!-- Left Handle -->
-
-                        <path
-                            d="M55 48
-                               C27 42 15 58 20 82
-                               C24 103 39 112 60 106
-                               L60 94
-                               C45 99 34 91 32 77
-                               C29 62 40 57 56 62"
-                            fill="none"
-                            stroke="url(#goldTrophy)"
-                            stroke-width="10"
-                            stroke-linecap="round">
-
-                        </path>
-
-
-                        <!-- Right Handle -->
-
-                        <path
-                            d="M165 48
-                               C193 42 205 58 200 82
-                               C196 103 181 112 160 106
-                               L160 94
-                               C175 99 186 91 188 77
-                               C191 62 180 57 164 62"
-                            fill="none"
-                            stroke="url(#goldTrophy)"
-                            stroke-width="10"
-                            stroke-linecap="round">
-
-                        </path>
-
-
-                        <!-- Main Trophy Cup -->
-
-                        <path
-                            d="M52 42
-                               L168 42
-                               L158 112
-                               C155 136 139 151 126 158
-                               L126 177
-                               L94 177
-                               L94 158
-                               C81 151 65 136 62 112
-                               Z"
-                            fill="url(#goldTrophy)"
-                            stroke="#a96c00"
-                            stroke-width="3">
-
-                        </path>
-
-
-                        <!-- Top Rim -->
-
-                        <path
-                            d="M48 40
-                               Q110 30 172 40
-                               L168 55
-                               Q110 46 52 55
-                               Z"
-                            fill="url(#darkGold)"
-                            stroke="#9c6200"
-                            stroke-width="2">
-
-                        </path>
-
-
-                        <!-- Decorative Band -->
-
-                        <path
-                            d="M59 73
-                               Q110 82 161 73
-                               L159 86
-                               Q110 95 61 86
-                               Z"
-                            fill="url(#darkGold)">
-
-                        </path>
-
-
-                        <!-- Trophy Star -->
-
-                        <path
-                            d="M110 88
-                               L115 101
-                               L129 102
-                               L118 111
-                               L122 125
-                               L110 117
-                               L98 125
-                               L102 111
-                               L91 102
-                               L105 101
-                               Z"
-                            fill="#fff1a3"
-                            stroke="#b97800"
-                            stroke-width="2">
-
-                        </path>
-
-
-                        <!-- Cup Highlight Details -->
-
-                        <path
-                            d="M76 58 L82 127"
-                            stroke="#fff0a0"
-                            stroke-width="4"
-                            opacity="0.65">
-
-                        </path>
-
-                        <path
-                            d="M91 59 L96 143"
-                            stroke="#fff0a0"
-                            stroke-width="3"
-                            opacity="0.5">
-
-                        </path>
-
-                        <path
-                            d="M144 58 L138 127"
-                            stroke="#9b6100"
-                            stroke-width="4"
-                            opacity="0.5">
-
-                        </path>
-
-                        <path
-                            d="M129 59 L124 143"
-                            stroke="#9b6100"
-                            stroke-width="3"
-                            opacity="0.4">
-
-                        </path>
-
-
-                        <!-- Trophy Stem -->
-
-                        <path
-                            d="M94 153
-                               Q110 163 126 153
-                               L126 180
-                               Q110 187 94 180
-                               Z"
-                            fill="url(#darkGold)">
-
-                        </path>
-
-
-                        <!-- Trophy Base -->
-
-                        <path
-                            d="M82 178
-                               Q110 170 138 178
-                               L148 194
-                               Q110 204 72 194
-                               Z"
-                            fill="url(#goldTrophy)"
-                            stroke="#9d6300"
-                            stroke-width="3">
-
-                        </path>
-
-
-                        <!-- Base Shadow -->
-
-                        <ellipse
-                            cx="110"
-                            cy="194"
-                            rx="39"
-                            ry="9"
-                            fill="#8b5600"
-                            opacity="0.45">
-
-                        </ellipse>
-
-
-                        <!-- Animated Shine -->
-
-                        <rect
-                            class="trophy-shine"
-                            x="50"
-                            y="40"
-                            width="120"
-                            height="125"
-                            fill="url(#shineGradient)"
-                            clip-path="url(#cupClip)">
-
-                        </rect>
-
-                    </svg>
-
-                </span>
-
-                Leadership Board
-
-            </h1>
-
-
-            <!-- Top 3 Students -->
-
-            <div class="top-leaders">
-
-                <!-- Second Position -->
-
-                <div class="leader-card">
-
-                    <div class="leader-rank">
+                    <!-- Medal -->
+                    <div class="medal">
                         🥈
                     </div>
 
-                    <div class="leader-icon">
-                        <i class="bi bi-person-circle"></i>
+
+                    <!-- Student Image -->
+                    <div class="student-image">
+
+                        <div class="default-avatar">
+                            👤
+                        </div>
+
                     </div>
 
-                    <div class="leader-name">
+
+                    <!-- Student Name -->
+                    <h3>
                         Student 2
-                    </div>
+                    </h3>
 
-                    <div class="leader-marks">
-                        850 Marks
-                    </div>
 
-                    <div class="leader-attendance">
-                        92% Attendance
+                    <!-- Average Marks -->
+                    <div class="average-mark">
+                        85.00%
                     </div>
 
                 </div>
 
 
-                <!-- First Position -->
+                <!-- ================================================= -->
+                <!-- RANK 1 - CENTER -->
+                <!-- ================================================= -->
 
-                <div class="leader-card first">
+                <div class="podium-card rank-one">
 
-                    <div class="leader-rank">
+                    <!-- Medal -->
+                    <div class="medal">
                         🥇
                     </div>
 
-                    <div class="leader-icon">
-                        <i class="bi bi-person-circle"></i>
+
+                    <!-- Student Image -->
+                    <div class="student-image">
+
+                        <div class="default-avatar">
+                            👤
+                        </div>
+
                     </div>
 
-                    <div class="leader-name">
+
+                    <!-- Student Name -->
+                    <h3>
                         Student 1
-                    </div>
+                    </h3>
 
-                    <div class="leader-marks">
-                        950 Marks
-                    </div>
 
-                    <div class="leader-attendance">
-                        96% Attendance
+                    <!-- Average Marks -->
+                    <div class="average-mark">
+                        95.00%
                     </div>
 
                 </div>
 
 
-                <!-- Third Position -->
+                <!-- ================================================= -->
+                <!-- RANK 3 - RIGHT -->
+                <!-- ================================================= -->
 
-                <div class="leader-card">
+                <div class="podium-card rank-three">
 
-                    <div class="leader-rank">
+                    <!-- Medal -->
+                    <div class="medal">
                         🥉
                     </div>
 
-                    <div class="leader-icon">
-                        <i class="bi bi-person-circle"></i>
+
+                    <!-- Student Image -->
+                    <div class="student-image">
+
+                        <div class="default-avatar">
+                            👤
+                        </div>
+
                     </div>
 
-                    <div class="leader-name">
+
+                    <!-- Student Name -->
+                    <h3>
                         Student 3
-                    </div>
+                    </h3>
 
-                    <div class="leader-marks">
-                        800 Marks
-                    </div>
 
-                    <div class="leader-attendance">
-                        89% Attendance
+                    <!-- Average Marks -->
+                    <div class="average-mark">
+                        80.00%
                     </div>
 
                 </div>
@@ -435,171 +174,951 @@
             </div>
 
 
-            <!-- Ranking Table -->
+            <!-- ================================================= -->
+            <!-- CURRENT RANKING MESSAGE -->
+            <!-- ================================================= -->
 
-            <div class="ranking-card">
+            <div class="current-ranking-card">
 
-                <div class="ranking-title">
-                    Student Rankings
+                <div class="current-ranking-text">
+
+                    Your Ranking at:
+
+                    <strong>4/10</strong>
+
                 </div>
 
 
-                <table class="ranking-table">
+                <div class="ranking-message">
 
-                    <thead>
+                    "Just a little more effort to shine on the
+                    Leadership Board!"
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- STUDENT RANKINGS -->
+            <!-- ================================================= -->
+
+            <div class="ranking-table-card">
+
+                <h2>
+                    Student Rankings
+                </h2>
+
+
+                <div class="table-responsive">
+
+                    <table class="table ranking-table">
+
+
+                        <!-- ================================================= -->
+                        <!-- TABLE HEADER -->
+                        <!-- ================================================= -->
+
+                        <thead>
 
                         <tr>
 
-                            <th>Rank</th>
+                            <th>
+                                Rank
+                            </th>
 
-                            <th>Student</th>
+                            <th>
+                                Student
+                            </th>
 
-                            <th>Marks</th>
+                            <th>
+                                Total Marks
+                            </th>
 
-                            <th>Attendance</th>
+                            <th>
+                                Average Marks
+                            </th>
+
+                            <th>
+                                Attendance
+                            </th>
 
                         </tr>
 
-                    </thead>
+                        </thead>
 
 
-                    <tbody>
+                        <!-- ================================================= -->
+                        <!-- TABLE BODY -->
+                        <!-- ================================================= -->
 
-                        <!-- Rank 1 -->
+                        <tbody>
+
+
+                        <!-- ================================================= -->
+                        <!-- RANK 1 -->
+                        <!-- ================================================= -->
 
                         <tr>
 
-                            <td class="rank-number">
-                                1
+                            <td>
+
+                                <span class="table-rank">
+                                    🥇 1
+                                </span>
+
                             </td>
 
-                            <td class="student-name">
-                                Student 1
+                            <td>
+
+                                <strong>
+                                    Student 1
+                                </strong>
+
                             </td>
 
-                            <td class="student-marks">
+                            <td>
                                 950
                             </td>
 
-                            <td class="student-attendance">
-                                96%
+                            <td>
+
+                                <strong>
+                                    95.00%
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    96%
+                                </strong>
+
                             </td>
 
                         </tr>
 
 
-                        <!-- Rank 2 -->
+                        <!-- ================================================= -->
+                        <!-- RANK 2 -->
+                        <!-- ================================================= -->
 
                         <tr>
 
-                            <td class="rank-number">
-                                2
+                            <td>
+
+                                <span class="table-rank">
+                                    🥈 2
+                                </span>
+
                             </td>
 
-                            <td class="student-name">
-                                Student 2
+                            <td>
+
+                                <strong>
+                                    Student 2
+                                </strong>
+
                             </td>
 
-                            <td class="student-marks">
+                            <td>
                                 850
                             </td>
 
-                            <td class="student-attendance">
-                                92%
+                            <td>
+
+                                <strong>
+                                    85.00%
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    92%
+                                </strong>
+
                             </td>
 
                         </tr>
 
 
-                        <!-- Rank 3 -->
+                        <!-- ================================================= -->
+                        <!-- RANK 3 -->
+                        <!-- ================================================= -->
 
                         <tr>
 
-                            <td class="rank-number">
-                                3
+                            <td>
+
+                                <span class="table-rank">
+                                    🥉 3
+                                </span>
+
                             </td>
 
-                            <td class="student-name">
-                                Student 3
+                            <td>
+
+                                <strong>
+                                    Student 3
+                                </strong>
+
                             </td>
 
-                            <td class="student-marks">
+                            <td>
                                 800
                             </td>
 
-                            <td class="student-attendance">
-                                89%
+                            <td>
+
+                                <strong>
+                                    80.00%
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    89%
+                                </strong>
+
                             </td>
 
                         </tr>
 
 
-                        <!-- Rank 4 -->
+                        <!-- ================================================= -->
+                        <!-- RANK 4 -->
+                        <!-- ================================================= -->
 
                         <tr>
 
-                            <td class="rank-number">
+                            <td>
                                 4
                             </td>
 
-                            <td class="student-name">
-                                Student 4
+                            <td>
+
+                                <strong>
+                                    Student 4
+                                </strong>
+
                             </td>
 
-                            <td class="student-marks">
+                            <td>
                                 750
                             </td>
 
-                            <td class="student-attendance">
-                                94%
+                            <td>
+
+                                <strong>
+                                    75.00%
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    94%
+                                </strong>
+
                             </td>
 
                         </tr>
 
 
-                        <!-- Rank 5 -->
+                        <!-- ================================================= -->
+                        <!-- RANK 5 -->
+                        <!-- ================================================= -->
 
                         <tr>
 
-                            <td class="rank-number">
+                            <td>
                                 5
                             </td>
 
-                            <td class="student-name">
-                                Student 5
+                            <td>
+
+                                <strong>
+                                    Student 5
+                                </strong>
+
                             </td>
 
-                            <td class="student-marks">
+                            <td>
                                 700
                             </td>
 
-                            <td class="student-attendance">
-                                87%
+                            <td>
+
+                                <strong>
+                                    70.00%
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    87%
+                                </strong>
+
                             </td>
 
                         </tr>
 
-                    </tbody>
 
-                </table>
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
         </div>
 
 
-        <!-- Footer -->
+        <!-- ================================================= -->
+        <!-- FOOTER -->
+        <!-- ================================================= -->
 
-        <div th:replace="~{fragments/layout :: footer}"></div>
+        <div th:replace="~{fragments/layout :: footer}">
+        </div>
 
     </div>
 
 </div>
 
 
-<!-- Scripts -->
 
-<div th:replace="~{fragments/layout :: scripts}"></div>
+<!-- ================================================= -->
+<!-- CUSTOM CSS -->
+<!-- ================================================= -->
+
+<style>
+
+/* ================================================= */
+/* PAGE */
+/* ================================================= */
+
+body {
+
+    background: #f1f3f7;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+
+/* ================================================= */
+/* TITLE */
+/* ================================================= */
+
+.trophy-icon {
+
+    font-size: 55px;
+
+    margin-right: 18px;
+
+}
+
+
+.leadership-title {
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+    color: #292b45;
+
+    margin: 0;
+
+}
+
+
+
+/* ================================================= */
+/* PODIUM CONTAINER */
+/* ================================================= */
+
+.podium-container {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-end;
+
+    gap: 35px;
+
+    margin-top: 40px;
+
+    margin-bottom: 70px;
+
+}
+
+
+
+/* ================================================= */
+/* COMMON PODIUM CARD */
+/* ================================================= */
+
+.podium-card {
+
+    width: 280px;
+
+    text-align: center;
+
+    position: relative;
+
+    padding: 25px 20px 35px 20px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.10);
+
+    border: none;
+
+    outline: none;
+
+    overflow: hidden;
+
+}
+
+
+
+/* ================================================= */
+/* RANK 1 - GOLD */
+/* ================================================= */
+
+.rank-one {
+
+    height: 390px;
+
+    background: linear-gradient(
+        to bottom,
+        #f2c300 0%,
+        #f7d84a 35%,
+        #fff3b5 70%,
+        #ffffff 100%
+    );
+
+    z-index: 2;
+
+}
+
+
+
+/* ================================================= */
+/* RANK 2 - SILVER */
+/* ================================================= */
+
+.rank-two {
+
+    height: 340px;
+
+    background: linear-gradient(
+        to bottom,
+        #969696 0%,
+        #bcbcbc 35%,
+        #e5e5e5 70%,
+        #ffffff 100%
+    );
+
+}
+
+
+
+/* ================================================= */
+/* RANK 3 - BRONZE */
+/* ================================================= */
+
+.rank-three {
+
+    height: 325px;
+
+    background: linear-gradient(
+        to bottom,
+        #d98535 0%,
+        #e9a263 35%,
+        #f4c79e 70%,
+        #ffffff 100%
+    );
+
+}
+
+
+
+/* ================================================= */
+/* MEDAL */
+/* ================================================= */
+
+.medal {
+
+    font-size: 38px;
+
+    line-height: 1;
+
+    margin-bottom: 20px;
+
+}
+
+
+
+/* ================================================= */
+/* STUDENT IMAGE */
+/* ================================================= */
+
+.student-image {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin: 10px 0 25px 0;
+
+}
+
+
+
+/* ================================================= */
+/* DEFAULT AVATAR */
+/* ================================================= */
+
+.default-avatar {
+
+    width: 105px;
+
+    height: 105px;
+
+    border-radius: 50%;
+
+    background: #dce8f5;
+
+    border: 5px solid white;
+
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 55px;
+
+}
+
+
+
+/* ================================================= */
+/* STUDENT NAME */
+/* ================================================= */
+
+.podium-card h3 {
+
+    font-size: 25px;
+
+    font-weight: 800;
+
+    color: #202020;
+
+    margin: 0 0 12px 0;
+
+}
+
+
+
+/* ================================================= */
+/* AVERAGE MARKS */
+/* ================================================= */
+
+.average-mark {
+
+    font-size: 25px;
+
+    font-weight: 800;
+
+    color: #292b45;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: none !important;
+
+    border-top: none !important;
+
+    border-bottom: none !important;
+
+    box-shadow: none !important;
+
+}
+
+
+
+/* ================================================= */
+/* CURRENT RANKING CARD */
+/* ================================================= */
+
+.current-ranking-card {
+
+    max-width: 750px;
+
+    margin: 0 auto 60px;
+
+    padding: 25px 40px;
+
+    text-align: center;
+
+    background: linear-gradient(
+        90deg,
+        #d8efff,
+        #f6ffdf
+    );
+
+    border-radius: 45px;
+
+    border: 5px solid white;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15);
+
+}
+
+
+
+/* ================================================= */
+/* CURRENT RANKING TEXT */
+/* ================================================= */
+
+.current-ranking-text {
+
+    font-size: 25px;
+
+    color: #555;
+
+    margin-bottom: 15px;
+
+}
+
+
+.current-ranking-text strong {
+
+    color: #222;
+
+}
+
+
+
+/* ================================================= */
+/* RANKING MESSAGE */
+/* ================================================= */
+
+.ranking-message {
+
+    font-size: 18px;
+
+    color: #111;
+
+    font-weight: 500;
+
+}
+
+
+
+/* ================================================= */
+/* RANKING TABLE CARD */
+/* ================================================= */
+
+.ranking-table-card {
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.08);
+
+    margin-bottom: 40px;
+
+}
+
+
+
+/* ================================================= */
+/* TABLE TITLE */
+/* ================================================= */
+
+.ranking-table-card h2 {
+
+    font-size: 26px;
+
+    font-weight: 800;
+
+    color: #292b45;
+
+    margin-bottom: 25px;
+
+}
+
+
+
+/* ================================================= */
+/* TABLE */
+/* ================================================= */
+
+.ranking-table {
+
+    margin-bottom: 0;
+
+}
+
+
+
+/* ================================================= */
+/* TABLE HEADER */
+/* ================================================= */
+
+.ranking-table thead {
+
+    background: #f5f6f8;
+
+}
+
+
+.ranking-table th {
+
+    padding: 18px 15px;
+
+    font-weight: 700;
+
+    color: #50535d;
+
+    border: none;
+
+}
+
+
+
+/* ================================================= */
+/* TABLE DATA */
+/* ================================================= */
+
+.ranking-table td {
+
+    padding: 18px 15px;
+
+    vertical-align: middle;
+
+    border-bottom: 1px solid #eeeeee;
+
+    color: #292b45;
+
+}
+
+
+
+/* ================================================= */
+/* TABLE HOVER */
+/* ================================================= */
+
+.ranking-table tbody tr:hover {
+
+    background: #f8f9fb;
+
+}
+
+
+
+/* ================================================= */
+/* TABLE RANK */
+/* ================================================= */
+
+.table-rank {
+
+    font-weight: 800;
+
+    font-size: 17px;
+
+}
+
+
+
+/* ================================================= */
+/* RESPONSIVE - TABLET */
+/* ================================================= */
+
+@media (max-width: 992px) {
+
+    .podium-container {
+
+        gap: 15px;
+
+    }
+
+
+    .podium-card {
+
+        width: 30%;
+
+    }
+
+
+    .leadership-title {
+
+        font-size: 34px;
+
+    }
+
+
+    .default-avatar {
+
+        width: 90px;
+
+        height: 90px;
+
+        font-size: 45px;
+
+    }
+
+
+    .podium-card h3 {
+
+        font-size: 21px;
+
+    }
+
+
+    .average-mark {
+
+        font-size: 21px;
+
+    }
+
+}
+
+
+
+/* ================================================= */
+/* RESPONSIVE - MOBILE */
+/* ================================================= */
+
+@media (max-width: 768px) {
+
+    .podium-container {
+
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 25px;
+
+    }
+
+
+    .podium-card {
+
+        width: 90%;
+
+        max-width: 350px;
+
+    }
+
+
+    /* Rank 1 first on mobile */
+
+    .rank-one {
+
+        order: 1;
+
+    }
+
+
+    /* Rank 2 second */
+
+    .rank-two {
+
+        order: 2;
+
+    }
+
+
+    /* Rank 3 third */
+
+    .rank-three {
+
+        order: 3;
+
+    }
+
+
+    .leadership-title {
+
+        font-size: 30px;
+
+    }
+
+
+    .trophy-icon {
+
+        font-size: 45px;
+
+    }
+
+
+    .current-ranking-card {
+
+        padding: 20px;
+
+    }
+
+
+    .current-ranking-text {
+
+        font-size: 21px;
+
+    }
+
+
+    .ranking-message {
+
+        font-size: 16px;
+
+    }
+
+
+    .ranking-table-card {
+
+        padding: 20px;
+
+    }
+
+}
+
+</style>
+
+
+
+<!-- ================================================= -->
+<!-- SCRIPTS -->
+<!-- ================================================= -->
+
+<div th:replace="~{fragments/layout :: scripts}">
+</div>
+
 
 </body>
 

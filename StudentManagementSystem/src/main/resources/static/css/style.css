@@ -1765,3 +1765,424 @@ body.sb-sidenav-toggled #sidebar-wrapper {
         padding: 20px;
     }
 }
+
+/* ================================================= */
+/* PODIUM CONTAINER */
+/* ================================================= */
+
+.podium-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    gap: 35px;
+
+    margin-top: 40px;
+    margin-bottom: 70px;
+
+    position: relative;
+}
+
+
+/* ================================================= */
+/* COMMON PODIUM CARD */
+/* ================================================= */
+
+.podium-card {
+    width: 280px;
+
+    text-align: center;
+
+    position: relative;
+
+    padding-top: 25px;
+
+    /* IMPORTANT */
+    border: none;
+    outline: none;
+
+    /* Remove bottom/shadow line */
+    box-shadow: none;
+
+    /* Only top corners */
+    border-radius: 18px 18px 0 0;
+
+    /*
+       IMPORTANT:
+       Do not use overflow:hidden here.
+       It can create a visible bottom edge.
+    */
+}
+
+
+/* ================================================= */
+/* RANK 1 - GOLD */
+/* ================================================= */
+
+.rank-one {
+    height: 390px;
+
+    background: linear-gradient(
+        to bottom,
+        #f2c300 0%,
+        #f5cf32 20%,
+        #f7dc67 40%,
+        #fae99e 58%,
+        rgba(252, 242, 190, 0.75) 72%,
+        rgba(255, 255, 255, 0.35) 88%,
+        rgba(255, 255, 255, 0) 100%
+    );
+
+    z-index: 2;
+}
+
+
+/* ================================================= */
+/* RANK 2 - SILVER */
+/* ================================================= */
+
+.rank-two {
+    height: 340px;
+
+    background: linear-gradient(
+        to bottom,
+        #858585 0%,
+        #999999 18%,
+        #b5b5b5 38%,
+        #d0d0d0 55%,
+        rgba(225, 225, 225, 0.75) 70%,
+        rgba(245, 245, 245, 0.4) 87%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+
+/* ================================================= */
+/* RANK 3 - BRONZE / ORANGE */
+/* ================================================= */
+
+.rank-three {
+    height: 325px;
+
+    background: linear-gradient(
+        to bottom,
+        #d77b00 0%,
+        #df8a24 18%,
+        #e9a05d 38%,
+        #efbd8c 55%,
+        rgba(244, 210, 180, 0.75) 70%,
+        rgba(250, 235, 220, 0.4) 87%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+
+/* ================================================= */
+/* MEDAL */
+/* ================================================= */
+
+.medal {
+    font-size: 38px;
+
+    margin-bottom: 15px;
+
+    position: relative;
+    z-index: 5;
+}
+
+
+/* ================================================= */
+/* STUDENT IMAGE */
+/* ================================================= */
+
+.student-image {
+    display: flex;
+    justify-content: center;
+
+    margin: 10px 0 20px;
+
+    position: relative;
+    z-index: 5;
+}
+
+
+/* ================================================= */
+/* DEFAULT AVATAR */
+/* ================================================= */
+
+.default-avatar {
+    width: 105px;
+    height: 105px;
+
+    border-radius: 50%;
+
+    background: #dceaf7;
+
+    border: 4px solid white;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.20);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 55px;
+}
+
+
+/* ================================================= */
+/* STUDENT NAME */
+/* ================================================= */
+
+.podium-card h3 {
+    font-size: 25px;
+
+    font-weight: 800;
+
+    color: #171717;
+
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    position: relative;
+    z-index: 5;
+}
+
+
+/* ================================================= */
+/* AVERAGE MARKS */
+/* ================================================= */
+
+.average-mark {
+    font-size: 25px;
+
+    font-weight: 800;
+
+    color: #292b45;
+
+    margin-top: 5px;
+
+    padding: 5px 20px;
+
+    /* NO HORIZONTAL LINE */
+    border: none !important;
+
+    border-top: none !important;
+    border-bottom: none !important;
+
+    position: relative;
+    z-index: 5;
+}
+
+
+/* ================================================= */
+/* REMOVE ANY POSSIBLE CARD LINES */
+/* ================================================= */
+
+.podium-card::before,
+.podium-card::after {
+    display: none !important;
+
+    content: none !important;
+
+    border: none !important;
+}
+
+
+/* ================================================= */
+/* CURRENT RANKING */
+/* ================================================= */
+
+.current-ranking-card {
+    max-width: 750px;
+
+    margin: 0 auto 60px;
+
+    padding: 25px 40px;
+
+    text-align: center;
+
+    background: linear-gradient(
+        90deg,
+        #d8efff,
+        #f6ffdf
+    );
+
+    border-radius: 45px;
+
+    border: 5px solid white;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ================================================= */
+/* CURRENT RANKING TEXT */
+/* ================================================= */
+
+.current-ranking-text {
+    font-size: 25px;
+
+    color: #555;
+
+    margin-bottom: 15px;
+}
+
+
+.current-ranking-text strong {
+    color: #222;
+}
+
+
+.ranking-message {
+    font-size: 18px;
+
+    color: #111;
+
+    font-weight: 500;
+}
+
+
+/* ================================================= */
+/* RANKING TABLE CARD */
+/* ================================================= */
+
+.ranking-table-card {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.08);
+
+    margin-bottom: 40px;
+}
+
+
+.ranking-table-card h2 {
+    font-size: 26px;
+
+    font-weight: 800;
+
+    color: #292b45;
+
+    margin-bottom: 25px;
+}
+
+
+/* ================================================= */
+/* TABLE */
+/* ================================================= */
+
+.ranking-table {
+    margin-bottom: 0;
+}
+
+
+.ranking-table thead {
+    background: #f5f6f8;
+}
+
+
+.ranking-table th {
+
+    padding: 18px 15px;
+
+    font-weight: 700;
+
+    color: #50535d;
+
+    border: none;
+
+    text-align: center;
+
+}
+
+.ranking-table td {
+
+    padding: 18px 15px;
+
+    vertical-align: middle;
+
+    border-bottom: 1px solid #eeeeee;
+
+    color: #292b45;
+
+    text-align: center;
+
+}
+
+
+.ranking-table tbody tr:hover {
+    background: #f8f9fb;
+}
+
+
+.table-rank {
+    font-weight: 800;
+
+    font-size: 17px;
+}
+
+
+/* ================================================= */
+/* RESPONSIVE */
+/* ================================================= */
+
+@media (max-width: 992px) {
+
+    .podium-container {
+        gap: 15px;
+    }
+
+    .podium-card {
+        width: 30%;
+    }
+
+    .leadership-title {
+        font-size: 34px;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .podium-container {
+        flex-direction: column;
+
+        align-items: center;
+    }
+
+    .podium-card {
+        width: 90%;
+
+        max-width: 350px;
+    }
+
+    .rank-one {
+        order: 1;
+    }
+
+    .rank-two {
+        order: 2;
+    }
+
+    .rank-three {
+        order: 3;
+    }
+
+    .leadership-title {
+        font-size: 30px;
+    }
+
+    .current-ranking-card {
+        padding: 20px;
+    }
+
+}

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}">
+</head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
+
+    <div id="page-content-wrapper">
+
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <h2 class="fw-bold mb-1">
+                        Fees Details
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Student course fees details
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <div class="row g-4">
+
+                        <div class="col-md-4">
+
+                            <div class="summary-box">
+
+                                <div class="summary-title">
+                                    Whole Fees
+                                </div>
+
+                                <div class="summary-value">
+                                    ₹<span th:text="${#numbers.formatDecimal(wholeFees, 0, 2)}">
+                                        0.00
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <div class="summary-box">
+
+                                <div class="summary-title">
+                                    Whole Paid
+                                </div>
+
+                                <div class="summary-value">
+                                    ₹<span th:text="${#numbers.formatDecimal(wholePaid, 0, 2)}">
+                                        0.00
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <div class="summary-box">
+
+                                <div class="summary-title">
+                                    Whole Pending
+                                </div>
+
+                                <div class="summary-value">
+                                    ₹<span th:text="${#numbers.formatDecimal(wholePending, 0, 2)}">
+                                        0.00
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div>
+
+                            <h5 class="fw-bold mb-1">
+                                Student Fees
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                All enrolled courses and fee details
+                            </p>
+
+                        </div>
+
+                        <span class="badge bg-primary"
+                              th:text="${feeDetails.size() + ' Students'}">
+                            0 Students
+                        </span>
+
+                    </div>
+
+
+                    <div th:if="${feeDetails == null || feeDetails.isEmpty()}"
+                         class="text-center py-5">
+
+                        <i class="bi bi-people fs-1 text-muted">
+                        </i>
+
+                        <h5 class="fw-bold mt-3">
+                            No Enrolled Students
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Students enrolled in courses will appear here.
+                        </p>
+
+                    </div>
+
+
+                    <div th:if="${feeDetails != null && !feeDetails.isEmpty()}"
+                         class="table-responsive">
+
+                        <table class="table table-bordered align-middle mb-0">
+
+                            <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    Student ID
+                                </th>
+
+                                <th>
+                                    Student Name
+                                </th>
+
+                                <th>
+                                    Course ID
+                                </th>
+
+                                <th>
+                                    Course Name
+                                </th>
+
+                                <th>
+                                    Course Fee
+                                </th>
+
+                                <th>
+                                    Paid
+                                </th>
+
+                                <th>
+                                    Pending
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            <tr th:each="fee : ${feeDetails}">
+
+                                <td class="fw-semibold"
+                                    th:text="${fee.studentId}">
+                                    101
+                                </td>
+
+
+                                <td class="fw-semibold"
+                                    th:text="${fee.studentName}">
+                                    Student Name
+                                </td>
+
+
+                                <td th:text="${fee.courseIds}">
+                                    1, 2, 3
+                                </td>
+
+
+                                <td th:text="${fee.courseNames}">
+                                    Java, Spring Boot, React
+                                </td>
+
+
+                                <td>
+
+                                    ₹<span th:text="${fee.courseFees}">
+                                        30000.00, 25000.00, 20000.00
+                                    </span>
+
+                                </td>
+
+
+                                <td class="text-success fw-semibold">
+
+                                    ₹<span th:text="${#numbers.formatDecimal(fee.paid, 0, 2)}">
+                                        0.00
+                                    </span>
+
+                                </td>
+
+
+                                <td class="text-danger fw-semibold">
+
+                                    ₹<span th:text="${#numbers.formatDecimal(fee.pending, 0, 2)}">
+                                        0.00
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div th:replace="~{fragments/layout::scripts}">
+</div>
+
+
+<style>
+
+    .summary-box {
+        padding: 24px;
+        border-radius: 12px;
+        background: #110d1f;
+        color: white;
+    }
+
+    .summary-title {
+        color: #d1ccd9;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        font-size: 27px;
+        font-weight: 600;
+    }
+
+    .table th {
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+</style>
+
+</body>
+
+</html>

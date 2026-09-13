@@ -16,95 +16,72 @@ import java.util.List;
 @RequestMapping("/study")
 public class StudyController {
 
-    private final ModuleService moduleService;
+	private final ModuleService moduleService;
 
-    public StudyController(ModuleService moduleService) {
-        this.moduleService = moduleService;
-    }
+	public StudyController(ModuleService moduleService) {
+		this.moduleService = moduleService;
+	}
 
+	// =========================================================
+	// DEFAULT STUDY PAGE
+	// =========================================================
 
-    // =========================================================
-    // DEFAULT STUDY PAGE
-    // =========================================================
+	@GetMapping
+	public String study(Model model) {
 
-    @GetMapping
-    public String study(Model model) {
+		return "study";
+	}
 
-        model.addAttribute(
-                "subjectName",
-                "Physics"
-        );
+	// =========================================================
+	// SUBJECT PAGE
+	// =========================================================
 
-        model.addAttribute(
-                "modules",
-                moduleService.getModulesBySubject("Physics")
-        );
+	@GetMapping("/{subject}")
+	public String subject(@PathVariable String subject, Model model) {
 
-        return "study";
-    }
+		// Check valid subject
 
+		if (!subject.equalsIgnoreCase("physics") && !subject.equalsIgnoreCase("chemistry")
+				&& !subject.equalsIgnoreCase("biology")) {
 
-    // =========================================================
-    // SUBJECT PAGE
-    // =========================================================
+			return "redirect:/study";
+		}
 
-    @GetMapping("/{subject}")
-    public String subject(
-            @PathVariable String subject,
-            Model model) {
+		String subjectName;
 
+		// Physics
 
-        // Check valid subject
-        if (!subject.equalsIgnoreCase("physics")
-                && !subject.equalsIgnoreCase("chemistry")
-                && !subject.equalsIgnoreCase("biology")) {
+		if (subject.equalsIgnoreCase("physics")) {
 
-            return "redirect:/study";
-        }
+			subjectName = "Physics";
 
+		}
 
-        String subjectName;
+		// Chemistry
 
+		else if (subject.equalsIgnoreCase("chemistry")) {
 
-        // Physics
-        if (subject.equalsIgnoreCase("physics")) {
+			subjectName = "Chemistry";
 
-            subjectName = "Physics";
+		}
 
-        }
+		// Biology
 
-        // Chemistry
-        else if (subject.equalsIgnoreCase("chemistry")) {
+		else {
 
-            subjectName = "Chemistry";
+			subjectName = "Biology";
 
-        }
+		}
 
-        // Biology
-        else {
+		// Get modules for selected subject
 
-            subjectName = "Biology";
+		List<Module> modules = moduleService.getModulesBySubject(subjectName);
 
-        }
+		model.addAttribute("subjectName", subjectName);
 
+		model.addAttribute("modules", modules);
 
-        // Get modules for selected subject
-        List<Module> modules =
-                moduleService.getModulesBySubject(subjectName);
-
-
-        model.addAttribute(
-                "subjectName",
-                subjectName
-        );
-
-        model.addAttribute(
-                "modules",
-                modules
-        );
-
-
-        return "study";
-    }
+		return "study";
+	}
 
 }
