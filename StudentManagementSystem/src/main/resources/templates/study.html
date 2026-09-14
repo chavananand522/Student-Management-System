@@ -1,16 +1,22 @@
 <!DOCTYPE html>
+
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/layout::head}">
 </head>
+
 <body>
+
 <div class="d-flex" id="wrapper">
+
     <!-- SIDEBAR -->
     <div th:replace="~{fragments/layout::sidebar}">
     </div>
 
     <!-- PAGE CONTENT -->
     <div id="page-content-wrapper">
+
         <!-- NAVBAR -->
         <div th:replace="~{fragments/layout::navbar}">
         </div>
@@ -20,207 +26,361 @@
             <!-- ================================================= -->
             <!-- STUDY HOME -->
             <!-- ================================================= -->
-            <div th:if="${subjectName == null}">
+
+            <div th:if="${study == null}">
+
                 <div class="study-header">
+
                     <div>
+
                         <div class="breadcrumb">
+
                             <a th:href="@{/study}">
                                 Study
                             </a>
+
                         </div>
+
                         <h1>
                             Study
                         </h1>
+
                         <p>
                             Choose a subject to start learning
                         </p>
+
                     </div>
+
                     <div class="subject-icon">
+
                         <i class="bi bi-book"></i>
+
                     </div>
+
                 </div>
 
+
                 <div class="section-title">
+
                     <h2>
                         Subjects
                     </h2>
+
                     <p>
                         Select a subject to view chapters
                     </p>
+
                 </div>
+
+
+                <!-- SUBJECTS -->
 
                 <div class="chapter-list">
 
-                    <!-- SUBJECTS -->
                     <a th:each="subject, stat : ${subjects}"
+
                        th:href="@{/study/{subject}(subject=${subject.subject.toLowerCase()})}"
+
                        class="chapter-card">
+
                         <div class="chapter-number"
                              th:text="${stat.count}">
+
                             1
+
                         </div>
+
 
                         <div class="chapter-info">
+
                             <h3 th:text="${subject.subject}">
+
                                 Physics
+
                             </h3>
+
+
                             <div class="chapter-meta">
+
                                 <span>
+
                                     <i class="bi bi-book"></i>
+
                                     View Chapters
+
                                 </span>
+
                             </div>
+
                         </div>
 
+
                         <div class="chapter-arrow">
+
                             <i class="bi bi-chevron-right"></i>
+
                         </div>
+
                     </a>
+
                 </div>
+
             </div>
+
 
             <!-- ================================================= -->
             <!-- SUBJECT PAGE -->
             <!-- ================================================= -->
-            <div th:if="${subjectName != null}">
+
+            <div th:if="${study != null}">
 
                 <!-- SUCCESS MESSAGE -->
+
                 <div th:if="${message}"
                      class="alert alert-success text-center"
                      role="alert"
                      th:text="${message}">
                 </div>
 
+
                 <!-- SUBJECT HEADER -->
+
                 <div class="card border-0 shadow-sm mb-4">
+
                     <div class="card-body">
+
                         <div class="d-flex justify-content-between align-items-center">
+
                             <div>
+
                                 <div class="mb-2">
+
                                     <a th:href="@{/study}"
                                        class="text-primary text-decoration-none">
+
                                         Study
+
                                     </a>
+
                                     <span class="mx-2">
                                         ›
                                     </span>
+
                                     <span th:text="${subjectName}">
                                         Physics
                                     </span>
+
                                 </div>
+
 
                                 <h1 class="fw-bold mb-1"
                                     th:text="${subjectName}">
+
                                     Physics
+
                                 </h1>
 
+
                                 <p class="text-muted mb-0">
+
                                     Explore chapters and concepts
+
                                 </p>
+
                             </div>
 
+
                             <div class="subject-icon">
+
                                 <i th:if="${subjectName == 'Physics'}"
                                    class="bi bi-lightning-charge">
                                 </i>
+
                                 <i th:if="${subjectName == 'Chemistry'}"
                                    class="bi bi-droplet">
                                 </i>
+
                                 <i th:if="${subjectName == 'Biology'}"
                                    class="bi bi-heart-pulse">
                                 </i>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
 
                 <!-- ================================================= -->
                 <!-- CHAPTER HEADER -->
                 <!-- ================================================= -->
+
                 <div class="d-flex justify-content-between align-items-center mb-3">
+
                     <div>
+
                         <h3 class="fw-bold mb-1"
                             th:text="${subjectName + ' Chapters'}">
+
                             Physics Chapters
+
                         </h3>
+
                         <p class="text-muted mb-0">
-                            Manage chapters
+
+                            Explore chapters
+
                         </p>
+
                     </div>
 
+
                     <!-- ADD CHAPTER -->
+
                     <a th:href="@{/chapter/new(subject=${subjectName})}"
                        class="btn btn-primary">
+
                         <i class="bi bi-plus-lg me-1"></i>
+
                         Add New Chapter
+
                     </a>
+
                 </div>
+
 
                 <!-- ================================================= -->
                 <!-- NO CHAPTERS -->
                 <!-- ================================================= -->
+
                 <div th:if="${chapters == null || chapters.isEmpty()}"
+
                      class="card border-0 shadow-sm">
+
                     <div class="card-body text-center py-5">
+
                         <i class="bi bi-journal-x fs-1 text-muted"></i>
+
                         <h5 class="mt-3">
+
                             No Chapters Found
+
                         </h5>
+
                         <p class="text-muted">
+
                             Add a new chapter to this subject.
+
                         </p>
+
                     </div>
+
                 </div>
+
 
                 <!-- ================================================= -->
                 <!-- CHAPTERS -->
                 <!-- ================================================= -->
+
                 <div th:if="${chapters != null && !chapters.isEmpty()}"
+
                      class="chapter-container">
 
+
                     <!-- ONE CHAPTER -->
+
                     <div th:each="chapter : ${chapters}"
+
                          class="chapter-row">
+
 
                         <div class="chapter-info">
 
-                            <a th:href="@{/chapter/{id}(id=${chapter.id})}"
-                               class="chapter-name"
-                               th:text="${chapter.name}">
-                                Botany
-                            </a>
+                            <div class="d-flex align-items-center gap-2">
+
+                                <span class="chapter-number-small"
+                                      th:text="${chapter.chapterNumber}">
+
+                                    1
+
+                                </span>
+
+
+                                <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+
+                                   class="chapter-name"
+
+                                   th:text="${chapter.name}">
+
+                                    Mechanics
+
+                                </a>
+
+                            </div>
+
 
                             <div class="chapter-description"
+
                                  th:if="${chapter.description != null && !chapter.description.isEmpty()}"
+
                                  th:text="${chapter.description}">
-                                Botany chapter description
+
+                                Chapter description
+
                             </div>
 
                         </div>
 
+
                         <div class="chapter-actions">
 
+
+                            <!-- VIEW -->
+
                             <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+
                                class="btn btn-sm btn-outline-primary"
+
                                title="View">
+
                                 👁
+
                             </a>
+
+
+                            <!-- EDIT -->
 
                             <a th:href="@{/chapter/{id}/edit(id=${chapter.id})}"
+
                                class="btn btn-sm btn-outline-warning"
+
                                title="Edit">
+
                                 ✏️
+
                             </a>
 
+
+                            <!-- DELETE -->
+
                             <form th:action="@{/chapter/{id}/delete(id=${chapter.id})}"
+
                                   method="post"
+
                                   style="display:inline;">
 
                                 <button type="submit"
+
                                         class="btn btn-sm btn-outline-danger"
+
                                         title="Delete"
+
                                         onclick="return confirm('Are you sure you want to delete this chapter?');">
+
                                     🗑
+
                                 </button>
 
                             </form>
@@ -228,20 +388,30 @@
                         </div>
 
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
+
 <!-- SCRIPTS -->
+
 <div th:replace="~{fragments/layout::scripts}">
 </div>
 
+
 <style>
+
     .chapter-container {
         width: 100%;
     }
+
     .chapter-row {
         display: flex;
         align-items: center;
@@ -253,34 +423,55 @@
         margin-bottom: 12px;
         transition: all 0.2s ease;
     }
+
     .chapter-row:hover {
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
         transform: translateY(-1px);
     }
+
     .chapter-info {
         display: flex;
         flex-direction: column;
         gap: 2px;
     }
+
     .chapter-name {
         font-weight: 600;
         font-size: 16px;
         color: #212529;
         text-decoration: none;
     }
+
     .chapter-name:hover {
         color: #4361ee;
     }
+
     .chapter-description {
         color: #6c757d;
         font-size: 14px;
+        margin-left: 34px;
     }
+
+    .chapter-number-small {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #4361ee;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
     .chapter-actions {
         display: flex;
         align-items: center;
         gap: 6px;
         margin-left: 20px;
     }
+
     .chapter-actions .btn {
         width: 34px;
         height: 34px;
@@ -288,16 +479,23 @@
         align-items: center;
         justify-content: center;
     }
+
     @media (max-width: 768px) {
+
         .chapter-row {
             flex-direction: column;
             align-items: flex-start;
         }
+
         .chapter-actions {
             margin-left: 0;
             margin-top: 10px;
         }
+
     }
+
 </style>
+
 </body>
+
 </html>

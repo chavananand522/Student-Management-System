@@ -1,5 +1,7 @@
 package com.itvedant.StudentManagement.config;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,19 +53,19 @@ public class DataInitializer {
             createSubject(
                     studyRepository,
                     "Physics",
-                    "Physics concepts and chapters"
+                    "Study of matter, energy, motion, and natural laws."
             );
 
             createSubject(
                     studyRepository,
                     "Chemistry",
-                    "Chemistry concepts and chapters"
+                    "Study of substances, reactions, and their properties."
             );
 
             createSubject(
                     studyRepository,
                     "Biology",
-                    "Biology concepts and chapters"
+                    "Study of living organisms and their processes."
             );
 
 
@@ -76,7 +78,7 @@ public class DataInitializer {
                     1,
                     "Physics",
                     "Mechanics",
-                    "Motion, force, work, energy and related concepts"
+                    "Study of motion, forces, energy, and the behavior of objects."
             );
 
             createChapter(
@@ -84,7 +86,7 @@ public class DataInitializer {
                     2,
                     "Physics",
                     "Heat & Thermodynamics",
-                    "Heat, temperature, thermodynamics and thermal properties"
+                    "Study of heat, temperature, and thermal energy."
             );
 
             createChapter(
@@ -92,7 +94,7 @@ public class DataInitializer {
                     3,
                     "Physics",
                     "Waves & Oscillations",
-                    "Oscillations, waves and wave motion"
+                    "Study of waves, vibrations, and oscillatory motion."
             );
 
             createChapter(
@@ -100,7 +102,7 @@ public class DataInitializer {
                     4,
                     "Physics",
                     "Electrodynamics",
-                    "Electricity, current, magnetic fields and electromagnetic concepts"
+                    "Study of electric charges, currents, and magnetic fields."
             );
 
             createChapter(
@@ -108,7 +110,7 @@ public class DataInitializer {
                     5,
                     "Physics",
                     "Optics",
-                    "Ray optics, wave optics and optical instruments"
+                    "Study of light, reflection, refraction, and optical systems."
             );
 
             createChapter(
@@ -116,7 +118,7 @@ public class DataInitializer {
                     6,
                     "Physics",
                     "Modern Physics",
-                    "Atoms, nuclei, quantum physics and modern physics"
+                    "Study of atoms, nuclei, quantum effects, and modern concepts."
             );
 
 
@@ -129,7 +131,7 @@ public class DataInitializer {
                     1,
                     "Chemistry",
                     "Physical Chemistry",
-                    "Chemical calculations, thermodynamics, equilibrium and kinetics"
+                    "Study of chemical principles, calculations, and physical properties."
             );
 
             createChapter(
@@ -137,7 +139,7 @@ public class DataInitializer {
                     2,
                     "Chemistry",
                     "Inorganic Chemistry",
-                    "Periodic table, chemical elements and inorganic compounds"
+                    "Study of elements, compounds, and their properties."
             );
 
             createChapter(
@@ -145,7 +147,7 @@ public class DataInitializer {
                     3,
                     "Chemistry",
                     "Organic Chemistry",
-                    "Organic compounds, reactions and mechanisms"
+                    "Study of carbon compounds, their structures, and reactions."
             );
 
 
@@ -158,7 +160,7 @@ public class DataInitializer {
                     1,
                     "Biology",
                     "Botany",
-                    "Study of plants and plant biology"
+                    "Study of plants, their structure, growth, and functions."
             );
 
             createChapter(
@@ -166,7 +168,7 @@ public class DataInitializer {
                     2,
                     "Biology",
                     "Zoology",
-                    "Study of animals and animal biology"
+                    "Study of animals, their structure, behavior, and functions."
             );
 
             createChapter(
@@ -174,7 +176,7 @@ public class DataInitializer {
                     3,
                     "Biology",
                     "Cell Biology",
-                    "Cell structure, functions and cellular processes"
+                    "Study of cells, their structure, and cellular functions."
             );
 
             createChapter(
@@ -182,7 +184,7 @@ public class DataInitializer {
                     4,
                     "Biology",
                     "Genetics & Evolution",
-                    "Genes, heredity, variation and evolution"
+                    "Study of heredity, genes, variation, and evolution."
             );
 
             createChapter(
@@ -190,7 +192,7 @@ public class DataInitializer {
                     5,
                     "Biology",
                     "Ecology & Environment",
-                    "Ecosystems, environment and biodiversity"
+                    "Study of organisms, ecosystems, and their environment."
             );
 
             createChapter(
@@ -198,7 +200,7 @@ public class DataInitializer {
                     6,
                     "Biology",
                     "Biotechnology & Applied Biology",
-                    "Biotechnology and applications of biological sciences"
+                    "Study of biotechnology and its applications in biology."
             );
         };
     }
@@ -239,12 +241,14 @@ public class DataInitializer {
             String name,
             String description) {
 
-        if (!chapterRepository
-                .findBySubjectIgnoreCaseAndNameIgnoreCase(
-                        subject,
-                        name
-                )
-                .isPresent()) {
+        List<Chapter> existingChapters =
+                chapterRepository
+                        .findBySubjectIgnoreCaseAndNameIgnoreCase(
+                                subject,
+                                name
+                        );
+
+        if (existingChapters.isEmpty()) {
 
             Chapter chapter = new Chapter();
 

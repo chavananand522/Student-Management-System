@@ -1,19 +1,20 @@
 package com.itvedant.StudentManagement.reposatory;
 
-import com.itvedant.StudentManagement.model.Chapter;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import com.itvedant.StudentManagement.model.Chapter;
 
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 
-    List<Chapter> findBySubjectIgnoreCaseOrderByChapterNumberAsc(String subject);
+    List<Chapter> findBySubjectIgnoreCaseOrderByChapterNumberAsc(
+            String subject
+    );
 
-    Optional<Chapter> findBySubjectIgnoreCaseAndNameIgnoreCase(
+    List<Chapter> findBySubjectIgnoreCaseAndNameIgnoreCase(
             String subject,
             String name
     );

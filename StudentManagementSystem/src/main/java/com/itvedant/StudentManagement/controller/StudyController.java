@@ -60,7 +60,6 @@ public class StudyController {
                 studyService.getSubjectByName(subject);
 
         if (study == null) {
-
             return "redirect:/study";
         }
 
