@@ -9,6 +9,9 @@
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
+		  
+		  <meta name="_csrf" th:content="${_csrf.token}">
+		  <meta name="_csrf_header" th:content="${_csrf.headerName}">
 
     <title>Student Management System</title>
 
@@ -169,16 +172,28 @@
         </a>
 
 
-        <!-- Enroll to Course -->
+		<!-- Enroll to Course -->
 
-        <a th:href="@{/enrollments/showEnroll}"
-           class="sidebar-link">
+		<a th:href="@{/enrollments/showEnroll}"
+		   class="sidebar-link">
 
-            <i class="bi bi-person-plus"></i>
+		    <i class="bi bi-person-plus"></i>
 
-            <span>Enroll to Course</span>
+		    <span>Enroll to Course</span>
 
-        </a>
+		</a>
+
+
+		<!-- AI Assistant -->
+
+		<a th:href="@{/ai-assistant}"
+		   class="sidebar-link">
+
+		    <i class="bi bi-robot"></i>
+
+		    <span>AI Assistant</span>
+
+		</a>
 
 
     </div>

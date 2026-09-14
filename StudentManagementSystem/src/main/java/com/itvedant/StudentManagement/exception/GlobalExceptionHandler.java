@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +22,12 @@ public class GlobalExceptionHandler {
 		
 		redirectAttributes.addFlashAttribute("messege", "Session expired, Please log in agian");
 		return "redirect:/login";
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public void noResourceFoundExceptionHandler(NoResourceFoundException ex) {
+		log.debug("Resource not found: {}", ex.getResourcePath());
 	}
 
 	@ExceptionHandler(Exception.class)
