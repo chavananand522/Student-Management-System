@@ -8,23 +8,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "study")
-public class Study {
+@Table(name = "topics")
+public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String subject;
+    @Column(nullable = false)
+    private Long chapterId;
 
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    public Study() {
+    public Topic() {
     }
 
-    public Study(String subject, String description) {
-        this.subject = subject;
+    public Topic(Long chapterId, String name, String description) {
+        this.chapterId = chapterId;
+        this.name = name;
         this.description = description;
     }
 
@@ -32,12 +37,24 @@ public class Study {
         return id;
     }
 
-    public String getSubject() {
-        return subject;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public Long getChapterId() {
+        return chapterId;
+    }
+
+    public void setChapterId(Long chapterId) {
+        this.chapterId = chapterId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

@@ -17,9 +17,9 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(CsrfException.class)
 	public String csrfExceptionHandler(CsrfException ex, RedirectAttributes redirectAttributes) {
-		
+
 		log.warn("CSRF Validation Failed", ex.getMessage());
-		
+
 		redirectAttributes.addFlashAttribute("messege", "Session expired, Please log in agian");
 		return "redirect:/login";
 	}

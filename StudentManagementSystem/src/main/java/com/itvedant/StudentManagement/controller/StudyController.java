@@ -1,7 +1,9 @@
 package com.itvedant.StudentManagement.controller;
 
-import com.itvedant.StudentManagement.model.Module;
-import com.itvedant.StudentManagement.services.ModuleService;
+import com.itvedant.StudentManagement.model.Chapter;
+import com.itvedant.StudentManagement.model.Study;
+import com.itvedant.StudentManagement.services.ChapterService;
+import com.itvedant.StudentManagement.services.StudyService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,72 +18,72 @@ import java.util.List;
 @RequestMapping("/study")
 public class StudyController {
 
-	private final ModuleService moduleService;
+    private final StudyService studyService;
+    private final ChapterService chapterService;
 
-	public StudyController(ModuleService moduleService) {
-		this.moduleService = moduleService;
-	}
+    public StudyController(
+            StudyService studyService,
+            ChapterService chapterService) {
 
-	// =========================================================
-	// DEFAULT STUDY PAGE
-	// =========================================================
+        this.studyService = studyService;
+        this.chapterService = chapterService;
+    }
 
-	@GetMapping
-	public String study(Model model) {
+    // =========================================================
+    // STUDY HOME
+    // =========================================================
 
-		return "study";
-	}
+    @GetMapping
+    public String study(Model model) {
 
-	// =========================================================
-	// SUBJECT PAGE
-	// =========================================================
+        List<Study> subjects =
+                studyService.getAllSubjects();
 
-	@GetMapping("/{subject}")
-	public String subject(@PathVariable String subject, Model model) {
+        model.addAttribute(
+                "subjects",
+                subjects
+        );
 
-		// Check valid subject
+        return "study";
+    }
 
-		if (!subject.equalsIgnoreCase("physics") && !subject.equalsIgnoreCase("chemistry")
-				&& !subject.equalsIgnoreCase("biology")) {
+    // =========================================================
+    // SUBJECT PAGE
+    // =========================================================
 
-			return "redirect:/study";
-		}
+    @GetMapping("/{subject}")
+    public String subject(
+            @PathVariable String subject,
+            Model model) {
 
-		String subjectName;
+        Study study =
+                studyService.getSubjectByName(subject);
 
-		// Physics
+        if (study == null) {
 
-		if (subject.equalsIgnoreCase("physics")) {
+            return "redirect:/study";
+        }
 
-			subjectName = "Physics";
+        List<Chapter> chapters =
+                chapterService.getChaptersBySubject(
+                        study.getSubject()
+                );
 
-		}
+        model.addAttribute(
+                "study",
+                study
+        );
 
-		// Chemistry
+        model.addAttribute(
+                "subjectName",
+                study.getSubject()
+        );
 
-		else if (subject.equalsIgnoreCase("chemistry")) {
+        model.addAttribute(
+                "chapters",
+                chapters
+        );
 
-			subjectName = "Chemistry";
-
-		}
-
-		// Biology
-
-		else {
-
-			subjectName = "Biology";
-
-		}
-
-		// Get modules for selected subject
-
-		List<Module> modules = moduleService.getModulesBySubject(subjectName);
-
-		model.addAttribute("subjectName", subjectName);
-
-		model.addAttribute("modules", modules);
-
-		return "study";
-	}
-
+        return "study";
+    }
 }

@@ -1,111 +1,91 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout::head}">
 </head>
-
 <body>
-
 <div class="d-flex" id="wrapper">
-
-    <!-- SIDEBAR -->
     <div th:replace="~{fragments/layout::sidebar}">
     </div>
 
-
-    <!-- PAGE CONTENT -->
     <div id="page-content-wrapper">
-
-        <!-- NAVBAR -->
         <div th:replace="~{fragments/layout::navbar}">
         </div>
 
-
         <div class="container-fluid px-4 py-4">
 
-            <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <h2>
-                    Edit Module
-                </h2>
-
-                <a th:href="@{/study/{subject}(subject=${module.subject})}"
-                   class="btn btn-secondary">
-
-                    <i class="bi bi-arrow-left me-1"></i>
-
-                    Back
-
-                </a>
-
-            </div>
-
-
-            <!-- EDIT FORM -->
-            <div class="card mb-4">
-
-                <div class="card-header bg-white">
-
-                    <i class="bi bi-pencil-square me-1"></i>
-
-                    Module Details
-
+                <div>
+                    <h2>Edit Topic</h2>
+                    <p class="text-muted mb-0"
+                       th:text="${chapter.name}">
+                        Cell Biology
+                    </p>
                 </div>
 
+                <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Topic Details
+                </div>
 
                 <div class="card-body">
 
-                    <form th:action="@{/module/{id}/update(id=${module.id})}"
-                          th:object="${module}"
+                    <form th:action="@{/topic/{id}/update(id=${topic.id})}"
+                          th:object="${topic}"
                           method="post">
 
-
-                        <!-- SUBJECT AUTOMATICALLY PRESERVED -->
                         <input type="hidden"
-                               th:field="*{subject}">
+                               th:field="*{chapterId}">
 
-
-                        <!-- MODULE NUMBER -->
                         <div class="mb-3">
-
                             <label class="form-label">
-                                Module Number
+                                Chapter
                             </label>
-
-                            <input type="number"
+                            <input type="text"
                                    class="form-control"
-                                   th:field="*{moduleNumber}"
-                                   min="1"
-                                   required>
-
+                                   th:value="${chapter.name}"
+                                   readonly>
                         </div>
 
-
-                        <!-- MODULE NAME -->
                         <div class="mb-3">
-
                             <label class="form-label">
-                                Module Name
+                                Topic Name
                             </label>
-
                             <input type="text"
                                    class="form-control"
                                    th:field="*{name}"
                                    required>
-
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Description
+                            </label>
+                            <textarea class="form-control"
+                                      th:field="*{description}"
+                                      rows="5">
+                            </textarea>
+                        </div>
 
-                        <!-- UPDATE BUTTON -->
                         <button type="submit"
                                 class="btn btn-primary">
-
                             <i class="bi bi-check-lg me-1"></i>
-
-                            Update Module
-
+                            Update Topic
                         </button>
+
+                        <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+                           class="btn btn-secondary">
+                            Cancel
+                        </a>
 
                     </form>
 
@@ -114,11 +94,8 @@
             </div>
 
         </div>
-
     </div>
-
 </div>
-
 
 <div th:replace="~{fragments/layout::scripts}">
 </div>

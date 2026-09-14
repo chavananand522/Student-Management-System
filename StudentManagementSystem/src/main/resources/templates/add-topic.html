@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}">
+</head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
+
+    <div id="page-content-wrapper">
+
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-0">Add Topic</h2>
+                    <p class="text-muted mb-0"
+                       th:text="${chapter.name}">
+                        Cell Biology
+                    </p>
+                </div>
+
+                <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white">
+                    <i class="bi bi-journal-plus me-1"></i>
+                    Topic Details
+                </div>
+
+                <div class="card-body">
+
+                    <form th:action="@{/topic/save}"
+                          th:object="${topic}"
+                          method="post">
+
+                        <input type="hidden"
+                               th:field="*{chapterId}">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Chapter
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   th:value="${chapter.name}"
+                                   readonly>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Topic Name
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{name}"
+                                   placeholder="Enter topic name"
+                                   required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Description
+                            </label>
+
+                            <textarea class="form-control"
+                                      th:field="*{description}"
+                                      rows="5"
+                                      placeholder="Enter topic description">
+                            </textarea>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>
+                            Save Topic
+                        </button>
+
+                        <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+                           class="btn btn-secondary">
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/layout::scripts}">
+</div>
+
+</body>
+</html>

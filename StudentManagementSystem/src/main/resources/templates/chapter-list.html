@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}">
+</head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
+
+    <div id="page-content-wrapper">
+
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
+
+        <div class="container-fluid px-4 py-4">
+
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <h2>
+                    Chapters
+                </h2>
+
+
+                <a th:href="@{/chapter/new(subject='Physics')}"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+
+                    Add New Chapter
+
+                </a>
+
+            </div>
+
+
+            <div th:if="${message}"
+                 class="alert alert-success text-center"
+                 th:text="${message}">
+            </div>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white">
+
+                    <i class="bi bi-table me-1"></i>
+
+                    Chapter List
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Chapter Number
+                                </th>
+
+                                <th>
+                                    Chapter Name
+                                </th>
+
+                                <th>
+                                    Subject
+                                </th>
+
+                                <th>
+                                    Description
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            <tr th:each="chapter : ${chapters.content}">
+
+                                <td th:text="${chapter.id}">
+                                </td>
+
+                                <td th:text="${chapter.chapterNumber}">
+                                </td>
+
+                                <td th:text="${chapter.name}">
+                                </td>
+
+                                <td th:text="${chapter.subject}">
+                                </td>
+
+                                <td th:text="${chapter.description}">
+                                </td>
+
+                                <td>
+
+                                    <!-- VIEW -->
+
+                                    <a th:href="@{/chapter/{id}(id=${chapter.id})}"
+                                       class="btn btn-sm btn-info text-white">
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+
+                                    <!-- EDIT -->
+
+                                    <a th:href="@{/chapter/{id}/edit(id=${chapter.id})}"
+                                       class="btn btn-sm btn-warning text-white">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+
+                                    <!-- DELETE -->
+
+                                    <form th:action="@{/chapter/{id}/delete(id=${chapter.id})}"
+                                          method="post"
+                                          style="display:inline;">
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this chapter?');">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- PAGINATION -->
+
+                    <nav th:if="${chapters.totalPages > 1}">
+
+                        <ul class="pagination justify-content-end">
+
+                            <li class="page-item"
+                                th:classappend="${chapters.first} ? 'disabled'">
+
+                                <a class="page-link"
+                                   th:href="@{/chapter/list(
+                                       page=${chapters.number - 1},
+                                       size=${chapters.size}
+                                   )}">
+
+                                    Previous
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="page-item"
+                                th:each="pageNum : ${#numbers.sequence(0, chapters.totalPages - 1)}"
+                                th:classappend="${pageNum == chapters.number} ? 'active'">
+
+                                <a class="page-link"
+                                   th:href="@{/chapter/list(
+                                       page=${pageNum},
+                                       size=${chapters.size}
+                                   )}"
+                                   th:text="${pageNum + 1}">
+
+                                </a>
+
+                            </li>
+
+
+                            <li class="page-item"
+                                th:classappend="${chapters.last} ? 'disabled'">
+
+                                <a class="page-link"
+                                   th:href="@{/chapter/list(
+                                       page=${chapters.number + 1},
+                                       size=${chapters.size}
+                                   )}">
+
+                                    Next
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </nav>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div th:replace="~{fragments/layout::scripts}">
+</div>
+
+</body>
+
+</html>

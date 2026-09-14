@@ -8,15 +8,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "modules")
-public class Module {
+@Table(name = "chapters")
+public class Chapter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Integer moduleNumber;
+    private Integer chapterNumber;
 
     @Column(nullable = false)
     private String subject;
@@ -27,11 +27,11 @@ public class Module {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    public Module() {
+    public Chapter() {
     }
 
-    public Module(Integer moduleNumber, String subject, String name, String description) {
-        this.moduleNumber = moduleNumber;
+    public Chapter(Integer chapterNumber, String subject, String name, String description) {
+        this.chapterNumber = chapterNumber;
         this.subject = subject;
         this.name = name;
         this.description = description;
@@ -45,12 +45,12 @@ public class Module {
         this.id = id;
     }
 
-    public Integer getModuleNumber() {
-        return moduleNumber;
+    public Integer getChapterNumber() {
+        return chapterNumber;
     }
 
-    public void setModuleNumber(Integer moduleNumber) {
-        this.moduleNumber = moduleNumber;
+    public void setChapterNumber(Integer chapterNumber) {
+        this.chapterNumber = chapterNumber;
     }
 
     public String getSubject() {
