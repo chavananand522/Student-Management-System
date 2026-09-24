@@ -1,6 +1,7 @@
 package com.itvedant.StudentManagement.services;
 
 import com.itvedant.StudentManagement.model.Test;
+
 import java.util.List;
 
 public interface TestService {
@@ -10,4 +11,6 @@ public interface TestService {
     Test getTestById(Long id);
 
     List<Test> getAllTests();
+
+    void deleteTest(Long id);
 }

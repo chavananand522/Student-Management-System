@@ -1,5 +1,6 @@
 package com.itvedant.StudentManagement.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +26,7 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_id")
+    @JsonBackReference
     private Test test;
 
     public Question() {

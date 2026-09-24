@@ -4,11 +4,7 @@ import com.itvedant.StudentManagement.model.Test;
 import com.itvedant.StudentManagement.services.TestService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,38 +18,57 @@ public class TestController {
         this.testService = testService;
     }
 
+    // ==============================
+    // CREATE TEST
+    // ==============================
+
     @GetMapping("/create")
     public String showCreateTest(Model model) {
         model.addAttribute("test", new Test());
         return "create-test";
     }
 
+    // ==============================
+    // SAVE TEST
+    // ==============================
+
     @PostMapping("/save")
     public String saveTest(@ModelAttribute Test test) {
-        System.out.println("TEST NAME = " + test.getTestName());
-        System.out.println("COURSE = " + test.getCourse());
-        System.out.println("SUBJECT = " + test.getSubject());
-        System.out.println("CHAPTER = " + test.getChapter());
-        System.out.println("DURATION = " + test.getDuration());
-        System.out.println("TOTAL MARKS = " + test.getTotalMarks());
-        System.out.println("PASSING MARKS = " + test.getPassingMarks());
-        System.out.println("QUESTIONS = " + (test.getQuestions() != null ? test.getQuestions().size() : 0));
-        System.out.println("STATUS = " + test.getStatus());
+
+        if (test.getQuestions() != null) {
+            test.getQuestions().forEach(question -> {
+                question.setTest(test);
+            });
+        }
 
         testService.saveTest(test);
 
         return "redirect:/tests/list";
     }
 
+    // ==============================
+    // TEST LIST
+    // ==============================
+
     @GetMapping("/list")
     public String listTests(Model model) {
+
         List<Test> tests = testService.getAllTests();
+
         model.addAttribute("tests", tests);
+
         return "test-list";
     }
 
+    // ==============================
+    // VIEW TEST RESULTS
+    // ==============================
+
     @GetMapping("/results/{id}")
-    public String testResults(@PathVariable Long id, Model model) {
+    public String testResults(
+            @PathVariable Long id,
+            Model model) {
+
         Test test = testService.getTestById(id);
 
         if (test == null) {
@@ -61,25 +76,122 @@ public class TestController {
         }
 
         model.addAttribute("test", test);
+
         return "test-results";
     }
 
+    // ==============================
+    // EDIT TEST
+    // ==============================
+
+    @GetMapping("/edit/{id}")
+    public String editTest(
+            @PathVariable Long id,
+            Model model) {
+
+        Test test = testService.getTestById(id);
+
+        if (test == null) {
+            return "redirect:/tests/list";
+        }
+
+        model.addAttribute("test", test);
+
+        return "create-test";
+    }
+
+    // ==============================
+    // UPDATE TEST
+    // ==============================
+
+    @PostMapping("/update/{id}")
+    public String updateTest(
+            @PathVariable Long id,
+            @ModelAttribute Test updatedTest) {
+
+        Test existingTest = testService.getTestById(id);
+
+        if (existingTest == null) {
+            return "redirect:/tests/list";
+        }
+
+        existingTest.setTestName(updatedTest.getTestName());
+        existingTest.setCourse(updatedTest.getCourse());
+        existingTest.setSubject(updatedTest.getSubject());
+        existingTest.setChapter(updatedTest.getChapter());
+        existingTest.setDuration(updatedTest.getDuration());
+        existingTest.setTotalMarks(updatedTest.getTotalMarks());
+        existingTest.setPassingMarks(updatedTest.getPassingMarks());
+        existingTest.setShuffleQuestions(updatedTest.getShuffleQuestions());
+        existingTest.setShuffleOptions(updatedTest.getShuffleOptions());
+        existingTest.setShowResultImmediately(
+                updatedTest.getShowResultImmediately()
+        );
+        existingTest.setAllowTestRetake(
+                updatedTest.getAllowTestRetake()
+        );
+        existingTest.setNumberOfAttempts(
+                updatedTest.getNumberOfAttempts()
+        );
+        existingTest.setStatus(updatedTest.getStatus());
+
+        // Clear old questions
+        existingTest.getQuestions().clear();
+
+        // Add updated questions
+        if (updatedTest.getQuestions() != null) {
+
+            updatedTest.getQuestions().forEach(question -> {
+
+                question.setTest(existingTest);
+
+                existingTest.getQuestions().add(question);
+            });
+        }
+
+        testService.saveTest(existingTest);
+
+        return "redirect:/tests/list";
+    }
+
+    // ==============================
+    // DELETE TEST
+    // ==============================
+
+    @GetMapping("/delete/{id}")
+    public String deleteTest(@PathVariable Long id) {
+
+        testService.deleteTest(id);
+
+        return "redirect:/tests/list";
+    }
+
+    // ==============================
+    // TEST ANALYSIS
+    // ==============================
+
     @GetMapping("/analysis")
     public String testAnalysis(Model model) {
+
         List<Test> tests = testService.getAllTests();
 
         long totalTests = tests.size();
 
         long publishedTests = tests.stream()
-                .filter(test -> "PUBLISHED".equalsIgnoreCase(test.getStatus()))
+                .filter(test ->
+                        "PUBLISHED".equalsIgnoreCase(test.getStatus()))
                 .count();
 
         long draftTests = tests.stream()
-                .filter(test -> !"PUBLISHED".equalsIgnoreCase(test.getStatus()))
+                .filter(test ->
+                        !"PUBLISHED".equalsIgnoreCase(test.getStatus()))
                 .count();
 
         long totalQuestions = tests.stream()
-                .mapToLong(test -> test.getQuestions() != null ? test.getQuestions().size() : 0)
+                .mapToLong(test ->
+                        test.getQuestions() != null
+                                ? test.getQuestions().size()
+                                : 0)
                 .sum();
 
         model.addAttribute("tests", tests);
