@@ -1,88 +1,213 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout::head}"></head>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}">
+</head>
+
 <body>
+
 <div class="d-flex" id="wrapper">
-    <div th:replace="~{fragments/layout::sidebar}"></div>
+
+    <!-- SIDEBAR -->
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
+
+    <!-- MAIN CONTENT -->
     <div id="page-content-wrapper" class="w-100">
-        <div th:replace="~{fragments/layout::navbar}"></div>
+
+        <!-- NAVBAR -->
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
         <main class="container-fluid px-4 py-4">
+
+            <!-- BREADCRUMB -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/tests/list}"
+                           class="text-decoration-none">
+                            Tests
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active"
+                        aria-current="page">
+                        Create Test
+                    </li>
+
+                </ol>
+            </nav>
+
+            <!-- PAGE HEADER -->
             <div class="d-flex align-items-center mb-4">
+
                 <div class="bg-primary text-white rounded p-3 me-3">
+
                     <i class="bi bi-file-earmark-text fs-4"></i>
+
                 </div>
+
                 <div>
-                    <h2 class="fw-bold mb-1">Create Test</h2>
-                    <p class="text-muted mb-0">Create and configure a new test</p>
+
+                    <h2 class="fw-bold mb-1">
+                        Create Test
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Create and configure a new test
+                    </p>
+
                 </div>
+
             </div>
-            <form th:action="@{/tests/save}" method="post" id="testForm">
-                <input type="hidden" name="status" id="status" value="PUBLISHED">
+
+            <form th:action="@{/tests/save}"
+                  method="post"
+                  id="testForm">
+
+                <input type="hidden"
+                       name="status"
+                       id="status"
+                       value="PUBLISHED">
+
                 <div class="row g-4">
+
+                    <!-- LEFT SIDE -->
                     <div class="col-lg-9">
+
+                        <!-- TEST INFORMATION -->
                         <div class="card border-0 shadow-sm mb-4">
+
                             <div class="card-body p-4">
+
                                 <div class="d-flex align-items-center mb-4">
-                                    <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">1</span>
-                                    <h5 class="fw-bold mb-0">Test Information</h5>
+
+                                    <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">
+                                        1
+                                    </span>
+
+                                    <h5 class="fw-bold mb-0">
+                                        Test Information
+                                    </h5>
+
                                 </div>
+
                                 <div class="mb-3">
+
                                     <label class="form-label fw-semibold">
-                                        Test Name <span class="text-danger">*</span>
+                                        Test Name
+                                        <span class="text-danger">*</span>
                                     </label>
+
                                     <input type="text"
                                            name="testName"
                                            id="testName"
                                            class="form-control"
                                            placeholder="Enter test name"
                                            required>
+
                                 </div>
+
                                 <div class="row g-3">
+
                                     <div class="col-md-4">
+
                                         <label class="form-label fw-semibold">
-                                            Course <span class="text-danger">*</span>
+                                            Course
+                                            <span class="text-danger">*</span>
                                         </label>
+
                                         <select name="course"
                                                 id="course"
                                                 class="form-select"
                                                 required>
-                                            <option value="">Select Course</option>
-                                            <option value="NEET">NEET</option>
-                                           
+
+                                            <option value="">
+                                                Select Course
+                                            </option>
+
+                                            <option value="NEET">
+                                                NEET
+                                            </option>
+
                                         </select>
+
                                     </div>
+
                                     <div class="col-md-4">
+
                                         <label class="form-label fw-semibold">
-                                            Subject <span class="text-danger">*</span>
+                                            Subject
+                                            <span class="text-danger">*</span>
                                         </label>
+
                                         <select name="subject"
                                                 id="subject"
                                                 class="form-select"
                                                 required>
-                                            <option value="">Select Subject</option>
-                                            <option value="Physics">Physics</option>
-                                            <option value="Chemistry">Chemistry</option>
-                                            <option value="Biology">Biology</option>
+
+                                            <option value="">
+                                                Select Subject
+                                            </option>
+
+                                            <option value="Physics">
+                                                Physics
+                                            </option>
+
+                                            <option value="Chemistry">
+                                                Chemistry
+                                            </option>
+
+                                            <option value="Biology">
+                                                Biology
+                                            </option>
+
                                         </select>
+
                                     </div>
+
                                     <div class="col-md-4">
+
                                         <label class="form-label fw-semibold">
-                                            Chapter / Topic <span class="text-danger">*</span>
+                                            Chapter / Topic
+                                            <span class="text-danger">*</span>
                                         </label>
+
                                         <select name="chapter"
                                                 id="chapter"
                                                 class="form-select"
                                                 required>
-                                            <option value="">Select Chapter</option>
-                                            <option value="Chapter 1">Chapter 1</option>
-                                            <option value="Chapter 2">Chapter 2</option>
-                                            <option value="Chapter 3">Chapter 3</option>
+
+                                            <option value="">
+                                                Select Chapter
+                                            </option>
+
+                                            <option value="Chapter 1">
+                                                Chapter 1
+                                            </option>
+
+                                            <option value="Chapter 2">
+                                                Chapter 2
+                                            </option>
+
+                                            <option value="Chapter 3">
+                                                Chapter 3
+                                            </option>
+
                                         </select>
+
                                     </div>
+
                                     <div class="col-md-4">
+
                                         <label class="form-label fw-semibold">
-                                            Duration (minutes) <span class="text-danger">*</span>
+                                            Duration (minutes)
+                                            <span class="text-danger">*</span>
                                         </label>
+
                                         <input type="number"
                                                name="duration"
                                                id="duration"
@@ -90,11 +215,16 @@
                                                placeholder="e.g. 60"
                                                min="1"
                                                required>
+
                                     </div>
+
                                     <div class="col-md-4">
+
                                         <label class="form-label fw-semibold">
-                                            Total Marks <span class="text-danger">*</span>
+                                            Total Marks
+                                            <span class="text-danger">*</span>
                                         </label>
+
                                         <input type="number"
                                                name="totalMarks"
                                                id="totalMarks"
@@ -102,11 +232,16 @@
                                                placeholder="e.g. 100"
                                                min="1"
                                                required>
+
                                     </div>
+
                                     <div class="col-md-4">
+
                                         <label class="form-label fw-semibold">
-                                            Passing Marks <span class="text-danger">*</span>
+                                            Passing Marks
+                                            <span class="text-danger">*</span>
                                         </label>
+
                                         <input type="number"
                                                name="passingMarks"
                                                id="passingMarks"
@@ -114,304 +249,535 @@
                                                placeholder="e.g. 40"
                                                min="1"
                                                required>
+
                                     </div>
+
                                 </div>
+
                             </div>
+
                         </div>
+
+
+                        <!-- QUESTIONS -->
                         <div class="card border-0 shadow-sm mb-4">
+
                             <div class="card-body p-4">
+
                                 <div class="d-flex align-items-center justify-content-between mb-4">
+
                                     <div class="d-flex align-items-center">
-                                        <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">2</span>
-                                        <h5 class="fw-bold mb-0">Questions</h5>
+
+                                        <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">
+                                            2
+                                        </span>
+
+                                        <h5 class="fw-bold mb-0">
+                                            Questions
+                                        </h5>
+
                                     </div>
-                                    <span class="text-muted" id="questionCount">
+
+                                    <span class="text-muted"
+                                          id="questionCount">
                                         Question 1 / 1
                                     </span>
+
                                 </div>
+
                                 <div id="questionsContainer">
+
                                     <div class="question-box border rounded p-3 mb-3">
+
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <strong>Question 1</strong>
+
+                                            <strong>
+                                                Question 1
+                                            </strong>
+
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger remove-question">
+
                                                 <i class="bi bi-trash"></i>
+
                                             </button>
+
                                         </div>
+
                                         <div class="mb-3">
+
                                             <label class="form-label fw-semibold">
-                                                Question Text <span class="text-danger">*</span>
+                                                Question Text
+                                                <span class="text-danger">*</span>
                                             </label>
+
                                             <textarea name="questions[0].questionText"
                                                       class="form-control"
                                                       rows="3"
                                                       placeholder="Enter question here..."
                                                       required></textarea>
+
                                         </div>
+
                                         <div class="row g-3">
+
                                             <div class="col-md-6">
+
                                                 <label class="form-label fw-semibold">
-                                                    Option A <span class="text-danger">*</span>
+                                                    Option A
+                                                    <span class="text-danger">*</span>
                                                 </label>
+
                                                 <input type="text"
                                                        name="questions[0].optionA"
                                                        class="form-control"
                                                        placeholder="Enter option A"
                                                        required>
+
                                             </div>
+
                                             <div class="col-md-6">
+
                                                 <label class="form-label fw-semibold">
-                                                    Option B <span class="text-danger">*</span>
+                                                    Option B
+                                                    <span class="text-danger">*</span>
                                                 </label>
+
                                                 <input type="text"
                                                        name="questions[0].optionB"
                                                        class="form-control"
                                                        placeholder="Enter option B"
                                                        required>
+
                                             </div>
+
                                             <div class="col-md-6">
+
                                                 <label class="form-label fw-semibold">
-                                                    Option C <span class="text-danger">*</span>
+                                                    Option C
+                                                    <span class="text-danger">*</span>
                                                 </label>
+
                                                 <input type="text"
                                                        name="questions[0].optionC"
                                                        class="form-control"
                                                        placeholder="Enter option C"
                                                        required>
+
                                             </div>
+
                                             <div class="col-md-6">
+
                                                 <label class="form-label fw-semibold">
-                                                    Option D <span class="text-danger">*</span>
+                                                    Option D
+                                                    <span class="text-danger">*</span>
                                                 </label>
+
                                                 <input type="text"
                                                        name="questions[0].optionD"
                                                        class="form-control"
                                                        placeholder="Enter option D"
                                                        required>
+
                                             </div>
+
                                             <div class="col-md-8">
+
                                                 <label class="form-label fw-semibold">
-                                                    Correct Answer <span class="text-danger">*</span>
+                                                    Correct Answer
+                                                    <span class="text-danger">*</span>
                                                 </label>
+
                                                 <select name="questions[0].correctAnswer"
                                                         class="form-select"
                                                         required>
-                                                    <option value="">Select correct answer</option>
-                                                    <option value="A">Option A</option>
-                                                    <option value="B">Option B</option>
-                                                    <option value="C">Option C</option>
-                                                    <option value="D">Option D</option>
+
+                                                    <option value="">
+                                                        Select correct answer
+                                                    </option>
+
+                                                    <option value="A">
+                                                        Option A
+                                                    </option>
+
+                                                    <option value="B">
+                                                        Option B
+                                                    </option>
+
+                                                    <option value="C">
+                                                        Option C
+                                                    </option>
+
+                                                    <option value="D">
+                                                        Option D
+                                                    </option>
+
                                                 </select>
+
                                             </div>
+
                                             <div class="col-md-4">
+
                                                 <label class="form-label fw-semibold">
-                                                    Marks <span class="text-danger">*</span>
+                                                    Marks
+                                                    <span class="text-danger">*</span>
                                                 </label>
+
                                                 <input type="number"
                                                        name="questions[0].marks"
                                                        class="form-control question-marks"
                                                        value="1"
                                                        min="1"
                                                        required>
+
                                             </div>
+
                                             <div class="col-12">
+
                                                 <label class="form-label fw-semibold">
                                                     Explanation
-                                                    <span class="text-muted">(Optional)</span>
+                                                    <span class="text-muted">
+                                                        (Optional)
+                                                    </span>
                                                 </label>
+
                                                 <textarea name="questions[0].explanation"
                                                           class="form-control"
                                                           rows="2"
                                                           placeholder="Enter explanation if any"></textarea>
+
                                             </div>
+
                                         </div>
+
                                     </div>
+
                                 </div>
+
                                 <button type="button"
                                         class="btn btn-outline-primary"
                                         id="addQuestion">
+
                                     <i class="bi bi-plus-lg me-1"></i>
+
                                     Add Question
+
                                 </button>
+
                             </div>
+
                         </div>
+
+
+                        <!-- TEST SETTINGS -->
                         <div class="card border-0 shadow-sm mb-4">
+
                             <div class="card-body p-4">
+
                                 <div class="d-flex align-items-center mb-4">
-                                    <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">3</span>
-                                    <h5 class="fw-bold mb-0">Test Settings</h5>
+
+                                    <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">
+                                        3
+                                    </span>
+
+                                    <h5 class="fw-bold mb-0">
+                                        Test Settings
+                                    </h5>
+
                                 </div>
+
                                 <div class="bg-light rounded p-3">
+
                                     <div class="row g-3">
+
                                         <div class="col-md-6">
+
                                             <div class="form-check">
+
                                                 <input type="hidden"
                                                        name="shuffleQuestions"
                                                        value="false">
+
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="shuffleQuestions"
                                                        id="shuffleQuestions"
                                                        value="true">
+
                                                 <label class="form-check-label"
                                                        for="shuffleQuestions">
+
                                                     Shuffle Questions
+
                                                 </label>
+
                                             </div>
+
                                         </div>
+
                                         <div class="col-md-6">
+
                                             <div class="form-check">
+
                                                 <input type="hidden"
                                                        name="shuffleOptions"
                                                        value="false">
+
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="shuffleOptions"
                                                        id="shuffleOptions"
                                                        value="true">
+
                                                 <label class="form-check-label"
                                                        for="shuffleOptions">
+
                                                     Shuffle Options
+
                                                 </label>
+
                                             </div>
+
                                         </div>
+
                                         <div class="col-md-6">
+
                                             <div class="form-check">
+
                                                 <input type="hidden"
                                                        name="showResultImmediately"
                                                        value="false">
+
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="showResultImmediately"
                                                        id="showResultImmediately"
                                                        value="true">
+
                                                 <label class="form-check-label"
                                                        for="showResultImmediately">
+
                                                     Show Result Immediately
+
                                                 </label>
+
                                             </div>
+
                                         </div>
+
                                         <div class="col-md-6">
+
                                             <div class="form-check">
+
                                                 <input type="hidden"
                                                        name="allowTestRetake"
                                                        value="false">
+
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="allowTestRetake"
                                                        id="allowTestRetake"
                                                        value="true">
+
                                                 <label class="form-check-label"
                                                        for="allowTestRetake">
+
                                                     Allow Test Retake
+
                                                 </label>
+
                                             </div>
+
                                         </div>
+
                                         <div class="col-md-6">
+
                                             <label class="form-label fw-semibold">
                                                 Number of Attempts
                                             </label>
+
                                             <select name="numberOfAttempts"
                                                     class="form-select">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="999">Unlimited</option>
+
+                                                <option value="1">
+                                                    1
+                                                </option>
+
+                                                <option value="2">
+                                                    2
+                                                </option>
+
+                                                <option value="3">
+                                                    3
+                                                </option>
+
+                                                <option value="999">
+                                                    Unlimited
+                                                </option>
+
                                             </select>
+
                                         </div>
+
                                     </div>
+
                                 </div>
+
                             </div>
+
                         </div>
+
+
+                        <!-- BUTTONS -->
                         <div class="d-flex justify-content-between mb-4">
+
                             <a th:href="@{/tests/list}"
                                class="btn btn-outline-secondary px-4">
+
                                 Cancel
+
                             </a>
+
                             <button type="submit"
                                     class="btn btn-primary px-4">
+
                                 <i class="bi bi-save me-1"></i>
+
                                 Save Test
+
                             </button>
+
                         </div>
+
                     </div>
+
+
+                    <!-- RIGHT SIDE SUMMARY -->
                     <div class="col-lg-3">
+
                         <div class="card border-0 shadow-sm sticky-top"
                              style="top:20px;">
+
                             <div class="card-body p-4">
+
                                 <div class="d-flex align-items-center mb-3">
+
                                     <i class="bi bi-file-earmark-text text-primary fs-4 me-2"></i>
+
                                     <h5 class="fw-bold mb-0">
                                         Test Summary
                                     </h5>
+
                                 </div>
+
                                 <hr>
+
                                 <div class="summary-row">
                                     <span>Test Name</span>
                                     <strong id="summaryTestName">-</strong>
                                 </div>
+
                                 <div class="summary-row">
                                     <span>Course</span>
                                     <strong id="summaryCourse">-</strong>
                                 </div>
+
                                 <div class="summary-row">
                                     <span>Subject</span>
                                     <strong id="summarySubject">-</strong>
                                 </div>
+
                                 <div class="summary-row">
                                     <span>Chapter</span>
                                     <strong id="summaryChapter">-</strong>
                                 </div>
+
                                 <hr>
+
                                 <div class="summary-row">
                                     <span>Questions</span>
                                     <strong id="summaryQuestions">1</strong>
                                 </div>
+
                                 <div class="summary-row">
                                     <span>Total Marks</span>
                                     <strong id="summaryMarks">1</strong>
                                 </div>
+
                                 <div class="summary-row">
                                     <span>Duration</span>
                                     <strong id="summaryDuration">0 min</strong>
                                 </div>
+
                                 <div class="summary-row">
                                     <span>Passing Marks</span>
                                     <strong id="summaryPassing">0</strong>
                                 </div>
+
                                 <hr>
+
                                 <div class="d-flex justify-content-between align-items-center mb-3">
+
                                     <span>Status</span>
+
                                     <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill"
                                           id="summaryStatus">
                                         Draft
                                     </span>
+
                                 </div>
+
                                 <div class="d-grid gap-2">
+
                                     <button type="button"
                                             class="btn btn-outline-primary"
                                             id="saveDraftBtn">
+
                                         <i class="bi bi-save me-1"></i>
+
                                         Save Draft
+
                                     </button>
+
                                     <button type="button"
                                             class="btn btn-primary"
                                             id="publishBtn">
+
                                         <i class="bi bi-send me-1"></i>
+
                                         Publish Test
+
                                     </button>
+
                                 </div>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </form>
+
         </main>
-        <div th:replace="~{fragments/layout::footer}"></div>
+
+        <div th:replace="~{fragments/layout::footer}">
+        </div>
+
     </div>
+
 </div>
-<div th:replace="~{fragments/layout::scripts}"></div>
+
+
+<!-- COMMON SCRIPTS -->
+<div th:replace="~{fragments/layout::scripts}">
+</div>
+
+
 <style>
+
 .summary-row {
     display: flex;
     justify-content: space-between;
@@ -419,9 +785,11 @@
     padding: 10px 0;
     font-size: 14px;
 }
+
 .summary-row span {
     color: #6c757d;
 }
+
 .summary-row strong {
     color: #1f2937;
     text-align: right;
@@ -430,219 +798,354 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .question-box {
     background: #fff;
 }
+
 .form-control,
 .form-select {
     min-height: 42px;
 }
+
 </style>
+
+
 <script>
+
 let questionIndex = 1;
 
-document.getElementById("addQuestion").addEventListener("click", function() {
-    const container = document.getElementById("questionsContainer");
-    const question = document.createElement("div");
+document.getElementById("addQuestion").addEventListener("click", function () {
 
-    question.className = "question-box border rounded p-3 mb-3";
+    const container =
+        document.getElementById("questionsContainer");
+
+    const question =
+        document.createElement("div");
+
+    question.className =
+        "question-box border rounded p-3 mb-3";
 
     question.innerHTML = `
+
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <strong>Question ${questionIndex + 1}</strong>
+
+            <strong>
+                Question ${questionIndex + 1}
+            </strong>
+
             <button type="button"
                     class="btn btn-sm btn-outline-danger remove-question">
+
                 <i class="bi bi-trash"></i>
+
             </button>
+
         </div>
+
         <div class="mb-3">
+
             <label class="form-label fw-semibold">
-                Question Text <span class="text-danger">*</span>
+                Question Text
+                <span class="text-danger">*</span>
             </label>
+
             <textarea name="questions[${questionIndex}].questionText"
                       class="form-control"
                       rows="3"
                       placeholder="Enter question here..."
                       required></textarea>
+
         </div>
+
         <div class="row g-3">
+
             <div class="col-md-6">
+
                 <label class="form-label fw-semibold">
-                    Option A <span class="text-danger">*</span>
+                    Option A
+                    <span class="text-danger">*</span>
                 </label>
+
                 <input type="text"
                        name="questions[${questionIndex}].optionA"
                        class="form-control"
                        placeholder="Enter option A"
                        required>
+
             </div>
+
             <div class="col-md-6">
+
                 <label class="form-label fw-semibold">
-                    Option B <span class="text-danger">*</span>
+                    Option B
+                    <span class="text-danger">*</span>
                 </label>
+
                 <input type="text"
                        name="questions[${questionIndex}].optionB"
                        class="form-control"
                        placeholder="Enter option B"
                        required>
+
             </div>
+
             <div class="col-md-6">
+
                 <label class="form-label fw-semibold">
-                    Option C <span class="text-danger">*</span>
+                    Option C
+                    <span class="text-danger">*</span>
                 </label>
+
                 <input type="text"
                        name="questions[${questionIndex}].optionC"
                        class="form-control"
                        placeholder="Enter option C"
                        required>
+
             </div>
+
             <div class="col-md-6">
+
                 <label class="form-label fw-semibold">
-                    Option D <span class="text-danger">*</span>
+                    Option D
+                    <span class="text-danger">*</span>
                 </label>
+
                 <input type="text"
                        name="questions[${questionIndex}].optionD"
                        class="form-control"
                        placeholder="Enter option D"
                        required>
+
             </div>
+
             <div class="col-md-8">
+
                 <label class="form-label fw-semibold">
-                    Correct Answer <span class="text-danger">*</span>
+                    Correct Answer
+                    <span class="text-danger">*</span>
                 </label>
+
                 <select name="questions[${questionIndex}].correctAnswer"
                         class="form-select"
                         required>
-                    <option value="">Select correct answer</option>
+
+                    <option value="">
+                        Select correct answer
+                    </option>
+
                     <option value="A">Option A</option>
                     <option value="B">Option B</option>
                     <option value="C">Option C</option>
                     <option value="D">Option D</option>
+
                 </select>
+
             </div>
+
             <div class="col-md-4">
+
                 <label class="form-label fw-semibold">
-                    Marks <span class="text-danger">*</span>
+                    Marks
+                    <span class="text-danger">*</span>
                 </label>
+
                 <input type="number"
                        name="questions[${questionIndex}].marks"
                        class="form-control question-marks"
                        value="1"
                        min="1"
                        required>
+
             </div>
+
             <div class="col-12">
+
                 <label class="form-label fw-semibold">
                     Explanation
-                    <span class="text-muted">(Optional)</span>
+                    <span class="text-muted">
+                        (Optional)
+                    </span>
                 </label>
+
                 <textarea name="questions[${questionIndex}].explanation"
                           class="form-control"
                           rows="2"
                           placeholder="Enter explanation if any"></textarea>
+
             </div>
+
         </div>
     `;
 
     container.appendChild(question);
+
     questionIndex++;
+
     updateQuestionCount();
+
     updateMarks();
+
 });
 
-document.addEventListener("click", function(e) {
-    const button = e.target.closest(".remove-question");
+
+document.addEventListener("click", function (e) {
+
+    const button =
+        e.target.closest(".remove-question");
 
     if (!button) {
         return;
     }
 
-    const questions = document.querySelectorAll(".question-box");
+    const questions =
+        document.querySelectorAll(".question-box");
 
     if (questions.length === 1) {
+
         alert("At least one question is required.");
+
         return;
+
     }
 
     button.closest(".question-box").remove();
 
     updateQuestionCount();
+
     updateMarks();
+
 });
 
+
 function updateQuestionCount() {
-    const count = document.querySelectorAll(".question-box").length;
+
+    const count =
+        document.querySelectorAll(".question-box").length;
 
     document.getElementById("questionCount").textContent =
         "Question " + count + " / " + count;
 
-    document.getElementById("summaryQuestions").textContent = count;
+    document.getElementById("summaryQuestions").textContent =
+        count;
+
 }
+
 
 function updateMarks() {
+
     let total = 0;
 
-    document.querySelectorAll(".question-marks").forEach(input => {
-        total += Number(input.value) || 0;
-    });
+    document.querySelectorAll(".question-marks")
+        .forEach(input => {
 
-    document.getElementById("summaryMarks").textContent = total;
+            total += Number(input.value) || 0;
+
+        });
+
+    document.getElementById("summaryMarks").textContent =
+        total;
+
 }
 
-document.addEventListener("input", function(e) {
+
+document.addEventListener("input", function (e) {
+
     if (e.target.classList.contains("question-marks")) {
+
         updateMarks();
+
     }
 
     if (e.target.id === "testName") {
+
         document.getElementById("summaryTestName").textContent =
             e.target.value || "-";
+
     }
 
     if (e.target.id === "duration") {
+
         document.getElementById("summaryDuration").textContent =
             (e.target.value || "0") + " min";
+
     }
 
     if (e.target.id === "passingMarks") {
+
         document.getElementById("summaryPassing").textContent =
             e.target.value || "0";
+
     }
+
 });
 
-document.addEventListener("change", function(e) {
+
+document.addEventListener("change", function (e) {
+
     if (e.target.id === "course") {
-        const option = e.target.options[e.target.selectedIndex];
+
+        const option =
+            e.target.options[e.target.selectedIndex];
 
         document.getElementById("summaryCourse").textContent =
-            option && option.value ? option.text : "-";
+            option && option.value
+                ? option.text
+                : "-";
+
     }
 
     if (e.target.id === "subject") {
+
         document.getElementById("summarySubject").textContent =
             e.target.value || "-";
+
     }
 
     if (e.target.id === "chapter") {
+
         document.getElementById("summaryChapter").textContent =
             e.target.value || "-";
+
     }
+
 });
 
-document.getElementById("saveDraftBtn").addEventListener("click", function() {
-    document.getElementById("status").value = "DRAFT";
-    document.getElementById("summaryStatus").textContent = "Draft";
-    document.getElementById("testForm").submit();
-});
 
-document.getElementById("publishBtn").addEventListener("click", function() {
-    document.getElementById("status").value = "PUBLISHED";
-    document.getElementById("summaryStatus").textContent = "Published";
-    document.getElementById("testForm").submit();
-});
+document.getElementById("saveDraftBtn")
+    .addEventListener("click", function () {
+
+        document.getElementById("status").value =
+            "DRAFT";
+
+        document.getElementById("summaryStatus").textContent =
+            "Draft";
+
+        document.getElementById("testForm").submit();
+
+    });
+
+
+document.getElementById("publishBtn")
+    .addEventListener("click", function () {
+
+        document.getElementById("status").value =
+            "PUBLISHED";
+
+        document.getElementById("summaryStatus").textContent =
+            "Published";
+
+        document.getElementById("testForm").submit();
+
+    });
+
 
 updateQuestionCount();
+
 updateMarks();
+
 </script>
+
 </body>
 </html>

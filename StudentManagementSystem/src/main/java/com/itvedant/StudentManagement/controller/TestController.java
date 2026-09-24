@@ -18,37 +18,27 @@ public class TestController {
         this.testService = testService;
     }
 
-    // ==============================
-    // CREATE TEST
-    // ==============================
-
     @GetMapping("/create")
     public String showCreateTest(Model model) {
         model.addAttribute("test", new Test());
         return "create-test";
     }
 
-    // ==============================
-    // SAVE TEST
-    // ==============================
-
     @PostMapping("/save")
     public String saveTest(@ModelAttribute Test test) {
 
         if (test.getQuestions() != null) {
+
             test.getQuestions().forEach(question -> {
                 question.setTest(test);
             });
+
         }
 
         testService.saveTest(test);
 
         return "redirect:/tests/list";
     }
-
-    // ==============================
-    // TEST LIST
-    // ==============================
 
     @GetMapping("/list")
     public String listTests(Model model) {
@@ -60,14 +50,8 @@ public class TestController {
         return "test-list";
     }
 
-    // ==============================
-    // VIEW TEST RESULTS
-    // ==============================
-
     @GetMapping("/results/{id}")
-    public String testResults(
-            @PathVariable Long id,
-            Model model) {
+    public String testResults(@PathVariable Long id, Model model) {
 
         Test test = testService.getTestById(id);
 
@@ -80,14 +64,8 @@ public class TestController {
         return "test-results";
     }
 
-    // ==============================
-    // EDIT TEST
-    // ==============================
-
     @GetMapping("/edit/{id}")
-    public String editTest(
-            @PathVariable Long id,
-            Model model) {
+    public String editTest(@PathVariable Long id, Model model) {
 
         Test test = testService.getTestById(id);
 
@@ -97,17 +75,12 @@ public class TestController {
 
         model.addAttribute("test", test);
 
-        return "create-test";
+        return "test-edit";
     }
 
-    // ==============================
-    // UPDATE TEST
-    // ==============================
-
     @PostMapping("/update/{id}")
-    public String updateTest(
-            @PathVariable Long id,
-            @ModelAttribute Test updatedTest) {
+    public String updateTest(@PathVariable Long id,
+                             @ModelAttribute Test updatedTest) {
 
         Test existingTest = testService.getTestById(id);
 
@@ -124,21 +97,13 @@ public class TestController {
         existingTest.setPassingMarks(updatedTest.getPassingMarks());
         existingTest.setShuffleQuestions(updatedTest.getShuffleQuestions());
         existingTest.setShuffleOptions(updatedTest.getShuffleOptions());
-        existingTest.setShowResultImmediately(
-                updatedTest.getShowResultImmediately()
-        );
-        existingTest.setAllowTestRetake(
-                updatedTest.getAllowTestRetake()
-        );
-        existingTest.setNumberOfAttempts(
-                updatedTest.getNumberOfAttempts()
-        );
+        existingTest.setShowResultImmediately(updatedTest.getShowResultImmediately());
+        existingTest.setAllowTestRetake(updatedTest.getAllowTestRetake());
+        existingTest.setNumberOfAttempts(updatedTest.getNumberOfAttempts());
         existingTest.setStatus(updatedTest.getStatus());
 
-        // Clear old questions
         existingTest.getQuestions().clear();
 
-        // Add updated questions
         if (updatedTest.getQuestions() != null) {
 
             updatedTest.getQuestions().forEach(question -> {
@@ -146,17 +111,15 @@ public class TestController {
                 question.setTest(existingTest);
 
                 existingTest.getQuestions().add(question);
+
             });
+
         }
 
         testService.saveTest(existingTest);
 
         return "redirect:/tests/list";
     }
-
-    // ==============================
-    // DELETE TEST
-    // ==============================
 
     @GetMapping("/delete/{id}")
     public String deleteTest(@PathVariable Long id) {
@@ -165,10 +128,6 @@ public class TestController {
 
         return "redirect:/tests/list";
     }
-
-    // ==============================
-    // TEST ANALYSIS
-    // ==============================
 
     @GetMapping("/analysis")
     public String testAnalysis(Model model) {

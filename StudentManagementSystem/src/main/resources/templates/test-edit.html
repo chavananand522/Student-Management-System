@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout::head}">
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+
+    <!-- SIDEBAR -->
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
+
+    <div class="flex-grow-1">
+
+        <!-- NAVBAR -->
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
+        <main class="container-fluid p-4">
+
+            <!-- PAGE HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Edit Test
+                    </h3>
+                    <p class="text-muted mb-0">
+                        Update test information
+                    </p>
+                </div>
+
+                <a th:href="@{/tests/list}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back to Tests
+                </a>
+            </div>
+
+            <!-- EDIT TEST FORM -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+
+                    <form th:action="@{/tests/update/{id}(id=${test.id})}"
+                          th:object="${test}"
+                          method="post">
+
+                        <!-- TEST INFORMATION -->
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Test Information
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Test Name
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{testName}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Course
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{course}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Subject
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{subject}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Chapter
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{chapter}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    Duration (Minutes)
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{duration}"
+                                       min="1"
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    Total Marks
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{totalMarks}"
+                                       min="1"
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    Passing Marks
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{passingMarks}"
+                                       min="0"
+                                       required>
+                            </div>
+
+                        </div>
+
+                        <!-- TEST SETTINGS -->
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-gear me-2"></i>
+                            Test Settings
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           th:field="*{shuffleQuestions}">
+                                    <label class="form-check-label">
+                                        Shuffle Questions
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           th:field="*{shuffleOptions}">
+                                    <label class="form-check-label">
+                                        Shuffle Options
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           th:field="*{showResultImmediately}">
+                                    <label class="form-check-label">
+                                        Show Result Immediately
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           th:field="*{allowTestRetake}">
+                                    <label class="form-check-label">
+                                        Allow Test Retake
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    Number of Attempts
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{numberOfAttempts}"
+                                       min="1">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    Status
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{status}">
+                                    <option value="DRAFT">Draft</option>
+                                    <option value="PUBLISHED">Published</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a th:href="@{/tests/list}"
+                               class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i>
+                                Cancel
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Update Test
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

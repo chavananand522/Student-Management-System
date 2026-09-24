@@ -21,6 +21,7 @@ body {
 
 /* Wrapper & Sidebar */
 
+
 #wrapper {
     display: flex;
     width: 100%;
@@ -1549,16 +1550,17 @@ body.sb-sidenav-toggled #sidebar-wrapper {
    PHYSICS / CHEMISTRY / BIOLOGY SUBJECT LINKS
    ========================================================= */
 
-.study-sub-link {
-    padding-left: 45px !important;
-    font-size: 14px;
-}
+   .study-sub-link,
+   .test-sub-link {
+       padding-left: 45px !important;
+       font-size: 14px;
+   }
 
-.study-sub-link i {
-    font-size: 15px;
-    margin-right: 0 !important;
-}
-
+   .study-sub-link i,
+   .test-sub-link i {
+       font-size: 15px;
+       margin-right: 0 !important;
+   }
 /* Physics */
 
 .study-sub-link[href*="physics"]:hover {

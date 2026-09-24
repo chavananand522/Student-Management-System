@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/layout::head}">
 </head>
@@ -8,38 +9,47 @@
 
 <div class="d-flex" id="wrapper">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
     <div th:replace="~{fragments/layout::sidebar}">
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="flex-grow-1">
 
-        <!-- Navbar -->
+        <!-- NAVBAR -->
         <div th:replace="~{fragments/layout::navbar}">
         </div>
 
         <main class="container-fluid p-4">
 
-            <!-- ================================================= -->
-            <!-- PAGE HEADER -->
-            <!-- ================================================= -->
+            <!-- BREADCRUMB -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/tests/list}"
+                           class="text-decoration-none">
+                            Tests
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active"
+                        aria-current="page">
+                        Test Results
+                    </li>
+                </ol>
+            </nav>
 
+            <!-- PAGE HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-4">
 
                 <div>
 
                     <h3 class="fw-bold mb-1">
-
                         <i class="bi bi-file-earmark-text me-2"></i>
-
                         Tests
-
                     </h3>
 
                     <p class="text-muted mb-0">
-
                         Manage your tests
-
                     </p>
 
                 </div>
@@ -48,17 +58,13 @@
                    class="btn btn-primary">
 
                     <i class="bi bi-plus-circle me-1"></i>
-
                     Create Test
 
                 </a>
 
             </div>
 
-            <!-- ================================================= -->
             <!-- TEST TABLE -->
-            <!-- ================================================= -->
-
             <div class="card border-0 shadow-sm">
 
                 <div class="card-body p-0">
@@ -71,37 +77,21 @@
 
                             <tr>
 
-                                <th class="px-4">
-                                    #
-                                </th>
+                                <th class="px-4">#</th>
 
-                                <th>
-                                    Test Name
-                                </th>
+                                <th>Test Name</th>
 
-                                <th>
-                                    Course
-                                </th>
+                                <th>Course</th>
 
-                                <th>
-                                    Subject
-                                </th>
+                                <th>Subject</th>
 
-                                <th>
-                                    Chapter
-                                </th>
+                                <th>Chapter</th>
 
-                                <th>
-                                    Questions
-                                </th>
+                                <th>Questions</th>
 
-                                <th>
-                                    Total Marks
-                                </th>
+                                <th>Total Marks</th>
 
-                                <th>
-                                    Status
-                                </th>
+                                <th>Status</th>
 
                                 <th class="text-center">
                                     Actions
@@ -113,106 +103,61 @@
 
                             <tbody>
 
-                            <!-- ================================================= -->
                             <!-- TEST ROW -->
-                            <!-- ================================================= -->
-
                             <tr th:each="test, stat : ${tests}">
-
-                                <!-- Number -->
 
                                 <td class="px-4"
                                     th:text="${stat.count}">
-
                                     1
-
                                 </td>
-
-                                <!-- Test Name -->
 
                                 <td>
-
                                     <strong th:text="${test.testName}">
-
                                         Test Name
-
                                     </strong>
-
                                 </td>
-
-                                <!-- Course -->
 
                                 <td th:text="${test.course}">
-
                                     NEET
-
                                 </td>
-
-                                <!-- Subject -->
 
                                 <td th:text="${test.subject}">
-
                                     Physics
-
                                 </td>
-
-                                <!-- Chapter -->
 
                                 <td th:text="${test.chapter}">
-
                                     Chapter 1
-
                                 </td>
-
-                                <!-- Questions -->
 
                                 <td>
-
                                     <span class="badge bg-primary"
                                           th:text="${test.questions != null ? test.questions.size() : 0}">
-
                                         0
-
                                     </span>
-
                                 </td>
-
-                                <!-- Total Marks -->
 
                                 <td th:text="${test.totalMarks}">
-
                                     100
-
                                 </td>
-
-                                <!-- Status -->
 
                                 <td>
 
                                     <span th:if="${test.status == 'PUBLISHED'}"
                                           class="badge bg-success">
-
                                         Published
-
                                     </span>
 
                                     <span th:unless="${test.status == 'PUBLISHED'}"
                                           class="badge bg-secondary">
-
                                         Draft
-
                                     </span>
 
                                 </td>
 
-                                <!-- ================================================= -->
                                 <!-- ACTIONS -->
-                                <!-- ================================================= -->
-
                                 <td class="text-center">
 
-                                    <!-- VIEW / EYE -->
-
+                                    <!-- VIEW -->
                                     <a th:href="@{/tests/results/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-outline-primary me-1"
                                        title="View Test">
@@ -222,7 +167,6 @@
                                     </a>
 
                                     <!-- EDIT -->
-
                                     <a th:href="@{/tests/edit/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-outline-warning me-1"
                                        title="Edit Test">
@@ -232,7 +176,6 @@
                                     </a>
 
                                     <!-- DELETE -->
-
                                     <a th:href="@{/tests/delete/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-outline-danger"
                                        title="Delete Test"
@@ -246,10 +189,7 @@
 
                             </tr>
 
-                            <!-- ================================================= -->
                             <!-- NO TESTS -->
-                            <!-- ================================================= -->
-
                             <tr th:if="${#lists.isEmpty(tests)}">
 
                                 <td colspan="9"
@@ -280,5 +220,4 @@
 </div>
 
 </body>
-
 </html>
