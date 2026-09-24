@@ -1,115 +1,403 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head}">
 </head>
-
 <body>
-
 <div class="d-flex" id="wrapper">
-
     <!-- Sidebar -->
     <div th:replace="~{fragments/layout :: sidebar}">
     </div>
-
     <!-- Page Content -->
     <div id="page-content-wrapper">
-
         <!-- Navbar -->
         <div th:replace="~{fragments/layout :: navbar}">
         </div>
-
-        <!-- AI Assistant -->
-        <div class="container-fluid px-4 py-4">
-
+        <!-- ================================================= -->
+        <!-- AI ASSISTANT -->
+        <!-- ================================================= -->
+        <main class="ai-page">
             <div class="ai-container">
-
                 <div class="ai-card">
-
                     <!-- AI Header -->
                     <div class="ai-header">
-
                         <div class="ai-icon">
                             <i class="bi bi-robot"></i>
                         </div>
-
                         <div>
                             <h4>AI Assistant</h4>
                             <p>Powered by Ollama & Qwen3</p>
                         </div>
-
                     </div>
-
-                    <!-- Chat Box -->
+                    <!-- Chat -->
                     <div id="chatBox" class="chat-box">
-
                         <div class="message ai">
-
                             <div class="message-content">
-
                                 <p>Hello! 👋</p>
-
-                                <p>
-                                    I am your AI Assistant. How can I help you?
-                                </p>
-
+                                <p>I am your AI Assistant. How can I help you?</p>
                             </div>
-
                         </div>
-
                     </div>
-
-                    <!-- Input Area -->
+                    <!-- Input -->
                     <div class="input-area">
-
                         <div id="typing" class="typing">
                             AI is thinking...
                         </div>
-
                         <div class="input-group">
-
-                            <input
-                                type="text"
-                                id="messageInput"
-                                class="form-control"
-                                placeholder="Ask something..."
-                                autocomplete="off">
-
-                            <button
-                                type="button"
-                                id="sendButton"
-                                class="btn btn-dark send-btn"
-                                onclick="sendMessage()">
-
+                            <input type="text"
+                                   id="messageInput"
+                                   class="form-control"
+                                   placeholder="Ask something..."
+                                   autocomplete="off">
+                            <button type="button"
+                                    id="sendButton"
+                                    class="btn btn-dark send-btn">
                                 <i class="bi bi-send"></i>
-
                             </button>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-        </div>
-
+        </main>
         <!-- Footer -->
         <div th:replace="~{fragments/layout :: footer}">
         </div>
-
     </div>
-
 </div>
 
+<!-- 🔴 CHANGED: Bootstrap JS required for Study collapse and Profile dropdown -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+<!-- Markdown -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+<!-- DOMPurify -->
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
-<style>
+<script>
+    const messageInput =
+        document.getElementById("messageInput");
 
-    body {
+    const chatBox =
+        document.getElementById("chatBox");
+
+    const typing =
+        document.getElementById("typing");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+    /*
+     * Enter key
+     */
+    messageInput.addEventListener(
+        "keydown",
+        function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+    );
+
+    /*
+     * Send button
+     */
+    sendButton.addEventListener(
+        "click",
+        sendMessage
+    );
+
+    /*
+     * Send message
+     */
+    async function sendMessage() {
+        const message =
+            messageInput.value.trim();
+
+        if (!message) {
+            return;
+        }
+
+        addMessage(
+            message,
+            "user"
+        );
+
+        messageInput.value = "";
+
+        typing.style.display = "block";
+
+        sendButton.disabled = true;
+
+        const aiMessage =
+            createAIMessage();
+
+        try {
+            const csrfMeta =
+                document.querySelector(
+                    'meta[name="_csrf"]'
+                );
+
+            const csrfHeaderMeta =
+                document.querySelector(
+                    'meta[name="_csrf_header"]'
+                );
+
+            const headers = {
+                "Content-Type":
+                    "application/json",
+                "Accept":
+                    "text/event-stream"
+            };
+
+            /*
+             * Add CSRF only when Spring Security
+             * provides the meta tags.
+             */
+            if (
+                csrfMeta &&
+                csrfHeaderMeta
+            ) {
+                headers[
+                    csrfHeaderMeta.content
+                ] = csrfMeta.content;
+            }
+
+            const response =
+                await fetch(
+                    "/ai-assistant/chat",
+                    {
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify({
+                            message: message
+                        })
+                    }
+                );
+
+            if (!response.ok) {
+                const errorText =
+                    await response.text();
+
+                console.error(
+                    "Server Error:",
+                    response.status,
+                    errorText
+                );
+
+                throw new Error(
+                    "Server error: " +
+                    response.status
+                );
+            }
+
+            if (!response.body) {
+                throw new Error(
+                    "Streaming is not supported."
+                );
+            }
+
+            typing.style.display = "none";
+
+            const reader =
+                response.body.getReader();
+
+            const decoder =
+                new TextDecoder();
+
+            let buffer = "";
+
+            while (true) {
+                const result =
+                    await reader.read();
+
+                if (result.done) {
+                    break;
+                }
+
+                buffer +=
+                    decoder.decode(
+                        result.value,
+                        {
+                            stream: true
+                        }
+                    );
+
+                const events =
+                    buffer.split("\n\n");
+
+                buffer =
+                    events.pop();
+
+                for (
+                    const event of events
+                ) {
+                    const lines =
+                        event.split("\n");
+
+                    for (
+                        const line of lines
+                    ) {
+                        if (
+                            line.startsWith("data:")
+                        ) {
+                            const text =
+                                line.substring(5);
+
+                            appendAIText(
+                                aiMessage,
+                                text
+                            );
+                        }
+                    }
+                }
+
+                chatBox.scrollTop =
+                    chatBox.scrollHeight;
+            }
+
+            /*
+             * Process remaining event
+             */
+            if (
+                buffer &&
+                buffer.startsWith("data:")
+            ) {
+                const text =
+                    buffer.substring(5);
+
+                appendAIText(
+                    aiMessage,
+                    text
+                );
+            }
+
+        }
+        catch (error) {
+            console.error(
+                "AI Assistant Error:",
+                error
+            );
+
+            typing.style.display =
+                "none";
+
+            aiMessage.textContent =
+                "Error: " +
+                error.message;
+
+        }
+        finally {
+            typing.style.display =
+                "none";
+
+            sendButton.disabled =
+                false;
+
+            messageInput.focus();
+        }
+    }
+
+    /*
+     * Add user / AI message
+     */
+    function addMessage(
+        message,
+        type
+    ) {
+        const messageDiv =
+            document.createElement("div");
+
+        messageDiv.className =
+            "message " + type;
+
+        const contentDiv =
+            document.createElement("div");
+
+        contentDiv.className =
+            "message-content";
+
+        contentDiv.textContent =
+            message;
+
+        messageDiv.appendChild(
+            contentDiv
+        );
+
+        chatBox.appendChild(
+            messageDiv
+        );
+
+        chatBox.scrollTop =
+            chatBox.scrollHeight;
+    }
+
+    /*
+     * Create AI message
+     */
+    function createAIMessage() {
+        const messageDiv =
+            document.createElement("div");
+
+        messageDiv.className =
+            "message ai";
+
+        const contentDiv =
+            document.createElement("div");
+
+        contentDiv.className =
+            "message-content";
+
+        contentDiv.dataset.content =
+            "";
+
+        messageDiv.appendChild(
+            contentDiv
+        );
+
+        chatBox.appendChild(
+            messageDiv
+        );
+
+        chatBox.scrollTop =
+            chatBox.scrollHeight;
+
+        return contentDiv;
+    }
+
+    /*
+     * Append streaming AI text
+     */
+    function appendAIText(
+        element,
+        text
+    ) {
+        element.dataset.content =
+            (
+                element.dataset.content || ""
+            ) + text;
+
+        element.innerHTML =
+            DOMPurify.sanitize(
+                marked.parse(
+                    element.dataset.content
+                )
+            );
+
+        chatBox.scrollTop =
+            chatBox.scrollHeight;
+    }
+</script>
+
+<!-- ========================================================= -->
+<!-- AI ASSISTANT CSS -->
+<!-- ========================================================= -->
+
+<style>
+    .ai-page {
+        min-height: calc(100vh - 70px);
+        padding: 30px;
         background: #f5f6fa;
     }
 
@@ -119,15 +407,16 @@
     }
 
     .ai-card {
-        background: white;
+        background: #ffffff;
         border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        box-shadow:
+            0 4px 15px rgba(0, 0, 0, 0.08);
         overflow: hidden;
     }
 
     .ai-header {
         background: #1e2129;
-        color: white;
+        color: #ffffff;
         padding: 20px 25px;
         display: flex;
         align-items: center;
@@ -137,6 +426,7 @@
     .ai-icon {
         width: 50px;
         height: 50px;
+        min-width: 50px;
         border-radius: 50%;
         background: #343741;
         display: flex;
@@ -169,8 +459,8 @@
 
     .message {
         display: flex;
-        margin-bottom: 18px;
         width: 100%;
+        margin-bottom: 18px;
     }
 
     .message.user {
@@ -192,14 +482,14 @@
     }
 
     .message.ai .message-content {
-        background: white;
+        background: #ffffff;
         border: 1px solid #e2e4e8;
-        color: #222;
+        color: #222222;
     }
 
     .message.user .message-content {
         background: #1e2129;
-        color: white;
+        color: #ffffff;
     }
 
     .message-content p {
@@ -234,13 +524,6 @@
         margin-bottom: 10px;
     }
 
-    .message-content h1:first-child,
-    .message-content h2:first-child,
-    .message-content h3:first-child,
-    .message-content h4:first-child {
-        margin-top: 0;
-    }
-
     .message-content code {
         background: #f1f1f1;
         padding: 2px 5px;
@@ -250,7 +533,7 @@
 
     .message-content pre {
         background: #1e2129;
-        color: white;
+        color: #ffffff;
         padding: 12px;
         border-radius: 8px;
         overflow-x: auto;
@@ -259,12 +542,12 @@
     .message-content pre code {
         background: transparent;
         padding: 0;
-        color: white;
+        color: #ffffff;
     }
 
     .input-area {
         padding: 18px;
-        background: white;
+        background: #ffffff;
         border-top: 1px solid #e5e5e5;
     }
 
@@ -283,7 +566,7 @@
     }
 
     .typing {
-        color: #777;
+        color: #777777;
         font-size: 14px;
         display: none;
         margin-bottom: 10px;
@@ -303,6 +586,9 @@
     }
 
     @media (max-width: 768px) {
+        .ai-page {
+            padding: 20px 15px;
+        }
 
         .chat-box {
             height: 450px;
@@ -315,294 +601,8 @@
         .ai-header h4 {
             font-size: 21px;
         }
-
     }
-
 </style>
 
-<script>
-
-    const messageInput =
-        document.getElementById("messageInput");
-
-    const chatBox =
-        document.getElementById("chatBox");
-
-    const typing =
-        document.getElementById("typing");
-
-    const sendButton =
-        document.getElementById("sendButton");
-
-
-    messageInput.addEventListener("keypress", function(event) {
-
-        if (event.key === "Enter") {
-
-            event.preventDefault();
-
-            sendMessage();
-
-        }
-
-    });
-
-
-    async function sendMessage() {
-
-        const message =
-            messageInput.value.trim();
-
-        if (message === "") {
-
-            return;
-
-        }
-
-        addMessage(message, "user");
-
-        messageInput.value = "";
-
-        typing.style.display = "block";
-
-        sendButton.disabled = true;
-
-        const aiMessage =
-            createAIMessage();
-
-        try {
-
-            const csrfToken =
-                document
-                    .querySelector('meta[name="_csrf"]')
-                    .getAttribute("content");
-
-            const csrfHeader =
-                document
-                    .querySelector('meta[name="_csrf_header"]')
-                    .getAttribute("content");
-
-            const response =
-                await fetch("/ai-assistant/chat", {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type": "application/json",
-
-                        "Accept": "text/event-stream",
-
-                        [csrfHeader]: csrfToken
-
-                    },
-
-                    body: JSON.stringify({
-
-                        message: message
-
-                    })
-
-                });
-
-            if (!response.ok) {
-
-                const errorText =
-                    await response.text();
-
-                console.error(
-                    "Server Error:",
-                    response.status,
-                    errorText
-                );
-
-                throw new Error(
-                    "Server error: " +
-                    response.status
-                );
-
-            }
-
-            if (!response.body) {
-
-                throw new Error(
-                    "Streaming is not supported by the browser."
-                );
-
-            }
-
-            typing.style.display = "none";
-
-            const reader =
-                response.body.getReader();
-
-            const decoder =
-                new TextDecoder();
-
-            let buffer = "";
-
-            while (true) {
-
-                const { value, done } =
-                    await reader.read();
-
-                if (done) {
-
-                    break;
-
-                }
-
-                buffer +=
-                    decoder.decode(
-                        value,
-                        { stream: true }
-                    );
-
-                const events =
-                    buffer.split("\n\n");
-
-                buffer =
-                    events.pop();
-
-                for (const event of events) {
-
-                    const lines =
-                        event.split("\n");
-
-                    for (const line of lines) {
-
-                        if (line.startsWith("data:")) {
-
-                            const text =
-                                line.substring(5);
-
-                            aiMessage.dataset.content =
-                                (aiMessage.dataset.content || "") + text;
-
-                            aiMessage.innerHTML =
-                                DOMPurify.sanitize(
-                                    marked.parse(
-                                        aiMessage.dataset.content
-                                    )
-                                );
-
-                        }
-
-                    }
-
-                }
-
-                chatBox.scrollTop =
-                    chatBox.scrollHeight;
-
-            }
-
-            if (buffer.startsWith("data:")) {
-
-                const text =
-                    buffer.substring(5);
-
-                aiMessage.dataset.content =
-                    (aiMessage.dataset.content || "") + text;
-
-                aiMessage.innerHTML =
-                    DOMPurify.sanitize(
-                        marked.parse(
-                            aiMessage.dataset.content
-                        )
-                    );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "AI Assistant Error:",
-                error
-            );
-
-            typing.style.display = "none";
-
-            aiMessage.textContent =
-                "Error: " + error.message;
-
-        } finally {
-
-            typing.style.display = "none";
-
-            sendButton.disabled = false;
-
-            messageInput.focus();
-
-        }
-
-    }
-
-
-    function addMessage(message, type) {
-
-        const messageDiv =
-            document.createElement("div");
-
-        messageDiv.className =
-            "message " + type;
-
-        const contentDiv =
-            document.createElement("div");
-
-        contentDiv.className =
-            "message-content";
-
-        contentDiv.textContent =
-            message;
-
-        messageDiv.appendChild(
-            contentDiv
-        );
-
-        chatBox.appendChild(
-            messageDiv
-        );
-
-        chatBox.scrollTop =
-            chatBox.scrollHeight;
-
-    }
-
-
-    function createAIMessage() {
-
-        const messageDiv =
-            document.createElement("div");
-
-        messageDiv.className =
-            "message ai";
-
-        const contentDiv =
-            document.createElement("div");
-
-        contentDiv.className =
-            "message-content";
-
-        contentDiv.dataset.content = "";
-
-        messageDiv.appendChild(
-            contentDiv
-        );
-
-        chatBox.appendChild(
-            messageDiv
-        );
-
-        chatBox.scrollTop =
-            chatBox.scrollHeight;
-
-        return contentDiv;
-
-    }
-
-</script>
-
 </body>
-
 </html>
