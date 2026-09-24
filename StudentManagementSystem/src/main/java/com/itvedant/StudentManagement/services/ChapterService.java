@@ -1,18 +1,16 @@
 package com.itvedant.StudentManagement.services;
 
-import com.itvedant.StudentManagement.model.Chapter;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import java.util.List;
+import com.itvedant.StudentManagement.model.Chapter;
 
 public interface ChapterService {
 
     Page<Chapter> getChapters(int page, int size);
 
-    List<Chapter> getAllChapters();
-
-    List<Chapter> getChaptersBySubject(String subject);
+    List<Chapter> getChaptersByModuleId(Long moduleId);
 
     Chapter getChapterById(Long id);
 

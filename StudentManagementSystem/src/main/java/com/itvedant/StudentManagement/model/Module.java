@@ -3,8 +3,8 @@ package com.itvedant.StudentManagement.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "chapters")
-public class Chapter {
+@Table(name = "modules")
+public class Module {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,23 +13,23 @@ public class Chapter {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "module_number", nullable = false)
+    private Integer moduleNumber;
+
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private String subject;
 
-    @Column(name = "module_id", nullable = false)
-    private Long moduleId;
-
-    public Chapter() {
+    public Module() {
     }
 
-    public Chapter(String name, String subject, String description, Long moduleId) {
+    public Module(Integer moduleNumber, String name, String subject, String description) {
+        this.moduleNumber = moduleNumber;
         this.name = name;
         this.subject = subject;
         this.description = description;
-        this.moduleId = moduleId;
     }
 
     public Long getId() {
@@ -48,6 +48,14 @@ public class Chapter {
         this.description = description;
     }
 
+    public Integer getModuleNumber() {
+        return moduleNumber;
+    }
+
+    public void setModuleNumber(Integer moduleNumber) {
+        this.moduleNumber = moduleNumber;
+    }
+
     public String getName() {
         return name;
     }
@@ -62,13 +70,5 @@ public class Chapter {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public Long getModuleId() {
-        return moduleId;
-    }
-
-    public void setModuleId(Long moduleId) {
-        this.moduleId = moduleId;
     }
 }

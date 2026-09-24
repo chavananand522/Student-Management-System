@@ -10,27 +10,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itvedant.StudentManagement.model.Chapter;
+import com.itvedant.StudentManagement.model.Module;
 import com.itvedant.StudentManagement.services.ChapterService;
-import com.itvedant.StudentManagement.services.TopicService;
+import com.itvedant.StudentManagement.services.ModuleService;
 
 @Controller
 @RequestMapping("/chapter")
 public class ChapterController {
 
 	private final ChapterService chapterService;
-	private final TopicService topicService;
+	private final ModuleService moduleService;
 
-	public ChapterController(ChapterService chapterService, TopicService topicService) {
+	public ChapterController(ChapterService chapterService, ModuleService moduleService) {
 
 		this.chapterService = chapterService;
-		this.topicService = topicService;
+		this.moduleService = moduleService;
 	}
 
+	// /chapter
 	@GetMapping
 	public String chapterHome() {
 		return "redirect:/chapter/list";
 	}
 
+	// /chapter/list
 	@GetMapping("/list")
 	public String chapterList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
 			Model model) {
@@ -40,102 +43,97 @@ public class ChapterController {
 		return "chapter-list";
 	}
 
+	// /chapter/new?moduleId=1
 	@GetMapping("/new")
-	public String addChapter(@RequestParam(required = false) String subject, Model model) {
+	public String addChapter(@RequestParam Long moduleId, Model model) {
 
-		String normalizedSubject = normalizeSubject(subject);
+		Module module = moduleService.getModuleById(moduleId);
 
 		Chapter chapter = new Chapter();
-		chapter.setSubject(normalizedSubject);
+
+		chapter.setSubject(module.getSubject());
+		chapter.setModuleId(module.getId());
 
 		model.addAttribute("chapter", chapter);
-		model.addAttribute("subject", normalizedSubject);
+		model.addAttribute("module", module);
 
 		return "add-chapter";
 	}
 
+	// Save Chapter
 	@PostMapping("/list")
 	public String saveChapter(Chapter chapter, RedirectAttributes redirectAttributes) {
 
-		String subject = normalizeSubject(chapter.getSubject());
+		Chapter savedChapter = chapterService.createChapter(chapter);
 
-		chapter.setSubject(subject);
-
-		chapterService.createChapter(chapter);
+		Module module = moduleService.getModuleById(savedChapter.getModuleId());
 
 		redirectAttributes.addFlashAttribute("message", "Chapter added successfully.");
 
-		return "redirect:/study/" + subject.toLowerCase();
+		return "redirect:/study/" + module.getSubject().toLowerCase() + "/module/" + module.getId();
 	}
 
+	// /chapter/{id} -> chapter details
 	@GetMapping("/{id}")
 	public String viewChapter(@PathVariable Long id, Model model) {
 
 		Chapter chapter = chapterService.getChapterById(id);
 
-		model.addAttribute("chapter", chapter);
+		Module module = moduleService.getModuleById(chapter.getModuleId());
 
-		model.addAttribute("topics", topicService.getTopicsByChapterId(chapter.getId()));
+		model.addAttribute("chapter", chapter);
+		model.addAttribute("module", module);
+		model.addAttribute("subjectName", module.getSubject());
 
 		return "chapter-view";
 	}
 
+	// /chapter/{id}/edit
 	@GetMapping("/{id}/edit")
 	public String editChapter(@PathVariable Long id, Model model) {
 
 		Chapter chapter = chapterService.getChapterById(id);
 
+		Module module = moduleService.getModuleById(chapter.getModuleId());
+
 		model.addAttribute("chapter", chapter);
+		model.addAttribute("module", module);
 
 		return "chapter-edit";
 	}
 
+	// Update Chapter
 	@PostMapping("/{id}/update")
 	public String updateChapter(@PathVariable Long id, Chapter chapter, RedirectAttributes redirectAttributes) {
 
 		Chapter existingChapter = chapterService.getChapterById(id);
 
 		chapter.setSubject(existingChapter.getSubject());
+		chapter.setModuleId(existingChapter.getModuleId());
 
 		chapterService.updateChapter(id, chapter);
 
+		Module module = moduleService.getModuleById(existingChapter.getModuleId());
+
 		redirectAttributes.addFlashAttribute("message", "Chapter updated successfully.");
 
-		return "redirect:/study/" + existingChapter.getSubject().toLowerCase();
+		return "redirect:/study/" + module.getSubject().toLowerCase() + "/module/" + module.getId();
 	}
 
+	// Delete Chapter
 	@PostMapping("/{id}/delete")
 	public String deleteChapter(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
 		Chapter chapter = chapterService.getChapterById(id);
 
-		String subject = chapter.getSubject();
+		Long moduleId = chapter.getModuleId();
+
+		Module module = moduleService.getModuleById(moduleId);
 
 		chapterService.deleteChapter(id);
 
 		redirectAttributes.addFlashAttribute("message", "Chapter deleted successfully.");
 
-		return "redirect:/study/" + subject.toLowerCase();
-	}
-
-	private String normalizeSubject(String subject) {
-
-		if (subject == null) {
-			return "";
-		}
-
-		if (subject.equalsIgnoreCase("physics")) {
-			return "Physics";
-		}
-
-		if (subject.equalsIgnoreCase("chemistry")) {
-			return "Chemistry";
-		}
-
-		if (subject.equalsIgnoreCase("biology")) {
-			return "Biology";
-		}
-
-		return subject;
+		return "redirect:/study/" + module.getSubject().toLowerCase() + "/module/" + module.getId();
 	}
 }
