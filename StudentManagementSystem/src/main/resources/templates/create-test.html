@@ -9,25 +9,35 @@
 
 <div class="d-flex" id="wrapper">
 
+    <!-- ===================================================== -->
     <!-- SIDEBAR -->
-    <div th:replace="~{fragments/layout::sidebar}">
-    </div>
+    <!-- ===================================================== -->
 
+    <div th:replace="~{fragments/layout::sidebar}"></div>
+
+
+    <!-- ===================================================== -->
     <!-- MAIN CONTENT -->
+    <!-- ===================================================== -->
+
     <div id="page-content-wrapper" class="w-100">
 
         <!-- NAVBAR -->
-        <div th:replace="~{fragments/layout::navbar}">
-        </div>
+        <div th:replace="~{fragments/layout::navbar}"></div>
+
 
         <main class="container-fluid px-4 py-4">
 
+            <!-- ================================================= -->
             <!-- BREADCRUMB -->
+            <!-- ================================================= -->
+
             <nav aria-label="breadcrumb" class="mb-3">
+
                 <ol class="breadcrumb mb-0">
 
                     <li class="breadcrumb-item">
-                        <a th:href="@{/tests/list}"
+                        <a th:href="@{/tests/results}"
                            class="text-decoration-none">
                             Tests
                         </a>
@@ -39,12 +49,17 @@
                     </li>
 
                 </ol>
+
             </nav>
 
+
+            <!-- ================================================= -->
             <!-- PAGE HEADER -->
+            <!-- ================================================= -->
+
             <div class="d-flex align-items-center mb-4">
 
-                <div class="bg-primary text-white rounded p-3 me-3">
+                <div class="page-icon bg-primary text-white rounded p-3 me-3">
 
                     <i class="bi bi-file-earmark-text fs-4"></i>
 
@@ -64,28 +79,50 @@
 
             </div>
 
+
+            <!-- ================================================= -->
+            <!-- FORM -->
+            <!-- ================================================= -->
+
             <form th:action="@{/tests/save}"
                   method="post"
                   id="testForm">
 
+                <!-- STATUS -->
                 <input type="hidden"
                        name="status"
                        id="status"
                        value="PUBLISHED">
 
+
+                <!-- ================================================= -->
+                <!-- DYNAMIC CHAPTER HIDDEN INPUTS -->
+                <!-- ================================================= -->
+
+                <div id="selectedChaptersContainer"></div>
+
+
                 <div class="row g-4">
 
-                    <!-- LEFT SIDE -->
+
+                    <!-- ================================================= -->
+                    <!-- LEFT CONTENT -->
+                    <!-- ================================================= -->
+
                     <div class="col-lg-9">
 
+
+                        <!-- ================================================= -->
                         <!-- TEST INFORMATION -->
+                        <!-- ================================================= -->
+
                         <div class="card border-0 shadow-sm mb-4">
 
                             <div class="card-body p-4">
 
                                 <div class="d-flex align-items-center mb-4">
 
-                                    <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">
+                                    <span class="section-number bg-primary text-white">
                                         1
                                     </span>
 
@@ -95,11 +132,18 @@
 
                                 </div>
 
+
+                                <!-- TEST NAME -->
+
                                 <div class="mb-3">
 
-                                    <label class="form-label fw-semibold">
+                                    <label for="testName"
+                                           class="form-label fw-semibold">
+
                                         Test Name
+
                                         <span class="text-danger">*</span>
+
                                     </label>
 
                                     <input type="text"
@@ -111,13 +155,21 @@
 
                                 </div>
 
+
                                 <div class="row g-3">
 
-                                    <div class="col-md-4">
 
-                                        <label class="form-label fw-semibold">
+                                    <!-- COURSE -->
+
+                                    <div class="col-md-6">
+
+                                        <label for="course"
+                                               class="form-label fw-semibold">
+
                                             Course
+
                                             <span class="text-danger">*</span>
+
                                         </label>
 
                                         <select name="course"
@@ -137,75 +189,18 @@
 
                                     </div>
 
-                                    <div class="col-md-4">
 
-                                        <label class="form-label fw-semibold">
-                                            Subject
-                                            <span class="text-danger">*</span>
-                                        </label>
+                                    <!-- DURATION -->
 
-                                        <select name="subject"
-                                                id="subject"
-                                                class="form-select"
-                                                required>
+                                    <div class="col-md-6">
 
-                                            <option value="">
-                                                Select Subject
-                                            </option>
+                                        <label for="duration"
+                                               class="form-label fw-semibold">
 
-                                            <option value="Physics">
-                                                Physics
-                                            </option>
-
-                                            <option value="Chemistry">
-                                                Chemistry
-                                            </option>
-
-                                            <option value="Biology">
-                                                Biology
-                                            </option>
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="col-md-4">
-
-                                        <label class="form-label fw-semibold">
-                                            Chapter / Topic
-                                            <span class="text-danger">*</span>
-                                        </label>
-
-                                        <select name="chapter"
-                                                id="chapter"
-                                                class="form-select"
-                                                required>
-
-                                            <option value="">
-                                                Select Chapter
-                                            </option>
-
-                                            <option value="Chapter 1">
-                                                Chapter 1
-                                            </option>
-
-                                            <option value="Chapter 2">
-                                                Chapter 2
-                                            </option>
-
-                                            <option value="Chapter 3">
-                                                Chapter 3
-                                            </option>
-
-                                        </select>
-
-                                    </div>
-
-                                    <div class="col-md-4">
-
-                                        <label class="form-label fw-semibold">
                                             Duration (minutes)
+
                                             <span class="text-danger">*</span>
+
                                         </label>
 
                                         <input type="number"
@@ -218,11 +213,18 @@
 
                                     </div>
 
-                                    <div class="col-md-4">
 
-                                        <label class="form-label fw-semibold">
+                                    <!-- TOTAL MARKS -->
+
+                                    <div class="col-md-6">
+
+                                        <label for="totalMarks"
+                                               class="form-label fw-semibold">
+
                                             Total Marks
+
                                             <span class="text-danger">*</span>
+
                                         </label>
 
                                         <input type="number"
@@ -235,20 +237,440 @@
 
                                     </div>
 
-                                    <div class="col-md-4">
+                                </div>
 
-                                        <label class="form-label fw-semibold">
-                                            Passing Marks
-                                            <span class="text-danger">*</span>
-                                        </label>
 
-                                        <input type="number"
-                                               name="passingMarks"
-                                               id="passingMarks"
-                                               class="form-control"
-                                               placeholder="e.g. 40"
-                                               min="1"
-                                               required>
+                                <!-- ================================================= -->
+                                <!-- CHAPTER / TOPIC -->
+                                <!-- ================================================= -->
+
+                                <div class="chapter-section mt-4">
+
+                                    <label class="form-label fw-semibold chapter-heading">
+
+                                        Chapter / Topic
+
+                                        <span class="text-danger">*</span>
+
+                                    </label>
+
+                                    <p class="chapter-description">
+                                        Select one or more chapters from Biology,
+                                        Chemistry and Physics.
+                                    </p>
+
+
+                                    <!-- ================================================= -->
+                                    <!-- SUBJECT CARDS -->
+                                    <!-- ================================================= -->
+
+                                    <div class="row g-4">
+
+
+                                        <!-- ================================================= -->
+                                        <!-- BIOLOGY -->
+                                        <!-- ================================================= -->
+
+                                        <div class="col-lg-4 col-md-6">
+
+                                            <div class="subject-card biology-card">
+
+                                                <div class="subject-header">
+
+                                                    <div class="subject-icon biology-icon">
+                                                        <i class="bi bi-flower1"></i>
+                                                    </div>
+
+                                                    <div>
+                                                        <div class="subject-name">
+                                                            Biology
+                                                        </div>
+
+                                                        <div class="subject-subtitle">
+                                                            Select chapters
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                                <label class="chapter-label">
+                                                    Chapter / Topic
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+
+                                                <!-- CUSTOM DROPDOWN -->
+
+                                                <div class="multi-dropdown"
+                                                     data-subject="Biology">
+
+
+                                                    <button type="button"
+                                                            class="multi-dropdown-button">
+
+                                                        <span class="selected-text">
+                                                            Select Chapter
+                                                        </span>
+
+                                                        <i class="bi bi-chevron-down"></i>
+
+                                                    </button>
+
+
+                                                    <div class="multi-dropdown-menu">
+
+
+                                                        <div class="dropdown-search">
+
+                                                            <input type="text"
+                                                                   class="chapter-search"
+                                                                   placeholder="Search chapter...">
+
+                                                        </div>
+
+
+                                                        <div class="chapter-options">
+
+
+                                                            <th:block
+                                                                    th:each="entry : ${chaptersBySubject}">
+
+                                                                <th:block
+                                                                        th:if="${entry.key.equalsIgnoreCase('Biology')}">
+
+                                                                    <label class="chapter-option"
+                                                                           th:each="chapterItem : ${entry.value}">
+
+                                                                        <input type="checkbox"
+                                                                               class="chapter-checkbox"
+                                                                               name="biologyChapter"
+                                                                               th:value="${chapterItem.name}"
+                                                                               data-subject="Biology">
+
+                                                                        <span class="custom-checkbox">
+                                                                            <i class="bi bi-check"></i>
+                                                                        </span>
+
+                                                                        <span class="chapter-option-text"
+                                                                              th:text="${chapterItem.name}">
+                                                                            Chapter
+                                                                        </span>
+
+                                                                    </label>
+
+                                                                </th:block>
+
+                                                            </th:block>
+
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="select-help">
+
+                                                    <i class="bi bi-info-circle"></i>
+
+                                                    Select multiple chapters
+
+                                                </div>
+
+
+                                                <!-- SELECTED BIOLOGY -->
+
+                                                <div class="subject-selected"
+                                                     id="biologySelected">
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- ================================================= -->
+                                        <!-- CHEMISTRY -->
+                                        <!-- ================================================= -->
+
+                                        <div class="col-lg-4 col-md-6">
+
+                                            <div class="subject-card chemistry-card">
+
+                                                <div class="subject-header">
+
+                                                    <div class="subject-icon chemistry-icon">
+                                                        <i class="bi bi-flask"></i>
+                                                    </div>
+
+                                                    <div>
+
+                                                        <div class="subject-name">
+                                                            Chemistry
+                                                        </div>
+
+                                                        <div class="subject-subtitle">
+                                                            Select chapters
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <label class="chapter-label">
+
+                                                    Chapter / Topic
+
+                                                    <span class="text-danger">*</span>
+
+                                                </label>
+
+
+                                                <!-- CUSTOM DROPDOWN -->
+
+                                                <div class="multi-dropdown"
+                                                     data-subject="Chemistry">
+
+
+                                                    <button type="button"
+                                                            class="multi-dropdown-button">
+
+                                                        <span class="selected-text">
+                                                            Select Chapter
+                                                        </span>
+
+                                                        <i class="bi bi-chevron-down"></i>
+
+                                                    </button>
+
+
+                                                    <div class="multi-dropdown-menu">
+
+
+                                                        <div class="dropdown-search">
+
+                                                            <input type="text"
+                                                                   class="chapter-search"
+                                                                   placeholder="Search chapter...">
+
+                                                        </div>
+
+
+                                                        <div class="chapter-options">
+
+
+                                                            <th:block
+                                                                    th:each="entry : ${chaptersBySubject}">
+
+                                                                <th:block
+                                                                        th:if="${entry.key.equalsIgnoreCase('Chemistry')}">
+
+                                                                    <label class="chapter-option"
+                                                                           th:each="chapterItem : ${entry.value}">
+
+                                                                        <input type="checkbox"
+                                                                               class="chapter-checkbox"
+                                                                               name="chemistryChapter"
+                                                                               th:value="${chapterItem.name}"
+                                                                               data-subject="Chemistry">
+
+                                                                        <span class="custom-checkbox">
+                                                                            <i class="bi bi-check"></i>
+                                                                        </span>
+
+                                                                        <span class="chapter-option-text"
+                                                                              th:text="${chapterItem.name}">
+                                                                            Chapter
+                                                                        </span>
+
+                                                                    </label>
+
+                                                                </th:block>
+
+                                                            </th:block>
+
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="select-help">
+
+                                                    <i class="bi bi-info-circle"></i>
+
+                                                    Select multiple chapters
+
+                                                </div>
+
+
+                                                <!-- SELECTED CHEMISTRY -->
+
+                                                <div class="subject-selected"
+                                                     id="chemistrySelected">
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- ================================================= -->
+                                        <!-- PHYSICS -->
+                                        <!-- ================================================= -->
+
+                                        <div class="col-lg-4 col-md-6">
+
+                                            <div class="subject-card physics-card">
+
+                                                <div class="subject-header">
+
+                                                    <div class="subject-icon physics-icon">
+                                                        <i class="bi bi-lightning-charge"></i>
+                                                    </div>
+
+                                                    <div>
+
+                                                        <div class="subject-name">
+                                                            Physics
+                                                        </div>
+
+                                                        <div class="subject-subtitle">
+                                                            Select chapters
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <label class="chapter-label">
+
+                                                    Chapter / Topic
+
+                                                    <span class="text-danger">*</span>
+
+                                                </label>
+
+
+                                                <!-- CUSTOM DROPDOWN -->
+
+                                                <div class="multi-dropdown"
+                                                     data-subject="Physics">
+
+
+                                                    <button type="button"
+                                                            class="multi-dropdown-button">
+
+                                                        <span class="selected-text">
+                                                            Select Chapter
+                                                        </span>
+
+                                                        <i class="bi bi-chevron-down"></i>
+
+                                                    </button>
+
+
+                                                    <div class="multi-dropdown-menu">
+
+
+                                                        <div class="dropdown-search">
+
+                                                            <input type="text"
+                                                                   class="chapter-search"
+                                                                   placeholder="Search chapter...">
+
+                                                        </div>
+
+
+                                                        <div class="chapter-options">
+
+
+                                                            <th:block
+                                                                    th:each="entry : ${chaptersBySubject}">
+
+                                                                <th:block
+                                                                        th:if="${entry.key.equalsIgnoreCase('Physics')}">
+
+                                                                    <label class="chapter-option"
+                                                                           th:each="chapterItem : ${entry.value}">
+
+                                                                        <input type="checkbox"
+                                                                               class="chapter-checkbox"
+                                                                               name="physicsChapter"
+                                                                               th:value="${chapterItem.name}"
+                                                                               data-subject="Physics">
+
+                                                                        <span class="custom-checkbox">
+                                                                            <i class="bi bi-check"></i>
+                                                                        </span>
+
+                                                                        <span class="chapter-option-text"
+                                                                              th:text="${chapterItem.name}">
+                                                                            Chapter
+                                                                        </span>
+
+                                                                    </label>
+
+                                                                </th:block>
+
+                                                            </th:block>
+
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="select-help">
+
+                                                    <i class="bi bi-info-circle"></i>
+
+                                                    Select multiple chapters
+
+                                                </div>
+
+
+                                                <!-- SELECTED PHYSICS -->
+
+                                                <div class="subject-selected"
+                                                     id="physicsSelected">
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- ================================================= -->
+                                    <!-- ALL SELECTED CHAPTERS -->
+                                    <!-- ================================================= -->
+
+                                    <div id="selectedChaptersBox"
+                                         class="selected-chapters-box mt-4"
+                                         style="display:none;">
+
+                                        <div class="selected-chapters-title">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            Selected Chapters
+
+                                        </div>
+
+
+                                        <div id="selectedChaptersList"
+                                             class="selected-chapters-list">
+                                        </div>
 
                                     </div>
 
@@ -259,16 +681,20 @@
                         </div>
 
 
+                        <!-- ================================================= -->
                         <!-- QUESTIONS -->
+                        <!-- ================================================= -->
+
                         <div class="card border-0 shadow-sm mb-4">
 
                             <div class="card-body p-4">
 
-                                <div class="d-flex align-items-center justify-content-between mb-4">
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
 
                                     <div class="d-flex align-items-center">
 
-                                        <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">
+                                        <span class="section-number bg-primary text-white">
                                             2
                                         </span>
 
@@ -278,22 +704,33 @@
 
                                     </div>
 
+
                                     <span class="text-muted"
                                           id="questionCount">
+
                                         Question 1 / 1
+
                                     </span>
 
                                 </div>
 
+
                                 <div id="questionsContainer">
 
+
+                                    <!-- ================================================= -->
+                                    <!-- QUESTION 1 -->
+                                    <!-- ================================================= -->
+
                                     <div class="question-box border rounded p-3 mb-3">
+
 
                                         <div class="d-flex justify-content-between align-items-center mb-3">
 
                                             <strong>
                                                 Question 1
                                             </strong>
+
 
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger remove-question">
@@ -304,12 +741,19 @@
 
                                         </div>
 
+
+                                        <!-- QUESTION -->
+
                                         <div class="mb-3">
 
                                             <label class="form-label fw-semibold">
+
                                                 Question Text
+
                                                 <span class="text-danger">*</span>
+
                                             </label>
+
 
                                             <textarea name="questions[0].questionText"
                                                       class="form-control"
@@ -319,13 +763,20 @@
 
                                         </div>
 
+
                                         <div class="row g-3">
+
+
+                                            <!-- OPTION A -->
 
                                             <div class="col-md-6">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Option A
+
                                                     <span class="text-danger">*</span>
+
                                                 </label>
 
                                                 <input type="text"
@@ -336,11 +787,17 @@
 
                                             </div>
 
+
+                                            <!-- OPTION B -->
+
                                             <div class="col-md-6">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Option B
+
                                                     <span class="text-danger">*</span>
+
                                                 </label>
 
                                                 <input type="text"
@@ -351,11 +808,17 @@
 
                                             </div>
 
+
+                                            <!-- OPTION C -->
+
                                             <div class="col-md-6">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Option C
+
                                                     <span class="text-danger">*</span>
+
                                                 </label>
 
                                                 <input type="text"
@@ -366,11 +829,17 @@
 
                                             </div>
 
+
+                                            <!-- OPTION D -->
+
                                             <div class="col-md-6">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Option D
+
                                                     <span class="text-danger">*</span>
+
                                                 </label>
 
                                                 <input type="text"
@@ -381,12 +850,19 @@
 
                                             </div>
 
+
+                                            <!-- CORRECT ANSWER -->
+
                                             <div class="col-md-8">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Correct Answer
+
                                                     <span class="text-danger">*</span>
+
                                                 </label>
+
 
                                                 <select name="questions[0].correctAnswer"
                                                         class="form-select"
@@ -416,11 +892,17 @@
 
                                             </div>
 
+
+                                            <!-- MARKS -->
+
                                             <div class="col-md-4">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Marks
+
                                                     <span class="text-danger">*</span>
+
                                                 </label>
 
                                                 <input type="number"
@@ -432,13 +914,19 @@
 
                                             </div>
 
+
+                                            <!-- EXPLANATION -->
+
                                             <div class="col-12">
 
                                                 <label class="form-label fw-semibold">
+
                                                     Explanation
+
                                                     <span class="text-muted">
                                                         (Optional)
                                                     </span>
+
                                                 </label>
 
                                                 <textarea name="questions[0].explanation"
@@ -453,6 +941,9 @@
                                     </div>
 
                                 </div>
+
+
+                                <!-- ADD QUESTION -->
 
                                 <button type="button"
                                         class="btn btn-outline-primary"
@@ -469,14 +960,18 @@
                         </div>
 
 
+                        <!-- ================================================= -->
                         <!-- TEST SETTINGS -->
+                        <!-- ================================================= -->
+
                         <div class="card border-0 shadow-sm mb-4">
 
                             <div class="card-body p-4">
 
+
                                 <div class="d-flex align-items-center mb-4">
 
-                                    <span class="badge bg-primary rounded-circle p-2 me-3 fs-6">
+                                    <span class="section-number bg-primary text-white">
                                         3
                                     </span>
 
@@ -486,9 +981,13 @@
 
                                 </div>
 
+
                                 <div class="bg-light rounded p-3">
 
                                     <div class="row g-3">
+
+
+                                        <!-- SHUFFLE QUESTIONS -->
 
                                         <div class="col-md-6">
 
@@ -515,6 +1014,9 @@
 
                                         </div>
 
+
+                                        <!-- SHUFFLE OPTIONS -->
+
                                         <div class="col-md-6">
 
                                             <div class="form-check">
@@ -539,6 +1041,9 @@
                                             </div>
 
                                         </div>
+
+
+                                        <!-- SHOW RESULT -->
 
                                         <div class="col-md-6">
 
@@ -565,6 +1070,9 @@
 
                                         </div>
 
+
+                                        <!-- ALLOW RETAKE -->
+
                                         <div class="col-md-6">
 
                                             <div class="form-check">
@@ -590,10 +1098,15 @@
 
                                         </div>
 
+
+                                        <!-- ATTEMPTS -->
+
                                         <div class="col-md-6">
 
                                             <label class="form-label fw-semibold">
+
                                                 Number of Attempts
+
                                             </label>
 
                                             <select name="numberOfAttempts"
@@ -628,15 +1141,19 @@
                         </div>
 
 
-                        <!-- BUTTONS -->
+                        <!-- ================================================= -->
+                        <!-- BOTTOM BUTTONS -->
+                        <!-- ================================================= -->
+
                         <div class="d-flex justify-content-between mb-4">
 
-                            <a th:href="@{/tests/list}"
+                            <a th:href="@{/tests/results}"
                                class="btn btn-outline-secondary px-4">
 
                                 Cancel
 
                             </a>
+
 
                             <button type="submit"
                                     class="btn btn-primary px-4">
@@ -649,16 +1166,22 @@
 
                         </div>
 
+
                     </div>
 
 
-                    <!-- RIGHT SIDE SUMMARY -->
+                    <!-- ================================================= -->
+                    <!-- RIGHT SUMMARY -->
+                    <!-- ================================================= -->
+
                     <div class="col-lg-3">
 
                         <div class="card border-0 shadow-sm sticky-top"
                              style="top:20px;">
 
+
                             <div class="card-body p-4">
+
 
                                 <div class="d-flex align-items-center mb-3">
 
@@ -670,62 +1193,124 @@
 
                                 </div>
 
-                                <hr>
-
-                                <div class="summary-row">
-                                    <span>Test Name</span>
-                                    <strong id="summaryTestName">-</strong>
-                                </div>
-
-                                <div class="summary-row">
-                                    <span>Course</span>
-                                    <strong id="summaryCourse">-</strong>
-                                </div>
-
-                                <div class="summary-row">
-                                    <span>Subject</span>
-                                    <strong id="summarySubject">-</strong>
-                                </div>
-
-                                <div class="summary-row">
-                                    <span>Chapter</span>
-                                    <strong id="summaryChapter">-</strong>
-                                </div>
 
                                 <hr>
 
-                                <div class="summary-row">
-                                    <span>Questions</span>
-                                    <strong id="summaryQuestions">1</strong>
-                                </div>
 
                                 <div class="summary-row">
-                                    <span>Total Marks</span>
-                                    <strong id="summaryMarks">1</strong>
+
+                                    <span>
+                                        Test Name
+                                    </span>
+
+                                    <strong id="summaryTestName">
+                                        -
+                                    </strong>
+
                                 </div>
 
-                                <div class="summary-row">
-                                    <span>Duration</span>
-                                    <strong id="summaryDuration">0 min</strong>
-                                </div>
 
                                 <div class="summary-row">
-                                    <span>Passing Marks</span>
-                                    <strong id="summaryPassing">0</strong>
+
+                                    <span>
+                                        Course
+                                    </span>
+
+                                    <strong id="summaryCourse">
+                                        -
+                                    </strong>
+
                                 </div>
+
+
+                                <div class="summary-row">
+
+                                    <span>
+                                        Chapters
+                                    </span>
+
+                                    <strong id="summaryChapter">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="summary-row">
+
+                                    <span>
+                                        Subjects
+                                    </span>
+
+                                    <strong id="summarySubject">
+                                        -
+                                    </strong>
+
+                                </div>
+
 
                                 <hr>
+
+
+                                <div class="summary-row">
+
+                                    <span>
+                                        Questions
+                                    </span>
+
+                                    <strong id="summaryQuestions">
+                                        1
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="summary-row">
+
+                                    <span>
+                                        Total Marks
+                                    </span>
+
+                                    <strong id="summaryMarks">
+                                        1
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="summary-row">
+
+                                    <span>
+                                        Duration
+                                    </span>
+
+                                    <strong id="summaryDuration">
+                                        0 min
+                                    </strong>
+
+                                </div>
+
+
+                                <hr>
+
 
                                 <div class="d-flex justify-content-between align-items-center mb-3">
 
-                                    <span>Status</span>
+                                    <span>
+                                        Status
+                                    </span>
 
                                     <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill"
                                           id="summaryStatus">
+
                                         Draft
+
                                     </span>
 
                                 </div>
+
+
+                                <!-- SAVE DRAFT -->
 
                                 <div class="d-grid gap-2">
 
@@ -738,6 +1323,9 @@
                                         Save Draft
 
                                     </button>
+
+
+                                    <!-- PUBLISH -->
 
                                     <button type="button"
                                             class="btn btn-primary"
@@ -763,254 +1351,1516 @@
 
         </main>
 
-        <div th:replace="~{fragments/layout::footer}">
-        </div>
+
+        <!-- FOOTER -->
+
+        <div th:replace="~{fragments/layout::footer}"></div>
 
     </div>
 
 </div>
 
 
+<!-- ===================================================== -->
 <!-- COMMON SCRIPTS -->
-<div th:replace="~{fragments/layout::scripts}">
-</div>
+<!-- ===================================================== -->
 
+<div th:replace="~{fragments/layout::scripts}"></div>
+
+
+<!-- ===================================================== -->
+<!-- INTERNAL CSS -->
+<!-- ===================================================== -->
 
 <style>
 
+/* ========================================================= */
+/* GENERAL */
+/* ========================================================= */
+
 .summary-row {
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     padding: 10px 0;
+
     font-size: 14px;
+
 }
+
 
 .summary-row span {
+
     color: #6c757d;
+
 }
+
 
 .summary-row strong {
+
     color: #1f2937;
+
     text-align: right;
-    max-width: 55%;
+
+    max-width: 60%;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
+
     white-space: nowrap;
+
 }
 
-.question-box {
-    background: #fff;
-}
 
 .form-control,
 .form-select {
+
     min-height: 42px;
+
+}
+
+
+.question-box {
+
+    background: #ffffff;
+
+}
+
+
+.section-number {
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 50%;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-right: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.page-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+/* ========================================================= */
+/* CHAPTER */
+/* ========================================================= */
+
+.chapter-heading {
+
+    font-size: 16px;
+
+    margin-bottom: 4px;
+
+}
+
+
+.chapter-description {
+
+    color: #6c757d;
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* ========================================================= */
+/* SUBJECT CARD */
+/* ========================================================= */
+
+.subject-card {
+
+    position: relative;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e7ef;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    min-height: 280px;
+
+    transition: all 0.2s ease;
+
+}
+
+
+.subject-card:hover {
+
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+
+    transform: translateY(-1px);
+
+}
+
+
+.biology-card {
+
+    border-top: 3px solid #198754;
+
+}
+
+
+.chemistry-card {
+
+    border-top: 3px solid #6f42c1;
+
+}
+
+
+.physics-card {
+
+    border-top: 3px solid #2563eb;
+
+}
+
+
+/* ========================================================= */
+/* SUBJECT HEADER */
+/* ========================================================= */
+
+.subject-header {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+
+.subject-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-right: 12px;
+
+    font-size: 21px;
+
+}
+
+
+.biology-icon {
+
+    background: #e8f6ef;
+
+    color: #198754;
+
+}
+
+
+.chemistry-icon {
+
+    background: #f1ebfa;
+
+    color: #6f42c1;
+
+}
+
+
+.physics-icon {
+
+    background: #e9f1ff;
+
+    color: #2563eb;
+
+}
+
+
+.subject-name {
+
+    font-weight: 700;
+
+    font-size: 17px;
+
+}
+
+
+.subject-subtitle {
+
+    color: #8a94a6;
+
+    font-size: 12px;
+
+    margin-top: 2px;
+
+}
+
+
+/* ========================================================= */
+/* CHAPTER LABEL */
+/* ========================================================= */
+
+.chapter-label {
+
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* ========================================================= */
+/* MULTI DROPDOWN */
+/* ========================================================= */
+
+.multi-dropdown {
+
+    position: relative;
+
+    width: 100%;
+
+}
+
+
+/* ========================================================= */
+/* DROPDOWN BUTTON */
+/* ========================================================= */
+
+.multi-dropdown-button {
+
+    width: 100%;
+
+    min-height: 44px;
+
+    border: 1px solid #d8dee8;
+
+    background: #ffffff;
+
+    border-radius: 7px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 9px 12px;
+
+    font-size: 14px;
+
+    color: #495057;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition: all 0.2s ease;
+
+}
+
+
+.multi-dropdown-button:hover {
+
+    border-color: #adb8c8;
+
+}
+
+
+.multi-dropdown.open .multi-dropdown-button {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+
+}
+
+
+.multi-dropdown-button i {
+
+    transition: transform 0.2s ease;
+
+}
+
+
+.multi-dropdown.open .multi-dropdown-button i {
+
+    transform: rotate(180deg);
+
+}
+
+
+.selected-text {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* ========================================================= */
+/* DROPDOWN MENU */
+/* ========================================================= */
+
+.multi-dropdown-menu {
+
+    position: absolute;
+
+    top: calc(100% + 6px);
+
+    left: 0;
+
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #d8dee8;
+
+    border-radius: 8px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+    z-index: 1000;
+
+    display: none;
+
+    overflow: hidden;
+
+}
+
+
+.multi-dropdown.open .multi-dropdown-menu {
+
+    display: block;
+
+}
+
+
+/* ========================================================= */
+/* SEARCH */
+/* ========================================================= */
+
+.dropdown-search {
+
+    padding: 10px;
+
+    border-bottom: 1px solid #edf0f4;
+
+    background: #fafbfc;
+
+}
+
+
+.chapter-search {
+
+    width: 100%;
+
+    height: 36px;
+
+    border: 1px solid #d8dee8;
+
+    border-radius: 6px;
+
+    padding: 6px 10px;
+
+    font-size: 13px;
+
+    outline: none;
+
+}
+
+
+.chapter-search:focus {
+
+    border-color: #2563eb;
+
+}
+
+
+/* ========================================================= */
+/* OPTIONS */
+/* ========================================================= */
+
+.chapter-options {
+
+    max-height: 220px;
+
+    overflow-y: auto;
+
+    padding: 5px 0;
+
+}
+
+
+.chapter-option {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 9px 12px;
+
+    cursor: pointer;
+
+    margin: 0;
+
+    font-size: 13px;
+
+    transition: background 0.15s ease;
+
+}
+
+
+.chapter-option:hover {
+
+    background: #f5f7fa;
+
+}
+
+
+.chapter-option input {
+
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+
+/* ========================================================= */
+/* CUSTOM CHECKBOX */
+/* ========================================================= */
+
+.custom-checkbox {
+
+    width: 18px;
+
+    height: 18px;
+
+    min-width: 18px;
+
+    border: 1.5px solid #cbd3df;
+
+    border-radius: 4px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    transition: all 0.15s ease;
+
+}
+
+
+.custom-checkbox i {
+
+    display: none;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.chapter-option input:checked + .custom-checkbox {
+
+    background: #2563eb;
+
+    border-color: #2563eb;
+
+}
+
+
+.chapter-option input:checked + .custom-checkbox i {
+
+    display: block;
+
+}
+
+
+.chapter-option-text {
+
+    color: #374151;
+
+    line-height: 1.3;
+
+}
+
+
+/* ========================================================= */
+/* HELP */
+/* ========================================================= */
+
+.select-help {
+
+    color: #8a94a6;
+
+    font-size: 11px;
+
+    margin-top: 8px;
+
+}
+
+
+.select-help i {
+
+    margin-right: 3px;
+
+}
+
+
+/* ========================================================= */
+/* SUBJECT SELECTED */
+/* ========================================================= */
+
+.subject-selected {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+
+    margin-top: 10px;
+
+}
+
+
+.small-selected-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    background: #f0f4f8;
+
+    color: #4b5563;
+
+    border-radius: 12px;
+
+    padding: 3px 7px;
+
+    font-size: 10px;
+
+    max-width: 100%;
+
+}
+
+
+.small-selected-badge span {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* ========================================================= */
+/* SELECTED CHAPTERS BOX */
+/* ========================================================= */
+
+.selected-chapters-box {
+
+    border: 1px solid #dfe6ee;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+}
+
+
+.selected-chapters-title {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #374151;
+
+    margin-bottom: 10px;
+
+}
+
+
+.selected-chapters-title i {
+
+    color: #198754;
+
+    margin-right: 5px;
+
+}
+
+
+.selected-chapters-list {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+}
+
+
+.selected-chapter-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px 10px;
+
+    border-radius: 18px;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+}
+
+
+.selected-chapter-badge.biology {
+
+    background: #e8f6ef;
+
+    color: #198754;
+
+}
+
+
+.selected-chapter-badge.chemistry {
+
+    background: #f1ebfa;
+
+    color: #6f42c1;
+
+}
+
+
+.selected-chapter-badge.physics {
+
+    background: #e9f1ff;
+
+    color: #2563eb;
+
+}
+
+
+.badge-subject {
+
+    font-weight: 700;
+
+}
+
+
+/* ========================================================= */
+/* MOBILE */
+/* ========================================================= */
+
+@media (max-width: 767px) {
+
+    .subject-card {
+
+        min-height: auto;
+
+    }
+
+    .multi-dropdown-menu {
+
+        position: absolute;
+
+    }
+
 }
 
 </style>
 
 
+<!-- ===================================================== -->
+<!-- JAVASCRIPT -->
+<!-- ===================================================== -->
+
 <script>
+
+/* ========================================================= */
+/* VARIABLES */
+/* ========================================================= */
 
 let questionIndex = 1;
 
-document.getElementById("addQuestion").addEventListener("click", function () {
 
-    const container =
-        document.getElementById("questionsContainer");
+/* ========================================================= */
+/* MULTI SELECT DROPDOWN */
+/* ========================================================= */
 
-    const question =
-        document.createElement("div");
+document.querySelectorAll(".multi-dropdown-button")
+    .forEach(function(button) {
 
-    question.className =
-        "question-box border rounded p-3 mb-3";
+        button.addEventListener("click", function(e) {
 
-    question.innerHTML = `
+            e.stopPropagation();
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
+            const dropdown =
+                button.closest(".multi-dropdown");
 
-            <strong>
-                Question ${questionIndex + 1}
-            </strong>
 
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger remove-question">
+            /*
+             * Close all other dropdowns
+             */
 
-                <i class="bi bi-trash"></i>
+            document.querySelectorAll(".multi-dropdown")
+                .forEach(function(item) {
 
-            </button>
+                    if (item !== dropdown) {
 
-        </div>
+                        item.classList.remove("open");
 
-        <div class="mb-3">
+                    }
 
-            <label class="form-label fw-semibold">
-                Question Text
-                <span class="text-danger">*</span>
-            </label>
+                });
 
-            <textarea name="questions[${questionIndex}].questionText"
-                      class="form-control"
-                      rows="3"
-                      placeholder="Enter question here..."
-                      required></textarea>
 
-        </div>
+            dropdown.classList.toggle("open");
 
-        <div class="row g-3">
+        });
 
-            <div class="col-md-6">
+    });
 
-                <label class="form-label fw-semibold">
-                    Option A
-                    <span class="text-danger">*</span>
-                </label>
 
-                <input type="text"
-                       name="questions[${questionIndex}].optionA"
-                       class="form-control"
-                       placeholder="Enter option A"
-                       required>
+/* ========================================================= */
+/* CLICK OUTSIDE DROPDOWN */
+/* ========================================================= */
 
-            </div>
+document.addEventListener("click", function(e) {
 
-            <div class="col-md-6">
+    if (!e.target.closest(".multi-dropdown")) {
 
-                <label class="form-label fw-semibold">
-                    Option B
-                    <span class="text-danger">*</span>
-                </label>
+        document.querySelectorAll(".multi-dropdown")
+            .forEach(function(dropdown) {
 
-                <input type="text"
-                       name="questions[${questionIndex}].optionB"
-                       class="form-control"
-                       placeholder="Enter option B"
-                       required>
+                dropdown.classList.remove("open");
 
-            </div>
+            });
 
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Option C
-                    <span class="text-danger">*</span>
-                </label>
-
-                <input type="text"
-                       name="questions[${questionIndex}].optionC"
-                       class="form-control"
-                       placeholder="Enter option C"
-                       required>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Option D
-                    <span class="text-danger">*</span>
-                </label>
-
-                <input type="text"
-                       name="questions[${questionIndex}].optionD"
-                       class="form-control"
-                       placeholder="Enter option D"
-                       required>
-
-            </div>
-
-            <div class="col-md-8">
-
-                <label class="form-label fw-semibold">
-                    Correct Answer
-                    <span class="text-danger">*</span>
-                </label>
-
-                <select name="questions[${questionIndex}].correctAnswer"
-                        class="form-select"
-                        required>
-
-                    <option value="">
-                        Select correct answer
-                    </option>
-
-                    <option value="A">Option A</option>
-                    <option value="B">Option B</option>
-                    <option value="C">Option C</option>
-                    <option value="D">Option D</option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-4">
-
-                <label class="form-label fw-semibold">
-                    Marks
-                    <span class="text-danger">*</span>
-                </label>
-
-                <input type="number"
-                       name="questions[${questionIndex}].marks"
-                       class="form-control question-marks"
-                       value="1"
-                       min="1"
-                       required>
-
-            </div>
-
-            <div class="col-12">
-
-                <label class="form-label fw-semibold">
-                    Explanation
-                    <span class="text-muted">
-                        (Optional)
-                    </span>
-                </label>
-
-                <textarea name="questions[${questionIndex}].explanation"
-                          class="form-control"
-                          rows="2"
-                          placeholder="Enter explanation if any"></textarea>
-
-            </div>
-
-        </div>
-    `;
-
-    container.appendChild(question);
-
-    questionIndex++;
-
-    updateQuestionCount();
-
-    updateMarks();
+    }
 
 });
 
 
-document.addEventListener("click", function (e) {
+/* ========================================================= */
+/* CHECKBOX CHANGE */
+/* ========================================================= */
+
+document.querySelectorAll(".chapter-checkbox")
+    .forEach(function(checkbox) {
+
+        checkbox.addEventListener("change", function() {
+
+            updateChapterDropdowns();
+
+            updateSelectedChapters();
+
+        });
+
+    });
+
+
+/* ========================================================= */
+/* UPDATE DROPDOWN TEXT */
+/* ========================================================= */
+
+function updateChapterDropdowns() {
+
+
+    document.querySelectorAll(".multi-dropdown")
+        .forEach(function(dropdown) {
+
+
+            const subject =
+                dropdown.getAttribute("data-subject");
+
+
+            const checkboxes =
+                dropdown.querySelectorAll(
+                    ".chapter-checkbox:checked"
+                );
+
+
+            const text =
+                dropdown.querySelector(".selected-text");
+
+
+            if (checkboxes.length === 0) {
+
+                text.textContent =
+                    "Select Chapter";
+
+                text.style.color =
+                    "#495057";
+
+            }
+
+            else if (checkboxes.length === 1) {
+
+                text.textContent =
+                    checkboxes[0].value;
+
+                text.style.color =
+                    "#1f2937";
+
+            }
+
+            else {
+
+                text.textContent =
+                    checkboxes.length + " chapters selected";
+
+                text.style.color =
+                    "#1f2937";
+
+            }
+
+
+            /*
+             * Update subject-specific badges
+             */
+
+            let selectedContainer;
+
+
+            if (subject === "Biology") {
+
+                selectedContainer =
+                    document.getElementById("biologySelected");
+
+            }
+
+            else if (subject === "Chemistry") {
+
+                selectedContainer =
+                    document.getElementById("chemistrySelected");
+
+            }
+
+            else if (subject === "Physics") {
+
+                selectedContainer =
+                    document.getElementById("physicsSelected");
+
+            }
+
+
+            if (!selectedContainer) {
+
+                return;
+
+            }
+
+
+            selectedContainer.innerHTML = "";
+
+
+            checkboxes.forEach(function(checkbox) {
+
+
+                const badge =
+                    document.createElement("div");
+
+
+                badge.className =
+                    "small-selected-badge";
+
+
+                const span =
+                    document.createElement("span");
+
+
+                span.textContent =
+                    checkbox.value;
+
+
+                badge.appendChild(span);
+
+
+                selectedContainer.appendChild(badge);
+
+            });
+
+        });
+
+}
+
+
+/* ========================================================= */
+/* SEARCH CHAPTERS */
+/* ========================================================= */
+
+document.querySelectorAll(".chapter-search")
+    .forEach(function(searchInput) {
+
+
+        searchInput.addEventListener("input", function() {
+
+
+            const searchValue =
+                searchInput.value.toLowerCase().trim();
+
+
+            const dropdown =
+                searchInput.closest(".multi-dropdown");
+
+
+            const options =
+                dropdown.querySelectorAll(".chapter-option");
+
+
+            options.forEach(function(option) {
+
+
+                const chapterText =
+                    option
+                        .querySelector(".chapter-option-text")
+                        .textContent
+                        .toLowerCase();
+
+
+                if (chapterText.includes(searchValue)) {
+
+                    option.style.display =
+                        "flex";
+
+                }
+
+                else {
+
+                    option.style.display =
+                        "none";
+
+                }
+
+            });
+
+        });
+
+    });
+
+
+/* ========================================================= */
+/* UPDATE HIDDEN CHAPTER INPUTS */
+/* ========================================================= */
+
+function updateSelectedChapters() {
+
+
+    const container =
+        document.getElementById(
+            "selectedChaptersContainer"
+        );
+
+
+    const list =
+        document.getElementById(
+            "selectedChaptersList"
+        );
+
+
+    const box =
+        document.getElementById(
+            "selectedChaptersBox"
+        );
+
+
+    /*
+     * Clear old hidden fields
+     */
+
+    container.innerHTML = "";
+
+    list.innerHTML = "";
+
+
+    let totalSelected = 0;
+
+
+    const selectedSubjects = [];
+
+
+    /*
+     * Get all checked chapters
+     */
+
+    document.querySelectorAll(".chapter-checkbox:checked")
+        .forEach(function(checkbox) {
+
+
+            const chapter =
+                checkbox.value;
+
+
+            const subject =
+                checkbox.getAttribute(
+                    "data-subject"
+                );
+
+
+            totalSelected++;
+
+
+            /*
+             * Keep subject list
+             */
+
+            if (!selectedSubjects.includes(subject)) {
+
+                selectedSubjects.push(subject);
+
+            }
+
+
+            /*
+             * Hidden chapter input
+             */
+
+            const chapterInput =
+                document.createElement("input");
+
+
+            chapterInput.type = "hidden";
+
+            chapterInput.name = "chapter";
+
+            chapterInput.value = chapter;
+
+
+            container.appendChild(
+                chapterInput
+            );
+
+
+            /*
+             * Hidden subject input
+             */
+
+            const subjectInput =
+                document.createElement("input");
+
+
+            subjectInput.type = "hidden";
+
+            subjectInput.name =
+                "chapterSubjects";
+
+            subjectInput.value =
+                subject;
+
+
+            container.appendChild(
+                subjectInput
+            );
+
+
+            /*
+             * Display badge
+             */
+
+            const badge =
+                document.createElement("span");
+
+
+            badge.className =
+                "selected-chapter-badge " +
+                subject.toLowerCase();
+
+
+            badge.innerHTML =
+
+                '<span class="badge-subject">' +
+
+                subject +
+
+                ':</span> ' +
+
+                chapter;
+
+
+            list.appendChild(badge);
+
+        });
+
+
+    /*
+     * Show / hide selected box
+     */
+
+    if (totalSelected > 0) {
+
+        box.style.display = "block";
+
+    }
+
+    else {
+
+        box.style.display = "none";
+
+    }
+
+
+    /*
+     * Summary
+     */
+
+    document.getElementById(
+        "summaryChapter"
+    ).textContent =
+
+        totalSelected > 0
+
+            ? totalSelected + " selected"
+
+            : "-";
+
+
+    document.getElementById(
+        "summarySubject"
+    ).textContent =
+
+        selectedSubjects.length > 0
+
+            ? selectedSubjects.join(", ")
+
+            : "-";
+
+}
+
+
+/* ========================================================= */
+/* ADD QUESTION */
+/* ========================================================= */
+
+document.getElementById("addQuestion")
+    .addEventListener("click", function() {
+
+
+        const container =
+            document.getElementById(
+                "questionsContainer"
+            );
+
+
+        const question =
+            document.createElement("div");
+
+
+        question.className =
+            "question-box border rounded p-3 mb-3";
+
+
+        question.innerHTML = `
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <strong>
+                    Question ${questionIndex + 1}
+                </strong>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger remove-question">
+
+                    <i class="bi bi-trash"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="mb-3">
+
+                <label class="form-label fw-semibold">
+
+                    Question Text
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <textarea name="questions[${questionIndex}].questionText"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Enter question here..."
+                          required></textarea>
+
+            </div>
+
+
+            <div class="row g-3">
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+
+                        Option A
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text"
+                           name="questions[${questionIndex}].optionA"
+                           class="form-control"
+                           placeholder="Enter option A"
+                           required>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+
+                        Option B
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text"
+                           name="questions[${questionIndex}].optionB"
+                           class="form-control"
+                           placeholder="Enter option B"
+                           required>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+
+                        Option C
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text"
+                           name="questions[${questionIndex}].optionC"
+                           class="form-control"
+                           placeholder="Enter option C"
+                           required>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+
+                        Option D
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="text"
+                           name="questions[${questionIndex}].optionD"
+                           class="form-control"
+                           placeholder="Enter option D"
+                           required>
+
+                </div>
+
+
+                <div class="col-md-8">
+
+                    <label class="form-label fw-semibold">
+
+                        Correct Answer
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <select name="questions[${questionIndex}].correctAnswer"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            Select correct answer
+                        </option>
+
+                        <option value="A">
+                            Option A
+                        </option>
+
+                        <option value="B">
+                            Option B
+                        </option>
+
+                        <option value="C">
+                            Option C
+                        </option>
+
+                        <option value="D">
+                            Option D
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Marks
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+                    <input type="number"
+                           name="questions[${questionIndex}].marks"
+                           class="form-control question-marks"
+                           value="1"
+                           min="1"
+                           required>
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <label class="form-label fw-semibold">
+
+                        Explanation
+
+                        <span class="text-muted">
+                            (Optional)
+                        </span>
+
+                    </label>
+
+                    <textarea name="questions[${questionIndex}].explanation"
+                              class="form-control"
+                              rows="2"
+                              placeholder="Enter explanation if any"></textarea>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(question);
+
+
+        questionIndex++;
+
+
+        updateQuestionCount();
+
+        updateMarks();
+
+    });
+
+
+/* ========================================================= */
+/* REMOVE QUESTION */
+/* ========================================================= */
+
+document.addEventListener("click", function(e) {
+
 
     const button =
         e.target.closest(".remove-question");
 
+
     if (!button) {
+
         return;
+
     }
 
+
     const questions =
-        document.querySelectorAll(".question-box");
+        document.querySelectorAll(
+            ".question-box"
+        );
+
 
     if (questions.length === 1) {
 
-        alert("At least one question is required.");
+        alert(
+            "At least one question is required."
+        );
 
         return;
 
     }
 
-    button.closest(".question-box").remove();
+
+    button.closest(
+        ".question-box"
+    ).remove();
+
 
     updateQuestionCount();
 
@@ -1019,127 +2869,274 @@ document.addEventListener("click", function (e) {
 });
 
 
+/* ========================================================= */
+/* QUESTION COUNT */
+/* ========================================================= */
+
 function updateQuestionCount() {
 
+
     const count =
-        document.querySelectorAll(".question-box").length;
+        document.querySelectorAll(
+            ".question-box"
+        ).length;
 
-    document.getElementById("questionCount").textContent =
-        "Question " + count + " / " + count;
 
-    document.getElementById("summaryQuestions").textContent =
+    document.getElementById(
+        "questionCount"
+    ).textContent =
+
+        "Question " +
+        count +
+        " / " +
         count;
+
+
+    document.getElementById(
+        "summaryQuestions"
+    ).textContent = count;
 
 }
 
+
+/* ========================================================= */
+/* MARKS */
+/* ========================================================= */
 
 function updateMarks() {
 
+
     let total = 0;
 
-    document.querySelectorAll(".question-marks")
-        .forEach(input => {
 
-            total += Number(input.value) || 0;
+    document.querySelectorAll(
+        ".question-marks"
+    ).forEach(function(input) {
 
-        });
 
-    document.getElementById("summaryMarks").textContent =
-        total;
+        total +=
+            Number(input.value) || 0;
+
+    });
+
+
+    document.getElementById(
+        "summaryMarks"
+    ).textContent = total;
 
 }
 
 
-document.addEventListener("input", function (e) {
+/* ========================================================= */
+/* INPUT EVENTS */
+/* ========================================================= */
 
-    if (e.target.classList.contains("question-marks")) {
+document.addEventListener(
+    "input",
+    function(e) {
 
-        updateMarks();
+
+        if (
+            e.target.classList.contains(
+                "question-marks"
+            )
+        ) {
+
+            updateMarks();
+
+        }
+
+
+        if (
+            e.target.id === "testName"
+        ) {
+
+            document.getElementById(
+                "summaryTestName"
+            ).textContent =
+
+                e.target.value || "-";
+
+        }
+
+
+        if (
+            e.target.id === "duration"
+        ) {
+
+            document.getElementById(
+                "summaryDuration"
+            ).textContent =
+
+                (e.target.value || "0") +
+                " min";
+
+        }
+
+    }
+);
+
+
+/* ========================================================= */
+/* COURSE CHANGE */
+/* ========================================================= */
+
+document.getElementById("course")
+    .addEventListener(
+        "change",
+        function() {
+
+
+            const option =
+                this.options[
+                    this.selectedIndex
+                ];
+
+
+            document.getElementById(
+                "summaryCourse"
+            ).textContent =
+
+                option && option.value
+
+                    ? option.text
+
+                    : "-";
+
+        }
+    );
+
+
+/* ========================================================= */
+/* VALIDATE CHAPTERS */
+/* ========================================================= */
+
+function validateChapters() {
+
+
+    const selected =
+        document.querySelectorAll(
+            ".chapter-checkbox:checked"
+        );
+
+
+    if (selected.length === 0) {
+
+        alert(
+            "Please select at least one chapter from Biology, Chemistry or Physics."
+        );
+
+        return false;
 
     }
 
-    if (e.target.id === "testName") {
 
-        document.getElementById("summaryTestName").textContent =
-            e.target.value || "-";
+    return true;
+
+}
+
+
+/* ========================================================= */
+/* SAVE DRAFT */
+/* ========================================================= */
+
+document.getElementById(
+    "saveDraftBtn"
+).addEventListener(
+    "click",
+    function() {
+
+
+        const form =
+            document.getElementById(
+                "testForm"
+            );
+
+
+        if (!form.reportValidity()) {
+
+            return;
+
+        }
+
+
+        if (!validateChapters()) {
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "status"
+        ).value = "DRAFT";
+
+
+        document.getElementById(
+            "summaryStatus"
+        ).textContent = "Draft";
+
+
+        form.submit();
 
     }
+);
 
-    if (e.target.id === "duration") {
 
-        document.getElementById("summaryDuration").textContent =
-            (e.target.value || "0") + " min";
+/* ========================================================= */
+/* PUBLISH TEST */
+/* ========================================================= */
+
+document.getElementById(
+    "publishBtn"
+).addEventListener(
+    "click",
+    function() {
+
+
+        const form =
+            document.getElementById(
+                "testForm"
+            );
+
+
+        if (!form.reportValidity()) {
+
+            return;
+
+        }
+
+
+        if (!validateChapters()) {
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "status"
+        ).value = "PUBLISHED";
+
+
+        document.getElementById(
+            "summaryStatus"
+        ).textContent = "Published";
+
+
+        form.submit();
 
     }
-
-    if (e.target.id === "passingMarks") {
-
-        document.getElementById("summaryPassing").textContent =
-            e.target.value || "0";
-
-    }
-
-});
+);
 
 
-document.addEventListener("change", function (e) {
+/* ========================================================= */
+/* INITIALIZE */
+/* ========================================================= */
 
-    if (e.target.id === "course") {
+updateChapterDropdowns();
 
-        const option =
-            e.target.options[e.target.selectedIndex];
-
-        document.getElementById("summaryCourse").textContent =
-            option && option.value
-                ? option.text
-                : "-";
-
-    }
-
-    if (e.target.id === "subject") {
-
-        document.getElementById("summarySubject").textContent =
-            e.target.value || "-";
-
-    }
-
-    if (e.target.id === "chapter") {
-
-        document.getElementById("summaryChapter").textContent =
-            e.target.value || "-";
-
-    }
-
-});
-
-
-document.getElementById("saveDraftBtn")
-    .addEventListener("click", function () {
-
-        document.getElementById("status").value =
-            "DRAFT";
-
-        document.getElementById("summaryStatus").textContent =
-            "Draft";
-
-        document.getElementById("testForm").submit();
-
-    });
-
-
-document.getElementById("publishBtn")
-    .addEventListener("click", function () {
-
-        document.getElementById("status").value =
-            "PUBLISHED";
-
-        document.getElementById("summaryStatus").textContent =
-            "Published";
-
-        document.getElementById("testForm").submit();
-
-    });
-
+updateSelectedChapters();
 
 updateQuestionCount();
 
@@ -1147,5 +3144,7 @@ updateMarks();
 
 </script>
 
+
 </body>
+
 </html>

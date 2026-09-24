@@ -13,24 +13,60 @@ public class Test {
     private Long id;
 
     private String testName;
+
     private String course;
+
+    /*
+     * Stores multiple subjects.
+     * Example:
+     * Biology | Chemistry | Physics
+     */
+    @Column(name = "subject", columnDefinition = "TEXT")
     private String subject;
+
+    /*
+     * Stores multiple subject + chapter combinations.
+     * Example:
+     *
+     * Biology: The Living World |
+     * Biology: Plant Kingdom |
+     * Chemistry: Thermodynamics |
+     * Physics: Laws of Motion
+     */
+    @Column(name = "chapter", columnDefinition = "TEXT")
     private String chapter;
+
     private Integer duration;
+
     private Integer totalMarks;
+
     private Integer passingMarks;
+
     private Boolean shuffleQuestions;
+
     private Boolean shuffleOptions;
+
     private Boolean showResultImmediately;
+
     private Boolean allowTestRetake;
+
     private Integer numberOfAttempts;
+
     private String status;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "test",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Question> questions = new ArrayList<>();
 
     public Test() {
     }
+
+    // =========================================================
+    // ID
+    // =========================================================
 
     public Long getId() {
         return id;
@@ -40,6 +76,10 @@ public class Test {
         this.id = id;
     }
 
+    // =========================================================
+    // TEST NAME
+    // =========================================================
+
     public String getTestName() {
         return testName;
     }
@@ -47,6 +87,10 @@ public class Test {
     public void setTestName(String testName) {
         this.testName = testName;
     }
+
+    // =========================================================
+    // COURSE
+    // =========================================================
 
     public String getCourse() {
         return course;
@@ -56,6 +100,10 @@ public class Test {
         this.course = course;
     }
 
+    // =========================================================
+    // SUBJECT
+    // =========================================================
+
     public String getSubject() {
         return subject;
     }
@@ -63,6 +111,10 @@ public class Test {
     public void setSubject(String subject) {
         this.subject = subject;
     }
+
+    // =========================================================
+    // CHAPTER
+    // =========================================================
 
     public String getChapter() {
         return chapter;
@@ -72,6 +124,10 @@ public class Test {
         this.chapter = chapter;
     }
 
+    // =========================================================
+    // DURATION
+    // =========================================================
+
     public Integer getDuration() {
         return duration;
     }
@@ -79,6 +135,10 @@ public class Test {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
+
+    // =========================================================
+    // TOTAL MARKS
+    // =========================================================
 
     public Integer getTotalMarks() {
         return totalMarks;
@@ -88,6 +148,10 @@ public class Test {
         this.totalMarks = totalMarks;
     }
 
+    // =========================================================
+    // PASSING MARKS
+    // =========================================================
+
     public Integer getPassingMarks() {
         return passingMarks;
     }
@@ -95,6 +159,10 @@ public class Test {
     public void setPassingMarks(Integer passingMarks) {
         this.passingMarks = passingMarks;
     }
+
+    // =========================================================
+    // SHUFFLE QUESTIONS
+    // =========================================================
 
     public Boolean getShuffleQuestions() {
         return shuffleQuestions;
@@ -104,6 +172,10 @@ public class Test {
         this.shuffleQuestions = shuffleQuestions;
     }
 
+    // =========================================================
+    // SHUFFLE OPTIONS
+    // =========================================================
+
     public Boolean getShuffleOptions() {
         return shuffleOptions;
     }
@@ -111,6 +183,10 @@ public class Test {
     public void setShuffleOptions(Boolean shuffleOptions) {
         this.shuffleOptions = shuffleOptions;
     }
+
+    // =========================================================
+    // SHOW RESULT IMMEDIATELY
+    // =========================================================
 
     public Boolean getShowResultImmediately() {
         return showResultImmediately;
@@ -120,6 +196,10 @@ public class Test {
         this.showResultImmediately = showResultImmediately;
     }
 
+    // =========================================================
+    // ALLOW TEST RETAKE
+    // =========================================================
+
     public Boolean getAllowTestRetake() {
         return allowTestRetake;
     }
@@ -127,6 +207,10 @@ public class Test {
     public void setAllowTestRetake(Boolean allowTestRetake) {
         this.allowTestRetake = allowTestRetake;
     }
+
+    // =========================================================
+    // NUMBER OF ATTEMPTS
+    // =========================================================
 
     public Integer getNumberOfAttempts() {
         return numberOfAttempts;
@@ -136,6 +220,10 @@ public class Test {
         this.numberOfAttempts = numberOfAttempts;
     }
 
+    // =========================================================
+    // STATUS
+    // =========================================================
+
     public String getStatus() {
         return status;
     }
@@ -143,6 +231,10 @@ public class Test {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    // =========================================================
+    // QUESTIONS
+    // =========================================================
 
     public List<Question> getQuestions() {
         return questions;
@@ -152,13 +244,25 @@ public class Test {
         this.questions = questions;
     }
 
+    // =========================================================
+    // ADD QUESTION
+    // =========================================================
+
     public void addQuestion(Question question) {
+
         questions.add(question);
+
         question.setTest(this);
     }
 
+    // =========================================================
+    // REMOVE QUESTION
+    // =========================================================
+
     public void removeQuestion(Question question) {
+
         questions.remove(question);
+
         question.setTest(null);
     }
 }

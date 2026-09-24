@@ -13,44 +13,68 @@ import java.util.List;
 @Service
 public class TestServiceImpl implements TestService {
 
-    private final TestRepository testRepository;
+	private final TestRepository testRepository;
 
-    public TestServiceImpl(TestRepository testRepository) {
-        this.testRepository = testRepository;
-    }
+	public TestServiceImpl(TestRepository testRepository) {
 
-    @Override
-    @Transactional
-    public Test saveTest(Test test) {
+		this.testRepository = testRepository;
+	}
 
-        if (test.getQuestions() != null) {
+	// =========================================================
+	// SAVE TEST
+	// =========================================================
 
-            for (Question question : test.getQuestions()) {
-                question.setTest(test);
-            }
-        }
+	@Override
+	@Transactional
+	public Test saveTest(Test test) {
 
-        return testRepository.save(test);
-    }
+		/*
+		 * Make sure every question belongs to this test.
+		 */
+		if (test.getQuestions() != null) {
 
-    @Override
-    @Transactional(readOnly = true)
-    public Test getTestById(Long id) {
+			for (Question question : test.getQuestions()) {
 
-        return testRepository.findById(id).orElse(null);
-    }
+				question.setTest(test);
+			}
+		}
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Test> getAllTests() {
+		/*
+		 * Save test and its questions.
+		 */
+		return testRepository.save(test);
+	}
 
-        return testRepository.findAll();
-    }
+	// =========================================================
+	// GET TEST BY ID
+	// =========================================================
 
-    @Override
-    @Transactional
-    public void deleteTest(Long id) {
+	@Override
+	@Transactional(readOnly = true)
+	public Test getTestById(Long id) {
 
-        testRepository.deleteById(id);
-    }
+		return testRepository.findById(id).orElse(null);
+	}
+
+	// =========================================================
+	// GET ALL TESTS
+	// =========================================================
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Test> getAllTests() {
+
+		return testRepository.findAll();
+	}
+
+	// =========================================================
+	// DELETE TEST
+	// =========================================================
+
+	@Override
+	@Transactional
+	public void deleteTest(Long id) {
+
+		testRepository.deleteById(id);
+	}
 }

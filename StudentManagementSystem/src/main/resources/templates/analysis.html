@@ -14,7 +14,7 @@
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="flex-grow-1">
+    <div id="page-content-wrapper">
 
         <!-- NAVBAR -->
         <div th:replace="~{fragments/layout::navbar}">
@@ -29,7 +29,7 @@
 
                     <li class="breadcrumb-item">
 
-                        <a th:href="@{/tests/list}"
+                        <a th:href="@{/tests/results}"
                            class="text-decoration-none">
 
                             Tests
@@ -366,6 +366,11 @@
 
     </div>
 
+</div>
+
+
+<!-- SCRIPTS (Bootstrap JS + sidebar menu logic) -->
+<div th:replace="~{fragments/layout::scripts}">
 </div>
 
 

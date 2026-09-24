@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
@@ -19,7 +20,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           rel="stylesheet">
 
-
     <style>
 
         * {
@@ -40,7 +40,6 @@
             margin: 0 auto;
             padding: 30px;
         }
-
 
         /* =========================================================
            PAGE TITLE
@@ -76,7 +75,6 @@
             color: #6c757d;
             font-size: 14px;
         }
-
 
         /* =========================================================
            INFORMATION GRID
@@ -126,7 +124,6 @@
             word-break: break-word;
         }
 
-
         /* =========================================================
            STATUS
            ========================================================= */
@@ -140,7 +137,6 @@
             font-size: 12px;
             font-weight: 600;
         }
-
 
         /* =========================================================
            SUMMARY
@@ -201,7 +197,6 @@
             font-weight: 700;
         }
 
-
         /* =========================================================
            QUESTION PANEL
            ========================================================= */
@@ -227,11 +222,6 @@
         .panel-title i {
             color: #0d6efd;
         }
-
-
-        /* =========================================================
-           QUESTION NAVIGATION
-           ========================================================= */
 
         .question-grid {
             display: grid;
@@ -265,26 +255,6 @@
             color: white;
             border-color: #0d6efd;
         }
-
-        .question-number.correct {
-            background: #d1e7dd;
-            color: #146c43;
-            border-color: #a3cfbb;
-        }
-
-        .question-number.wrong {
-            background: #f8d7da;
-            color: #b02a37;
-            border-color: #f1aeb5;
-        }
-
-        .question-number.active.correct,
-        .question-number.active.wrong {
-            background: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-        }
-
 
         /* =========================================================
            QUESTION CARD
@@ -342,7 +312,6 @@
             white-space: pre-wrap;
         }
 
-
         /* =========================================================
            OPTIONS
            ========================================================= */
@@ -382,15 +351,6 @@
             color: #198754;
         }
 
-        .wrong-answer {
-            background: #fff0f1;
-            border-color: #ef9da5;
-        }
-
-        .wrong-answer .option-letter {
-            color: #dc3545;
-        }
-
         .answer-badge {
             white-space: nowrap;
             padding: 4px 9px;
@@ -404,30 +364,28 @@
             color: white;
         }
 
-        .wrong-badge {
-            background: #dc3545;
-            color: white;
-        }
-
-
         /* =========================================================
-           NOT ATTEMPTED
+           EXPLANATION
            ========================================================= */
 
-        .not-attempted {
-            margin-top: 20px;
-            padding: 14px 16px;
+        .explanation {
+            margin-top: 25px;
+            padding: 18px;
             border-radius: 10px;
-            background: #fff4df;
-            color: #8a5300;
-            border: 1px solid #ffe0a3;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
+            background: #eef4ff;
+            border: 1px solid #cfe2ff;
         }
 
+        .explanation-title {
+            color: #0d6efd;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .explanation-text {
+            color: #495057;
+            line-height: 1.6;
+        }
 
         /* =========================================================
            NO QUESTION
@@ -447,7 +405,6 @@
             margin-bottom: 15px;
             color: #adb5bd;
         }
-
 
         /* =========================================================
            BACK BUTTON
@@ -477,7 +434,6 @@
             color: #0d6efd;
         }
 
-
         /* =========================================================
            RESPONSIVE
            ========================================================= */
@@ -491,9 +447,7 @@
             .question-grid {
                 grid-template-columns: repeat(12, 1fr);
             }
-
         }
-
 
         @media (max-width: 768px) {
 
@@ -529,9 +483,7 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-
         }
-
 
         @media (max-width: 480px) {
 
@@ -556,18 +508,15 @@
                 padding: 12px;
                 font-size: 14px;
             }
-
         }
 
     </style>
 
 </head>
 
-
 <body>
 
 <div class="result-container">
-
 
     <!-- =========================================================
          BACK BUTTON
@@ -575,12 +524,12 @@
 
     <div class="back-section">
 
-        <a th:href="@{/tests/list}"
+        <a th:href="@{/tests/results}"
            class="back-button">
 
             <i class="fas fa-arrow-left"></i>
 
-            Back to Tests
+            Back to Test Results
 
         </a>
 
@@ -594,7 +543,9 @@
     <div class="page-title">
 
         <div class="page-title-icon">
+
             <i class="fas fa-chart-column"></i>
+
         </div>
 
         <div>
@@ -602,7 +553,7 @@
             <h2>Test Results</h2>
 
             <p>
-                Review your test performance and answers
+                Review test questions and correct answers
             </p>
 
         </div>
@@ -615,6 +566,29 @@
          ========================================================= -->
 
     <div class="info-grid">
+
+        <!-- TEST NAME -->
+
+        <div class="info-card">
+
+            <div class="info-icon">
+                <i class="fas fa-file-lines"></i>
+            </div>
+
+            <div>
+
+                <div class="info-label">
+                    Test
+                </div>
+
+                <div class="info-value"
+                     th:text="${test.testName}">
+                    Test Name
+                </div>
+
+            </div>
+
+        </div>
 
 
         <!-- COURSE -->
@@ -631,7 +605,6 @@
                     Course
                 </div>
 
-                <!-- FIXED: test.course is String -->
                 <div class="info-value"
                      th:text="${test.course}">
                     Course
@@ -656,7 +629,6 @@
                     Subject
                 </div>
 
-                <!-- FIXED: test.subject is String -->
                 <div class="info-value"
                      th:text="${test.subject}">
                     Subject
@@ -681,7 +653,6 @@
                     Chapter
                 </div>
 
-                <!-- FIXED: test.chapter is String -->
                 <div class="info-value"
                      th:text="${test.chapter}">
                     Chapter
@@ -710,7 +681,7 @@
 
                     <span class="status-badge"
                           th:text="${test.status}">
-                        Completed
+                        Published
                     </span>
 
                 </div>
@@ -773,30 +744,6 @@
         </div>
 
 
-        <!-- PASSING MARKS -->
-
-        <div class="info-card">
-
-            <div class="info-icon">
-                <i class="fas fa-check"></i>
-            </div>
-
-            <div>
-
-                <div class="info-label">
-                    Passing Marks
-                </div>
-
-                <div class="info-value"
-                     th:text="${test.passingMarks}">
-                    40
-                </div>
-
-            </div>
-
-        </div>
-
-
         <!-- QUESTIONS -->
 
         <div class="info-card">
@@ -812,94 +759,7 @@
                 </div>
 
                 <div class="info-value"
-                     th:text="${#lists.size(test.questions)}">
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================================
-         RESULT SUMMARY
-         ========================================================= -->
-
-    <div class="summary-grid">
-
-
-        <!-- CORRECT -->
-
-        <div class="summary-card correct">
-
-            <div class="summary-icon">
-
-                <i class="fas fa-check"></i>
-
-            </div>
-
-            <div>
-
-                <div class="summary-label">
-                    Correct Answers
-                </div>
-
-                <div class="summary-value"
-                     th:text="${correctCount}">
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- WRONG -->
-
-        <div class="summary-card wrong">
-
-            <div class="summary-icon">
-
-                <i class="fas fa-xmark"></i>
-
-            </div>
-
-            <div>
-
-                <div class="summary-label">
-                    Wrong Answers
-                </div>
-
-                <div class="summary-value"
-                     th:text="${wrongCount}">
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- NOT OPENED -->
-
-        <div class="summary-card not-opened">
-
-            <div class="summary-icon">
-
-                <i class="fas fa-eye-slash"></i>
-
-            </div>
-
-            <div>
-
-                <div class="summary-label">
-                    Not Attempted
-                </div>
-
-                <div class="summary-value"
-                     th:text="${neverOpenedCount}">
+                     th:text="${test.questions != null ? test.questions.size() : 0}">
                     0
                 </div>
 
@@ -929,23 +789,19 @@
 
         <div class="question-grid">
 
-
             <a th:each="question, stat : ${test.questions}"
 
                th:href="@{/tests/results/{id}(id=${test.id}, question=${stat.index})}"
 
                class="question-number"
 
-               th:classappend="${selectedQuestion != null and question.id == selectedQuestion.id ? ' active' : ''}
-                               + ${question.correct ? ' correct' : ''}
-                               + ${question.wrong ? ' wrong' : ''}"
+               th:classappend="${selectedQuestion != null and question.id == selectedQuestion.id ? ' active' : ''}"
 
                th:text="${stat.index + 1}">
 
                 1
 
             </a>
-
 
         </div>
 
@@ -963,7 +819,6 @@
         <!-- QUESTION HEADER -->
 
         <div class="question-header">
-
 
             <div class="question-label">
 
@@ -990,7 +845,6 @@
 
             </div>
 
-
         </div>
 
 
@@ -1002,6 +856,7 @@
             <!-- QUESTION TEXT -->
 
             <div class="question-text"
+
                  th:text="${selectedQuestion.questionText}">
 
                 Question text
@@ -1014,41 +869,29 @@
             <div class="options-container">
 
 
-                <div th:each="option, stat : ${selectedQuestion.options}"
+                <!-- OPTION A -->
 
-                     class="option"
+                <div class="option"
 
-                     th:classappend="${option.correct ? ' correct-answer' : ''}
-                                     + ${option.selected and !option.correct ? ' wrong-answer' : ''}">
+                     th:classappend="${selectedQuestion.correctAnswer != null and
+                                      (selectedQuestion.correctAnswer.equalsIgnoreCase('A')
+                                      or selectedQuestion.correctAnswer.equals(selectedQuestion.optionA))}
+                                      ? ' correct-answer' : ''">
 
-
-                    <!-- OPTION LETTER -->
-
-                    <strong class="option-letter"
-
-                            th:text="${T(java.lang.Character).toString(65 + stat.index) + '.'}">
-
+                    <strong class="option-letter">
                         A.
-
                     </strong>
 
-
-                    <!-- OPTION TEXT -->
-
                     <div class="option-text"
-
-                         th:text="${option.optionText}">
-
-                        Option text
-
+                         th:text="${selectedQuestion.optionA}">
+                        Option A
                     </div>
-
-
-                    <!-- CORRECT BADGE -->
 
                     <span class="answer-badge correct-badge"
 
-                          th:if="${option.correct}">
+                          th:if="${selectedQuestion.correctAnswer != null and
+                                  (selectedQuestion.correctAnswer.equalsIgnoreCase('A')
+                                  or selectedQuestion.correctAnswer.equals(selectedQuestion.optionA))}">
 
                         <i class="fas fa-check"></i>
 
@@ -1056,40 +899,136 @@
 
                     </span>
 
+                </div>
 
-                    <!-- WRONG BADGE -->
 
-                    <span class="answer-badge wrong-badge"
+                <!-- OPTION B -->
 
-                          th:if="${option.selected and !option.correct}">
+                <div class="option"
 
-                        <i class="fas fa-xmark"></i>
+                     th:classappend="${selectedQuestion.correctAnswer != null and
+                                      (selectedQuestion.correctAnswer.equalsIgnoreCase('B')
+                                      or selectedQuestion.correctAnswer.equals(selectedQuestion.optionB))}
+                                      ? ' correct-answer' : ''">
 
-                        Your Answer
+                    <strong class="option-letter">
+                        B.
+                    </strong>
+
+                    <div class="option-text"
+                         th:text="${selectedQuestion.optionB}">
+                        Option B
+                    </div>
+
+                    <span class="answer-badge correct-badge"
+
+                          th:if="${selectedQuestion.correctAnswer != null and
+                                  (selectedQuestion.correctAnswer.equalsIgnoreCase('B')
+                                  or selectedQuestion.correctAnswer.equals(selectedQuestion.optionB))}">
+
+                        <i class="fas fa-check"></i>
+
+                        Correct Answer
 
                     </span>
-
 
                 </div>
 
 
+                <!-- OPTION C -->
+
+                <div class="option"
+
+                     th:classappend="${selectedQuestion.correctAnswer != null and
+                                      (selectedQuestion.correctAnswer.equalsIgnoreCase('C')
+                                      or selectedQuestion.correctAnswer.equals(selectedQuestion.optionC))}
+                                      ? ' correct-answer' : ''">
+
+                    <strong class="option-letter">
+                        C.
+                    </strong>
+
+                    <div class="option-text"
+                         th:text="${selectedQuestion.optionC}">
+                        Option C
+                    </div>
+
+                    <span class="answer-badge correct-badge"
+
+                          th:if="${selectedQuestion.correctAnswer != null and
+                                  (selectedQuestion.correctAnswer.equalsIgnoreCase('C')
+                                  or selectedQuestion.correctAnswer.equals(selectedQuestion.optionC))}">
+
+                        <i class="fas fa-check"></i>
+
+                        Correct Answer
+
+                    </span>
+
+                </div>
+
+
+                <!-- OPTION D -->
+
+                <div class="option"
+
+                     th:classappend="${selectedQuestion.correctAnswer != null and
+                                      (selectedQuestion.correctAnswer.equalsIgnoreCase('D')
+                                      or selectedQuestion.correctAnswer.equals(selectedQuestion.optionD))}
+                                      ? ' correct-answer' : ''">
+
+                    <strong class="option-letter">
+                        D.
+                    </strong>
+
+                    <div class="option-text"
+                         th:text="${selectedQuestion.optionD}">
+                        Option D
+                    </div>
+
+                    <span class="answer-badge correct-badge"
+
+                          th:if="${selectedQuestion.correctAnswer != null and
+                                  (selectedQuestion.correctAnswer.equalsIgnoreCase('D')
+                                  or selectedQuestion.correctAnswer.equals(selectedQuestion.optionD))}">
+
+                        <i class="fas fa-check"></i>
+
+                        Correct Answer
+
+                    </span>
+
+                </div>
+
             </div>
 
 
-            <!-- NOT ATTEMPTED -->
+            <!-- =====================================================
+                 EXPLANATION
+                 ===================================================== -->
 
-            <div class="not-attempted"
+            <div class="explanation"
 
-                 th:if="${selectedQuestion.selectedOption == null}">
+                 th:if="${selectedQuestion.explanation != null
+                         and !selectedQuestion.explanation.isEmpty()}">
 
-                <i class="fas fa-circle-exclamation"></i>
+                <div class="explanation-title">
 
-                <span>
-                    This question was not attempted.
-                </span>
+                    <i class="fas fa-lightbulb"></i>
+
+                    Explanation
+
+                </div>
+
+                <div class="explanation-text"
+
+                     th:text="${selectedQuestion.explanation}">
+
+                    Explanation
+
+                </div>
 
             </div>
-
 
         </div>
 
@@ -1097,21 +1036,22 @@
 
 
     <!-- =========================================================
-         NO QUESTION
+         NO QUESTIONS
          ========================================================= -->
 
     <div class="no-question"
 
-         th:if="${selectedQuestion == null}">
+         th:if="${test.questions == null
+                 or test.questions.isEmpty()}">
 
         <i class="fas fa-circle-question"></i>
 
         <h4>
-            No Question Selected
+            No Questions Found
         </h4>
 
         <p>
-            Select a question above to view its details.
+            This test does not contain any questions.
         </p>
 
     </div>
@@ -1148,7 +1088,8 @@
 
 <!-- Bootstrap JS -->
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 
