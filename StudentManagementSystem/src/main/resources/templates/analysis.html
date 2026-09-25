@@ -13,6 +13,7 @@
     <div th:replace="~{fragments/layout::sidebar}">
     </div>
 
+
     <!-- MAIN CONTENT -->
     <div id="page-content-wrapper">
 
@@ -20,347 +21,394 @@
         <div th:replace="~{fragments/layout::navbar}">
         </div>
 
+
         <main class="container-fluid p-4">
 
-            <!-- BREADCRUMB -->
-            <nav aria-label="breadcrumb" class="mb-3">
 
-                <ol class="breadcrumb mb-0">
+            <!-- ================================================= -->
+            <!-- FLASH MESSAGE -->
+            <!-- ================================================= -->
 
-                    <li class="breadcrumb-item">
+            <div th:if="${message}"
+                 class="alert alert-success alert-dismissible fade show">
 
-                        <a th:href="@{/tests/results}"
-                           class="text-decoration-none">
+                <i class="bi bi-check-circle me-2"></i>
 
-                            Tests
+                <span th:text="${message}">
+                    Success
+                </span>
 
-                        </a>
-
-                    </li>
-
-                    <li class="breadcrumb-item active"
-                        aria-current="page">
-
-                        Analysis
-
-                    </li>
-
-                </ol>
-
-            </nav>
-
-
-            <!-- PAGE TITLE -->
-
-            <div class="page-title">
-                Analysis
-            </div>
-
-            <div class="page-subtitle">
-                Get insights from your test performance.
-            </div>
-
-
-            <!-- STAT CARDS -->
-
-            <div class="row g-3">
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon">
-
-                            <i class="bi bi-file-earmark-text"></i>
-
-                        </div>
-
-                        <div class="stat-title">
-                            Total Tests
-                        </div>
-
-                        <div class="stat-number"
-                             th:text="${totalTests}">
-                            0
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon">
-
-                            <i class="bi bi-check-circle"></i>
-
-                        </div>
-
-                        <div class="stat-title">
-                            Published Tests
-                        </div>
-
-                        <div class="stat-number"
-                             th:text="${publishedTests}">
-                            0
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon">
-
-                            <i class="bi bi-pencil-square"></i>
-
-                        </div>
-
-                        <div class="stat-title">
-                            Draft Tests
-                        </div>
-
-                        <div class="stat-number"
-                             th:text="${draftTests}">
-                            0
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon">
-
-                            <i class="bi bi-question-circle"></i>
-
-                        </div>
-
-                        <div class="stat-title">
-                            Total Questions
-                        </div>
-
-                        <div class="stat-number"
-                             th:text="${totalQuestions}">
-                            0
-                        </div>
-
-                    </div>
-
-                </div>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
 
             </div>
 
 
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h3 class="fw-bold mb-1">
+
+                        <i class="bi bi-bar-chart-line me-2"></i>
+
+                        Test Analysis
+
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Overview of created tests and questions
+
+                    </p>
+
+                </div>
+
+
+                <a th:href="@{/tests/create}"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-plus-circle me-1"></i>
+
+                    Create Test
+
+                </a>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- SUMMARY CARDS -->
+            <!-- ================================================= -->
+
+            <div class="row g-3 mb-4">
+
+
+                <!-- TOTAL TESTS -->
+
+                <div class="col-md-3">
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <small class="text-muted">
+                                Total Tests
+                            </small>
+
+                            <h2 class="fw-bold mb-0"
+                                th:text="${totalTests}">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PUBLISHED -->
+
+                <div class="col-md-3">
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <small class="text-muted">
+                                Published Tests
+                            </small>
+
+                            <h2 class="fw-bold text-success mb-0"
+                                th:text="${publishedTests}">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DRAFT -->
+
+                <div class="col-md-3">
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <small class="text-muted">
+                                Draft Tests
+                            </small>
+
+                            <h2 class="fw-bold mb-0"
+                                th:text="${draftTests}">
+
+                                0
+
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CREATED QUESTIONS -->
+
+                <div class="col-md-3">
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                        <div class="card-body">
+
+                            <small class="text-muted">
+                                Total Questions
+                            </small>
+
+                            <h2 class="fw-bold text-primary mb-0"
+                                th:text="${totalQuestions}">
+
+                                0
+
+                            </h2>
+
+                            <small class="text-muted">
+                                Questions added to tests
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
             <!-- TEST-WISE ANALYSIS -->
+            <!-- ================================================= -->
 
-            <div class="main-card">
+            <div class="card border-0 shadow-sm">
 
-                <div class="section-title">
+                <div class="card-header bg-white py-3">
 
-                    <i class="bi bi-bar-chart-line text-primary"></i>
+                    <h5 class="fw-bold mb-0">
 
-                    Test-wise Analysis
+                        Test-wise Analysis
 
-                </div>
-
-
-                <div th:if="${tests != null and !tests.isEmpty()}"
-                     class="analysis-table">
-
-                    <table class="table">
-
-                        <thead>
-
-                        <tr>
-
-                            <th>#</th>
-
-                            <th>Test Name</th>
-
-                            <th>Course</th>
-
-                            <th>Subject</th>
-
-                            <th>Questions</th>
-
-                            <th>Total Marks</th>
-
-                            <th>Passing Marks</th>
-
-                            <th>Status</th>
-
-                            <th>Performance</th>
-
-                        </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                        <tr th:each="test, stat : ${tests}">
-
-                            <td th:text="${stat.count}">
-                                1
-                            </td>
-
-                            <td>
-
-                                <strong th:text="${test.testName}">
-                                    Physics Test
-                                </strong>
-
-                            </td>
-
-                            <td th:text="${test.course}">
-                                NEET
-                            </td>
-
-                            <td th:text="${test.subject}">
-                                Physics
-                            </td>
-
-                            <td th:text="${test.questions != null ? #lists.size(test.questions) : 0}">
-                                10
-                            </td>
-
-                            <td th:text="${test.totalMarks}">
-                                100
-                            </td>
-
-                            <td th:text="${test.passingMarks}">
-                                40
-                            </td>
-
-                            <td>
-
-                                <span th:if="${test.status == 'PUBLISHED'}"
-                                      class="published">
-
-                                    Published
-
-                                </span>
-
-                                <span th:unless="${test.status == 'PUBLISHED'}"
-                                      class="draft">
-
-                                    Draft
-
-                                </span>
-
-                            </td>
-
-                            <td style="min-width:160px;">
-
-                                <div class="progress">
-
-                                    <div class="progress-bar bg-primary"
-                                         th:style="'width:' + (${test.totalMarks != null and test.totalMarks > 0 and test.passingMarks != null} ? ${test.passingMarks * 100 / test.totalMarks} : 0) + '%'">
-
-                                    </div>
-
-                                </div>
-
-                                <small class="text-muted"
-                                       th:text="${test.totalMarks != null and test.totalMarks > 0 and test.passingMarks != null ? (test.passingMarks * 100 / test.totalMarks) + '%' : '0%'}">
-
-                                    40%
-
-                                </small>
-
-                            </td>
-
-                        </tr>
-
-                        </tbody>
-
-                    </table>
+                    </h5>
 
                 </div>
 
 
-                <div th:if="${tests == null or tests.isEmpty()}"
-                     class="text-center text-muted py-5">
+                <div class="card-body p-0">
 
-                    <i class="bi bi-bar-chart fs-1 d-block mb-3"></i>
+                    <div class="table-responsive">
 
-                    No test data available for analysis.
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light">
+
+                            <tr>
+
+                                <th class="px-4">
+                                    Test
+                                </th>
+
+                                <th>
+                                    Course
+                                </th>
+
+                                <th>
+                                    Subject
+                                </th>
+
+                                <th>
+                                    Chapter
+                                </th>
+
+                                <th>
+                                    Questions
+                                </th>
+
+                                <th>
+                                    Total Marks
+                                </th>
+
+                                <th>
+                                    Passing Marks
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                            <!-- TEST -->
+
+                            <tr th:each="test : ${tests}">
+
+
+                                <!-- TEST NAME -->
+
+                                <td class="px-4">
+
+                                    <strong
+                                            th:text="${test.testName}">
+
+                                        Test
+
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- COURSE -->
+
+                                <td th:text="${test.course}">
+
+                                    NEET
+
+                                </td>
+
+
+                                <!-- SUBJECT -->
+
+                                <td th:text="${test.subject}">
+
+                                    Biology
+
+                                </td>
+
+
+                                <!-- CHAPTER -->
+
+                                <td th:text="${test.chapter}">
+
+                                    Chapter
+
+                                </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- CREATED QUESTIONS -->
+                                <!-- ================================================= -->
+
+                                <td>
+
+                                    <span class="badge bg-primary">
+
+                                        <i class="bi bi-question-circle me-1"></i>
+
+                                        <span
+                                                th:text="${test.questions != null ? test.questions.size() : 0}">
+
+                                            0
+
+                                        </span>
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- TOTAL MARKS -->
+
+                                <td th:text="${test.totalMarks}">
+
+                                    100
+
+                                </td>
+
+
+                                <!-- PASSING MARKS -->
+
+                                <td th:text="${test.passingMarks}">
+
+                                    40
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    <span
+                                            th:if="${'PUBLISHED'.equalsIgnoreCase(test.status)}"
+                                            class="badge bg-success">
+
+                                        Published
+
+                                    </span>
+
+
+                                    <span
+                                            th:unless="${'PUBLISHED'.equalsIgnoreCase(test.status)}"
+                                            class="badge bg-secondary">
+
+                                        Draft
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- ================================================= -->
+                            <!-- NO TESTS -->
+                            <!-- ================================================= -->
+
+                            <tr th:if="${#lists.isEmpty(tests)}">
+
+                                <td colspan="8"
+                                    class="text-center py-5 text-muted">
+
+                                    <i class="bi bi-bar-chart fs-1 d-block mb-3"></i>
+
+                                    <h5>
+                                        No test data available
+                                    </h5>
+
+                                </td>
+
+                            </tr>
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
                 </div>
 
             </div>
 
-
-            <!-- INFORMATION BOXES -->
-
-            <div class="row g-3">
-
-                <div class="col-md-4">
-
-                    <div class="info-box">
-
-                        <div class="info-number"
-                             th:text="${totalTests}">
-                            0
-                        </div>
-
-                        <div class="info-label">
-                            Tests created in the system
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <div class="info-box">
-
-                        <div class="info-number"
-                             th:text="${publishedTests}">
-                            0
-                        </div>
-
-                        <div class="info-label">
-                            Tests currently published
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <div class="info-box">
-
-                        <div class="info-number"
-                             th:text="${totalQuestions}">
-                            0
-                        </div>
-
-                        <div class="info-label">
-                            Questions across all tests
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
 
         </main>
 
@@ -369,140 +417,11 @@
 </div>
 
 
-<!-- SCRIPTS (Bootstrap JS + sidebar menu logic) -->
+<!-- SCRIPTS -->
+
 <div th:replace="~{fragments/layout::scripts}">
 </div>
 
-
-<style>
-
-body {
-    background: #f7f9fc;
-    font-family: Arial, sans-serif;
-    color: #172b4d;
-}
-
-.page-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.page-subtitle {
-    color: #718096;
-    font-size: 14px;
-    margin-bottom: 22px;
-}
-
-.stat-card {
-    background: white;
-    border: 1px solid #e5eaf0;
-    border-radius: 12px;
-    padding: 20px;
-    height: 100%;
-    box-shadow: 0 2px 8px rgba(20,40,80,0.04);
-}
-
-.stat-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
-    background: #e9f1ff;
-    color: #2563eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    margin-bottom: 14px;
-}
-
-.stat-title {
-    color: #718096;
-    font-size: 13px;
-    margin-bottom: 5px;
-}
-
-.stat-number {
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.main-card {
-    background: white;
-    border: 1px solid #e5eaf0;
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 2px 8px rgba(20,40,80,0.04);
-}
-
-.section-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 18px;
-}
-
-.analysis-table {
-    border: 1px solid #e4eaf2;
-    border-radius: 9px;
-    overflow: hidden;
-}
-
-.analysis-table table {
-    margin-bottom: 0;
-}
-
-.analysis-table th {
-    background: #f1f5fa;
-    font-size: 13px;
-    padding: 12px;
-}
-
-.analysis-table td {
-    font-size: 13px;
-    padding: 12px;
-    vertical-align: middle;
-}
-
-.progress {
-    height: 8px;
-    border-radius: 10px;
-    background: #edf1f5;
-}
-
-.progress-bar {
-    border-radius: 10px;
-}
-
-.published {
-    color: #087443;
-    font-weight: 600;
-}
-
-.draft {
-    color: #856404;
-    font-weight: 600;
-}
-
-.info-box {
-    background: #f8fafc;
-    border: 1px solid #e4eaf2;
-    border-radius: 10px;
-    padding: 18px;
-    margin-top: 20px;
-}
-
-.info-number {
-    font-size: 25px;
-    font-weight: 700;
-}
-
-.info-label {
-    font-size: 13px;
-    color: #718096;
-}
-
-</style>
-
 </body>
+
 </html>

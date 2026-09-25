@@ -1,16 +1,22 @@
 package com.itvedant.StudentManagement.services;
 
-import com.itvedant.StudentManagement.model.Test;
-
 import java.util.List;
+
+import com.itvedant.StudentManagement.model.Test;
 
 public interface TestService {
 
-    Test saveTest(Test test);
+    Test save(Test test);
 
-    Test getTestById(Long id);
+    Test getById(Long id);
 
-    List<Test> getAllTests();
+    List<Test> getAll();
 
-    void deleteTest(Long id);
+    Test update(Long id, Test test);
+
+    void delete(Long id);
+
+    long getQuestionCount(Long testId);
+
+    long getTotalQuestionCount();
 }

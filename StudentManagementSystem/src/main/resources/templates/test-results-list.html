@@ -10,81 +10,153 @@
 
 <div class="d-flex" id="wrapper">
 
-    <!-- SIDEBAR -->
-    <div th:replace="~{fragments/layout::sidebar}"></div>
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
 
-    <!-- PAGE CONTENT -->
+    <div th:replace="~{fragments/layout::sidebar}">
+    </div>
+
+
+    <!-- =========================================================
+         PAGE CONTENT
+         ========================================================= -->
+
     <div id="page-content-wrapper">
 
-        <!-- NAVBAR -->
-        <div th:replace="~{fragments/layout::navbar}"></div>
+
+        <!-- =====================================================
+             NAVBAR
+             ===================================================== -->
+
+        <div th:replace="~{fragments/layout::navbar}">
+        </div>
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+             ===================================================== -->
 
         <main class="container-fluid p-4">
 
-            <!-- SUCCESS MESSAGE -->
+
+            <!-- =================================================
+                 SUCCESS MESSAGE
+                 ================================================= -->
+
             <div th:if="${message}"
                  class="alert alert-success alert-dismissible fade show text-center"
                  role="alert">
+
                 <div class="d-flex justify-content-center align-items-center">
+
                     <i class="bi bi-check-circle me-2"></i>
-                    <span th:text="${message}">Success</span>
+
+                    <span th:text="${message}">
+                        Success
+                    </span>
+
                 </div>
+
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+                        aria-label="Close">
+                </button>
+
             </div>
 
-            <!-- ERROR MESSAGE -->
+
+            <!-- =================================================
+                 ERROR MESSAGE
+                 ================================================= -->
+
             <div th:if="${error}"
                  class="alert alert-danger alert-dismissible fade show text-center"
                  role="alert">
+
                 <div class="d-flex justify-content-center align-items-center">
+
                     <i class="bi bi-exclamation-triangle me-2"></i>
-                    <span th:text="${error}">Error</span>
+
+                    <span th:text="${error}">
+                        Error
+                    </span>
+
                 </div>
+
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+                        aria-label="Close">
+                </button>
+
             </div>
 
-            <!-- BREADCRUMB -->
-            <nav aria-label="breadcrumb" class="mb-3">
+
+            <!-- =================================================
+                 BREADCRUMB
+                 ================================================= -->
+
+            <nav aria-label="breadcrumb"
+                 class="mb-3">
+
                 <ol class="breadcrumb mb-0">
 
                     <li class="breadcrumb-item">
+
                         <a th:href="@{/tests/results}"
                            class="text-decoration-none">
+
                             Tests
+
                         </a>
+
                     </li>
 
                     <li class="breadcrumb-item active"
                         aria-current="page">
+
                         Test Results
+
                     </li>
 
                 </ol>
+
             </nav>
 
-            <!-- PAGE HEADER -->
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
             <div class="d-flex justify-content-between align-items-center mb-4">
 
                 <div>
+
                     <h3 class="fw-bold mb-1">
+
                         <i class="bi bi-bar-chart me-2"></i>
+
                         Test Results
+
                     </h3>
 
                     <p class="text-muted mb-0">
+
                         View results for all tests
+
                     </p>
+
                 </div>
 
             </div>
 
-            <!-- RESULTS TABLE -->
+
+            <!-- =================================================
+                 RESULTS TABLE
+                 ================================================= -->
+
             <div class="card border-0 shadow-sm">
 
                 <div class="card-body p-0">
@@ -93,100 +165,208 @@
 
                         <table class="table table-hover align-middle mb-0">
 
+
+                            <!-- =================================================
+                                 TABLE HEADER
+                                 ================================================= -->
+
                             <thead class="table-light">
 
                             <tr>
-                                <th class="px-4">#</th>
-                                <th>Test Name</th>
-                                <th>Course</th>
-                                <th>Subject</th>
-                                <th>Chapter</th>
-                                <th>Total Marks</th>
-                                <th>Status</th>
-                                <th class="text-center">Action</th>
+
+                                <th class="px-4 text-center">
+                                    #
+                                </th>
+
+                                <th class="text-center">
+                                    Test Name
+                                </th>
+
+                                <th class="text-center">
+                                    Course
+                                </th>
+
+                                <th class="text-center">
+                                    Subject
+                                </th>
+
+                                <th class="text-center">
+                                    Chapter
+                                </th>
+
+                                <th class="text-center">
+                                    Total Marks
+                                </th>
+
+                                <th class="text-center">
+                                    Status
+                                </th>
+
+                                <th class="text-center">
+                                    Action
+                                </th>
+
                             </tr>
 
                             </thead>
 
+
+                            <!-- =================================================
+                                 TABLE BODY
+                                 ================================================= -->
+
                             <tbody>
+
+
+                            <!-- =================================================
+                                 EACH TEST
+                                 ================================================= -->
 
                             <tr th:each="test, stat : ${tests}">
 
-                                <td class="px-4"
+
+                                <!-- NUMBER -->
+
+                                <td class="px-4 text-center"
                                     th:text="${stat.count}">
+
                                     1
+
                                 </td>
 
-                                <td>
+
+                                <!-- TEST NAME -->
+
+                                <td class="text-center">
+
                                     <strong th:text="${test.testName}">
+
                                         Test Name
+
                                     </strong>
+
                                 </td>
 
-                                <td th:text="${test.course}">
+
+                                <!-- COURSE -->
+
+                                <td class="text-center"
+                                    th:text="${test.course}">
+
                                     NEET
+
                                 </td>
 
-                                <td th:text="${test.subject}">
+
+                                <!-- SUBJECT -->
+
+                                <td class="text-center"
+                                    th:text="${test.subject}">
+
                                     Physics
+
                                 </td>
 
-                                <td th:text="${test.chapter}">
+
+                                <!-- CHAPTER -->
+
+                                <td class="text-center"
+                                    th:text="${test.chapter}">
+
                                     Chapter 1
+
                                 </td>
 
-                                <td th:text="${test.totalMarks}">
+
+                                <!-- TOTAL MARKS -->
+
+                                <td class="text-center"
+                                    th:text="${test.totalMarks}">
+
                                     100
+
                                 </td>
 
-                                <td>
+
+                                <!-- STATUS -->
+
+                                <td class="text-center">
+
 
                                     <span th:if="${test.status == 'PUBLISHED'}"
                                           class="badge bg-success">
+
                                         Published
+
                                     </span>
+
 
                                     <span th:unless="${test.status == 'PUBLISHED'}"
                                           class="badge bg-secondary">
+
                                         Draft
+
                                     </span>
+
 
                                 </td>
 
-                                <!-- ACTIONS -->
+
+                                <!-- =================================================
+                                     ACTIONS
+                                     ================================================= -->
+
                                 <td class="text-center">
 
                                     <div class="d-flex justify-content-center gap-2">
 
-                                        <!-- VIEW -->
+
+                                        <!-- VIEW RESULT -->
+
                                         <a th:href="@{/tests/results/{id}(id=${test.id})}"
                                            class="btn btn-sm btn-outline-primary"
                                            title="View Result">
+
                                             <i class="bi bi-eye"></i>
+
                                         </a>
 
-                                        <!-- EDIT -->
+
+                                        <!-- EDIT TEST -->
+
                                         <a th:href="@{/tests/edit/{id}(id=${test.id})}"
                                            class="btn btn-sm btn-outline-warning"
                                            title="Edit Test">
+
                                             <i class="bi bi-pencil"></i>
+
                                         </a>
 
-                                        <!-- DELETE -->
+
+                                        <!-- DELETE TEST -->
+
                                         <a th:href="@{/tests/delete/{id}(id=${test.id})}"
                                            class="btn btn-sm btn-outline-danger"
                                            title="Delete Test"
                                            onclick="return confirm('Are you sure you want to delete this test?');">
+
                                             <i class="bi bi-trash"></i>
+
                                         </a>
+
 
                                     </div>
 
                                 </td>
 
+
                             </tr>
 
-                            <!-- NO RESULTS -->
+
+                            <!-- =================================================
+                                 NO RESULTS
+                                 ================================================= -->
+
                             <tr th:if="${#lists.isEmpty(tests)}">
 
                                 <td colspan="8"
@@ -200,6 +380,7 @@
 
                             </tr>
 
+
                             </tbody>
 
                         </table>
@@ -210,25 +391,45 @@
 
             </div>
 
+
         </main>
 
     </div>
 
 </div>
 
-<!-- SCRIPTS (Bootstrap JS + sidebar menu logic) -->
-<div th:replace="~{fragments/layout::scripts}"></div>
+
+<!-- =============================================================
+     SCRIPTS
+     ============================================================= -->
+
+<div th:replace="~{fragments/layout::scripts}">
+</div>
+
 
 <script>
+
     // Auto-hide flash messages after 4 seconds
+
     document.addEventListener("DOMContentLoaded", function () {
+
         document.querySelectorAll(".alert").forEach(function (el) {
+
             setTimeout(function () {
-                bootstrap.Alert.getOrCreateInstance(el).close();
+
+                bootstrap.Alert
+                    .getOrCreateInstance(el)
+                    .close();
+
             }, 4000);
+
         });
+
     });
+
 </script>
 
+
 </body>
+
 </html>

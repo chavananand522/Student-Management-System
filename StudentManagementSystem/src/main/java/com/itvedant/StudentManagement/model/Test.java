@@ -1,6 +1,7 @@
 package com.itvedant.StudentManagement.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,28 +13,14 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String testName;
 
     private String course;
 
-    /*
-     * Stores multiple subjects.
-     * Example:
-     * Biology | Chemistry | Physics
-     */
-    @Column(name = "subject", columnDefinition = "TEXT")
     private String subject;
 
-    /*
-     * Stores multiple subject + chapter combinations.
-     * Example:
-     *
-     * Biology: The Living World |
-     * Biology: Plant Kingdom |
-     * Chemistry: Thermodynamics |
-     * Physics: Laws of Motion
-     */
-    @Column(name = "chapter", columnDefinition = "TEXT")
+    @Column(length = 2000)
     private String chapter;
 
     private Integer duration;
@@ -42,43 +29,66 @@ public class Test {
 
     private Integer passingMarks;
 
-    private Boolean shuffleQuestions;
+    private Boolean shuffleQuestions = false;
 
-    private Boolean shuffleOptions;
+    private Boolean shuffleOptions = false;
 
-    private Boolean showResultImmediately;
+    private Boolean showResultImmediately = true;
 
-    private Boolean allowTestRetake;
+    private Boolean allowTestRetake = false;
 
-    private Integer numberOfAttempts;
+    private Integer numberOfAttempts = 1;
 
-    private String status;
+    private String status = "DRAFT";
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     @OneToMany(
             mappedBy = "test",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @OrderBy("id ASC")
     private List<Question> questions = new ArrayList<>();
 
-    public Test() {
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+
+        if (status == null || status.isBlank()) {
+            status = "DRAFT";
+        }
+
+        if (numberOfAttempts == null || numberOfAttempts < 1) {
+            numberOfAttempts = 1;
+        }
+
+        if (passingMarks == null && totalMarks != null) {
+            passingMarks = (int) Math.ceil(totalMarks * 0.40);
+        }
     }
 
-    // =========================================================
-    // ID
-    // =========================================================
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+        question.setTest(this);
+    }
+
+    public void removeQuestion(Question question) {
+        questions.remove(question);
+        question.setTest(null);
+    }
 
     public Long getId() {
         return id;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    // =========================================================
-    // TEST NAME
-    // =========================================================
 
     public String getTestName() {
         return testName;
@@ -88,10 +98,6 @@ public class Test {
         this.testName = testName;
     }
 
-    // =========================================================
-    // COURSE
-    // =========================================================
-
     public String getCourse() {
         return course;
     }
@@ -99,10 +105,6 @@ public class Test {
     public void setCourse(String course) {
         this.course = course;
     }
-
-    // =========================================================
-    // SUBJECT
-    // =========================================================
 
     public String getSubject() {
         return subject;
@@ -112,10 +114,6 @@ public class Test {
         this.subject = subject;
     }
 
-    // =========================================================
-    // CHAPTER
-    // =========================================================
-
     public String getChapter() {
         return chapter;
     }
@@ -123,10 +121,6 @@ public class Test {
     public void setChapter(String chapter) {
         this.chapter = chapter;
     }
-
-    // =========================================================
-    // DURATION
-    // =========================================================
 
     public Integer getDuration() {
         return duration;
@@ -136,10 +130,6 @@ public class Test {
         this.duration = duration;
     }
 
-    // =========================================================
-    // TOTAL MARKS
-    // =========================================================
-
     public Integer getTotalMarks() {
         return totalMarks;
     }
@@ -147,10 +137,6 @@ public class Test {
     public void setTotalMarks(Integer totalMarks) {
         this.totalMarks = totalMarks;
     }
-
-    // =========================================================
-    // PASSING MARKS
-    // =========================================================
 
     public Integer getPassingMarks() {
         return passingMarks;
@@ -160,10 +146,6 @@ public class Test {
         this.passingMarks = passingMarks;
     }
 
-    // =========================================================
-    // SHUFFLE QUESTIONS
-    // =========================================================
-
     public Boolean getShuffleQuestions() {
         return shuffleQuestions;
     }
@@ -171,10 +153,6 @@ public class Test {
     public void setShuffleQuestions(Boolean shuffleQuestions) {
         this.shuffleQuestions = shuffleQuestions;
     }
-
-    // =========================================================
-    // SHUFFLE OPTIONS
-    // =========================================================
 
     public Boolean getShuffleOptions() {
         return shuffleOptions;
@@ -184,10 +162,6 @@ public class Test {
         this.shuffleOptions = shuffleOptions;
     }
 
-    // =========================================================
-    // SHOW RESULT IMMEDIATELY
-    // =========================================================
-
     public Boolean getShowResultImmediately() {
         return showResultImmediately;
     }
@@ -195,10 +169,6 @@ public class Test {
     public void setShowResultImmediately(Boolean showResultImmediately) {
         this.showResultImmediately = showResultImmediately;
     }
-
-    // =========================================================
-    // ALLOW TEST RETAKE
-    // =========================================================
 
     public Boolean getAllowTestRetake() {
         return allowTestRetake;
@@ -208,10 +178,6 @@ public class Test {
         this.allowTestRetake = allowTestRetake;
     }
 
-    // =========================================================
-    // NUMBER OF ATTEMPTS
-    // =========================================================
-
     public Integer getNumberOfAttempts() {
         return numberOfAttempts;
     }
@@ -219,10 +185,6 @@ public class Test {
     public void setNumberOfAttempts(Integer numberOfAttempts) {
         this.numberOfAttempts = numberOfAttempts;
     }
-
-    // =========================================================
-    // STATUS
-    // =========================================================
 
     public String getStatus() {
         return status;
@@ -232,9 +194,13 @@ public class Test {
         this.status = status;
     }
 
-    // =========================================================
-    // QUESTIONS
-    // =========================================================
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
     public List<Question> getQuestions() {
         return questions;
@@ -242,27 +208,11 @@ public class Test {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
-    }
 
-    // =========================================================
-    // ADD QUESTION
-    // =========================================================
-
-    public void addQuestion(Question question) {
-
-        questions.add(question);
-
-        question.setTest(this);
-    }
-
-    // =========================================================
-    // REMOVE QUESTION
-    // =========================================================
-
-    public void removeQuestion(Question question) {
-
-        questions.remove(question);
-
-        question.setTest(null);
+        if (questions != null) {
+            for (Question question : questions) {
+                question.setTest(this);
+            }
+        }
     }
 }

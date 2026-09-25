@@ -18,6 +18,46 @@
 
         <main class="container-fluid p-4">
 
+            <!-- ================================================= -->
+            <!-- FLASH MESSAGES -->
+            <!-- ================================================= -->
+
+            <div th:if="${message}"
+                 class="alert alert-success alert-dismissible fade show text-center mx-auto flash-alert"
+                 role="alert">
+
+                <i class="bi bi-check-circle me-2"></i>
+
+                <span th:text="${message}">
+                    Success
+                </span>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+
+
+            <div th:if="${error}"
+                 class="alert alert-danger alert-dismissible fade show text-center mx-auto flash-alert"
+                 role="alert">
+
+                <i class="bi bi-exclamation-circle me-2"></i>
+
+                <span th:text="${error}">
+                    Error
+                </span>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+
+
             <!-- PAGE HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -227,6 +267,26 @@
         </main>
     </div>
 </div>
+
+
+<!-- ===================================================== -->
+<!-- PAGE-SPECIFIC STYLE -->
+<!-- ===================================================== -->
+
+<style>
+    .flash-alert {
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+
+<!-- ===================================================== -->
+<!-- COMMON SCRIPTS -->
+<!-- ===================================================== -->
+
+<div th:replace="~{fragments/layout::scripts}"></div>
 
 </body>
 </html>

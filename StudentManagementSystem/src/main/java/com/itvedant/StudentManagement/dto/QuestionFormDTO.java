@@ -1,52 +1,22 @@
-package com.itvedant.StudentManagement.model;
+package com.itvedant.StudentManagement.dto;
 
-import jakarta.persistence.*;
+public class QuestionFormDTO {
 
-@Entity
-@Table(name = "test_questions")
-public class Question {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_id", nullable = false)
-    private Test test;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String questionText;
 
-    @Column(columnDefinition = "TEXT")
     private String optionA;
 
-    @Column(columnDefinition = "TEXT")
     private String optionB;
 
-    @Column(columnDefinition = "TEXT")
     private String optionC;
 
-    @Column(columnDefinition = "TEXT")
     private String optionD;
 
     private String correctAnswer;
 
     private Integer marks;
 
-    @Column(columnDefinition = "TEXT")
     private String explanation;
-
-    public Long getId() {
-        return id;
-    }
-
-    public Test getTest() {
-        return test;
-    }
-
-    public void setTest(Test test) {
-        this.test = test;
-    }
 
     public String getQuestionText() {
         return questionText;
