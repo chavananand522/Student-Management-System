@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Head Fragment -->
+    <th:block th:replace="~{student/student-layout :: head}"></th:block>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .test-performance-card {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .test-performance-card:hover {
+            transform: translateY(-2px);
+        }
+        .chart-container {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="d-flex">
+        <!-- Sidebar Fragment -->
+        <div th:replace="~{student/student-layout :: sidebar}"></div>
+
+        <!-- Main Content Area -->
+        <div class="flex-grow-1 d-flex flex-column min-vh-100 ms-0">
+            
+            <!-- Navbar Fragment -->
+            <div th:replace="~{student/student-layout :: navbar}"></div>
+
+            <!-- Alerts Fragment -->
+            <div th:replace="~{student/student-layout :: alerts}"></div>
+
+            <!-- Main Dashboard Body Content -->
+            <main class="container-fluid px-4 py-4 flex-grow-1">
+                
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h2 class="fw-bold text-dark mb-0">Test Performance Analysis</h2>
+                        <p class="text-muted mb-0">Track test scores, answer breakdown, and compare against topper marks</p>
+                    </div>
+                    <button id="resetChartsBtn" class="btn btn-outline-secondary d-none" onclick="resetChartSelection()">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+                    </button>
+                </div>
+
+                <!-- 2 Charts Section (Side-by-side Pillars) -->
+                <div class="row g-4 mb-4">
+                    <!-- Chart 1: Answers Distribution (3 Pillars: Correct, Wrong, Unanswered) -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-semibold text-secondary mb-3">Answers Distribution</h5>
+                                <div class="chart-container">
+                                    <canvas id="allTestsAnswersChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Your Marks vs Topper Marks -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-semibold text-secondary mb-3">Your Marks vs Topper Marks</h5>
+                                <div class="chart-container">
+                                    <canvas id="topperMarksChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attempted Tests List -->
+                <h4 class="fw-bold text-dark mb-3">All Attempted Tests</h4>
+                
+                <div class="row g-3" th:if="${rows != null and !rows.empty}">
+                    <div class="col-md-6 col-lg-4" th:each="row, iterStat : ${rows}">
+                        <div class="card test-performance-card border-0 shadow-sm h-100" 
+                             th:onclick="'filterChartsByTest(' + ${iterStat.index} + ', this)'">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold text-primary mb-0" th:text="${row.testName}">Test Name</h5>
+                                    <span class="badge bg-primary rounded-pill" th:text="${row.obtainedMarks} + ' Marks'">0 Marks</span>
+                                </div>
+                                
+                                <hr class="text-muted opacity-25">
+
+                                <div class="row text-center mt-2">
+                                    <div class="col-4">
+                                        <span class="d-block text-success fw-bold" th:text="${row.correct}">0</span>
+                                        <small class="text-muted">Correct</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="d-block text-danger fw-bold" th:text="${row.wrong}">0</span>
+                                        <small class="text-muted">Wrong</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="d-block text-warning fw-bold" th:text="${row.unanswered}">0</span>
+                                        <small class="text-muted">Skipped</small>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 pt-2 border-top d-flex justify-content-between text-muted small" th:if="${row.topperMarks != null}">
+                                    <span>Topper (<span th:text="${row.topperName}">Topper</span>):</span>
+                                    <strong class="text-dark" th:text="${row.topperMarks} + ' Marks'">0 Marks</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="text-center py-5" th:if="${rows == null or rows.empty}">
+                    <p class="text-muted fs-5">No test records available to analyze.</p>
+                </div>
+
+            </main>
+
+            <!-- Footer Fragment -->
+            <footer th:replace="~{student/student-layout :: footer}"></footer>
+
+        </div>
+    </div>
+
+    <!-- Layout Scripts Fragment -->
+    <th:block th:replace="~{student/student-layout :: scripts}"></th:block>
+
+    <!-- Page Specific Script for Chart rendering -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const rowsData = /*[[${rows}]]*/ [];
+
+        let answersChart = null;
+        let topperChart = null;
+
+        function initCharts(data) {
+            if (!data || data.length === 0) return;
+
+            const labels = data.map(r => r.testName);
+            const correct = data.map(r => r.correct);
+            const wrong = data.map(r => r.wrong);
+            const unanswered = data.map(r => r.unanswered);
+
+            const myMarks = data.map(r => r.obtainedMarks);
+            const topperMarks = data.map(r => r.topperMarks != null ? r.topperMarks : r.obtainedMarks);
+
+            // Determine Topper label name dynamically
+            let topperLabel = 'Topper Marks';
+            if (data.length === 1 && data[0].topperName) {
+                topperLabel = `Topper Marks (${data[0].topperName})`;
+            }
+
+            // 1. Render Answers Distribution Chart (3 Pillars)
+            const ctxAnswers = document.getElementById('allTestsAnswersChart').getContext('2d');
+            if (answersChart) answersChart.destroy();
+
+            answersChart = new Chart(ctxAnswers, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Correct', data: correct, backgroundColor: '#198754' },
+                        { label: 'Wrong', data: wrong, backgroundColor: '#dc3545' },
+                        { label: 'Unanswered', data: unanswered, backgroundColor: '#ffc107' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        x: { stacked: false }, 
+                        y: { stacked: false, beginAtZero: true } 
+                    }
+                }
+            });
+
+            // 2. Render Topper Marks Chart (With Topper Name in tooltip & legend)
+            const ctxTopper = document.getElementById('topperMarksChart').getContext('2d');
+            if (topperChart) topperChart.destroy();
+
+            topperChart = new Chart(ctxTopper, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Your Marks', data: myMarks, backgroundColor: '#0d6efd' },
+                        { label: topperLabel, data: topperMarks, backgroundColor: '#ffc107' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const item = data[index];
+                                    if (context.datasetIndex === 1 && item.topperName) {
+                                        return `Topper Marks (${item.topperName}): ${context.raw}`;
+                                    }
+                                    return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: { 
+                        y: { beginAtZero: true } 
+                    }
+                }
+            });
+        }
+
+        function filterChartsByTest(index, element) {
+            document.querySelectorAll('.test-performance-card').forEach(card => {
+                card.classList.remove('border-primary', 'shadow');
+            });
+            element.classList.add('border-primary', 'shadow');
+            document.getElementById('resetChartsBtn').classList.remove('d-none');
+
+            const selected = [rowsData[index]];
+            initCharts(selected);
+        }
+
+        function resetChartSelection() {
+            document.querySelectorAll('.test-performance-card').forEach(card => {
+                card.classList.remove('border-primary', 'shadow');
+            });
+            document.getElementById('resetChartsBtn').classList.add('d-none');
+            initCharts(rowsData);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (rowsData && rowsData.length > 0) {
+                initCharts(rowsData);
+            }
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

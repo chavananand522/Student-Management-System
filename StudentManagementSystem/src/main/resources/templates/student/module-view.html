@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{student/student-layout::head}"></head>
 
@@ -14,26 +13,21 @@
     <div class="student-content">
 
         <div th:replace="~{student/student-layout::navbar}"></div>
-
         <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <!-- BREADCRUMB -->
             <div class="mb-4">
                 <a th:href="@{/student/study}"
                    class="text-primary text-decoration-none">Study</a>
                 <span class="mx-2">›</span>
-
                 <a th:href="@{'/student/study/' + ${subjectLower}}"
                    class="text-primary text-decoration-none"
                    th:text="${subjectName}"></a>
                 <span class="mx-2">›</span>
-
                 <span th:text="${module.name}"></span>
             </div>
 
-            <!-- MODULE HEADER -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -41,30 +35,21 @@
                             <div class="text-muted mb-2"
                                  th:text="'Module ' + ${module.moduleNumber}">
                             </div>
-
-                            <h1 class="fw-bold mb-2"
-                                th:text="${module.name}">
-                            </h1>
-
+                            <h1 class="fw-bold mb-2" th:text="${module.name}"></h1>
                             <p class="text-muted mb-0"
                                th:if="${module.description != null && !module.description.isEmpty()}"
                                th:text="${module.description}">
                             </p>
                         </div>
-
                         <div class="text-primary" style="font-size: 48px;">
-                            <i th:if="${subjectName == 'Physics'}"
-                               class="bi bi-lightning-charge"></i>
-                            <i th:if="${subjectName == 'Chemistry'}"
-                               class="bi bi-droplet"></i>
-                            <i th:if="${subjectName == 'Biology'}"
-                               class="bi bi-heart-pulse"></i>
+                            <i th:if="${subjectName == 'Physics'}" class="bi bi-lightning-charge"></i>
+                            <i th:if="${subjectName == 'Chemistry'}" class="bi bi-droplet"></i>
+                            <i th:if="${subjectName == 'Biology'}" class="bi bi-heart-pulse"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- CHAPTERS HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h3 class="fw-bold mb-1">Chapters</h3>
@@ -76,7 +61,6 @@
                 </a>
             </div>
 
-            <!-- NO CHAPTERS -->
             <div th:if="${chapters == null || chapters.isEmpty()}"
                  class="card border-0 shadow-sm">
                 <div class="card-body text-center py-5">
@@ -88,22 +72,17 @@
                 </div>
             </div>
 
-            <!-- CHAPTER LIST -->
             <div th:if="${chapters != null && !chapters.isEmpty()}">
 
-                <div th:each="chapter, stat : ${chapters}"
-                     class="mv-row">
+                <div th:each="chapter, stat : ${chapters}" class="mv-row">
 
                     <div class="mv-info">
                         <div class="mv-title">
                             <span class="mv-badge" th:text="${stat.count}">1</span>
-
                             <a th:href="@{'/student/study/' + ${subjectLower} + '/module/' + ${module.id} + '/chapter/' + ${chapter.id}}"
                                class="mv-name"
-                               th:text="${chapter.name}">
-                            </a>
+                               th:text="${chapter.name}"></a>
                         </div>
-
                         <div class="mv-desc"
                              th:if="${chapter.description != null && !chapter.description.isEmpty()}"
                              th:text="${chapter.description}">
@@ -133,94 +112,29 @@
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 <style>
-    .mv-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        background: #ffffff;
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        padding: 16px 22px;
-        margin-bottom: 12px;
-        transition: box-shadow 0.2s ease, transform 0.2s ease;
-    }
-
-    .mv-row:hover {
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-        transform: translateY(-1px);
-    }
-
-    .mv-info {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        flex: 1;
-        min-width: 0;
-    }
-
-    .mv-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .mv-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: #4361ee;
-        color: #ffffff;
-        font-size: 13px;
-        font-weight: 600;
-        flex-shrink: 0;
-    }
-
-    .mv-name {
-        font-size: 18px;
-        font-weight: 600;
-        color: #212529;
-        text-decoration: none;
-    }
-
-    .mv-name:hover {
-        color: #4361ee;
-    }
-
-    .mv-desc {
-        color: #6c757d;
-        font-size: 14px;
-        margin-left: 36px;
-    }
-
-    .mv-actions {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-shrink: 0;
-    }
-
-    .mv-actions .btn {
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-    }
-
-    @media (max-width: 768px) {
-        .mv-row {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .mv-actions {
-            margin-top: 8px;
-        }
-    }
+.mv-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; background: #fff; border: 1px solid #e9ecef;
+    border-radius: 12px; padding: 16px 22px; margin-bottom: 12px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.mv-row:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-1px); }
+.mv-info { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.mv-title { display: flex; align-items: center; gap: 8px; }
+.mv-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #4361ee; color: #fff; font-size: 13px; font-weight: 600; flex-shrink: 0;
+}
+.mv-name { font-size: 18px; font-weight: 600; color: #212529; text-decoration: none; }
+.mv-name:hover { color: #4361ee; }
+.mv-desc { color: #6c757d; font-size: 14px; margin-left: 36px; }
+.mv-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.mv-actions .btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; padding: 0; }
+@media (max-width: 768px) {
+    .mv-row { flex-direction: column; align-items: flex-start; }
+    .mv-actions { margin-top: 8px; }
+}
 </style>
 
 </body>

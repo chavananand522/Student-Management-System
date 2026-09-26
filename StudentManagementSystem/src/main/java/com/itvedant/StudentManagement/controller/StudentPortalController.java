@@ -10,12 +10,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -331,9 +329,16 @@ public class StudentPortalController {
         Students student =
                 currentStudent(authentication);
 
+        /*
+         * Get ALL PUBLISHED tests created by Admin.
+         */
         List<Test> tests =
                 availableTests(student);
 
+        /*
+         * Store number of attempts made by
+         * the currently logged-in student.
+         */
         Map<Long, Integer> attempts =
                 new LinkedHashMap<>();
 
@@ -360,6 +365,10 @@ public class StudentPortalController {
         return "student/tests";
     }
 
+    // =========================================================
+    // TEST DETAILS
+    // =========================================================
+
     @GetMapping("/tests/{id}")
     @Transactional(readOnly = true)
     public String testDetails(
@@ -379,7 +388,7 @@ public class StudentPortalController {
             redirectAttributes
                     .addFlashAttribute(
                         "error",
-                        "Test is not available for your enrolled courses.");
+                        "Test is not available.");
 
             return "redirect:/student/tests";
         }
@@ -405,6 +414,10 @@ public class StudentPortalController {
         return "student/test-details";
     }
 
+    // =========================================================
+    // START TEST
+    // =========================================================
+
     @PostMapping("/tests/{id}/start")
     @Transactional
     public String startTest(
@@ -423,7 +436,7 @@ public class StudentPortalController {
             redirectAttributes
                     .addFlashAttribute(
                         "error",
-                        "Test is not available for your enrolled courses.");
+                        "Test is not available.");
 
             return "redirect:/student/tests";
         }
@@ -434,6 +447,10 @@ public class StudentPortalController {
                         id,
                         authentication.getName());
 
+        /*
+         * If the student already has an unfinished attempt,
+         * continue that attempt.
+         */
         TestAttempt inProgress =
                 attempts.stream()
                     .filter(a ->
@@ -444,10 +461,14 @@ public class StudentPortalController {
                     .orElse(null);
 
         if (inProgress != null) {
+
             return "redirect:/student/tests/attempt/"
                     + inProgress.getId();
         }
 
+        /*
+         * Check allowed attempts.
+         */
         if (!canStart(test, attempts)) {
 
             redirectAttributes
@@ -455,13 +476,15 @@ public class StudentPortalController {
                         "error",
                         "You have used all allowed attempts for this test.");
 
-            return "redirect:/student/tests/" + id;
+            return "redirect:/student/tests/"
+                    + id;
         }
 
         TestAttempt attempt =
                 new TestAttempt();
 
         attempt.setTest(test);
+
         attempt.setStudentUsername(
                 authentication.getName());
 
@@ -480,9 +503,11 @@ public class StudentPortalController {
                 + attempt.getId();
     }
 
-    @GetMapping(
-        "/tests/attempt/{attemptId}"
-    )
+    // =========================================================
+    // TAKE TEST
+    // =========================================================
+
+    @GetMapping("/tests/attempt/{attemptId}")
     @Transactional(readOnly = true)
     public String attempt(
             @PathVariable Long attemptId,
@@ -551,9 +576,11 @@ public class StudentPortalController {
         return "student/test-attempt";
     }
 
-    @PostMapping(
-        "/tests/attempt/{attemptId}/submit"
-    )
+    // =========================================================
+    // SUBMIT TEST
+    // =========================================================
+
+    @PostMapping("/tests/attempt/{attemptId}/submit")
     @Transactional
     public String submitAttempt(
             @PathVariable Long attemptId,
@@ -591,6 +618,10 @@ public class StudentPortalController {
 
         test.getQuestions().size();
 
+        // =====================================================
+        // CHECK TIME LIMIT
+        // =====================================================
+
         if (attempt.getStartedAt() != null &&
             test.getDuration() != null) {
 
@@ -617,7 +648,9 @@ public class StudentPortalController {
                         test.getQuestions().size());
 
                 attempt.setCorrectAnswers(0);
+
                 attempt.setWrongAnswers(0);
+
                 attempt.setObtainedMarks(0);
 
                 attemptRepository.save(
@@ -638,6 +671,10 @@ public class StudentPortalController {
         int unanswered = 0;
         int marks = 0;
 
+        // =====================================================
+        // CHECK EACH QUESTION
+        // =====================================================
+
         for (Question question :
                 test.getQuestions()) {
 
@@ -646,16 +683,19 @@ public class StudentPortalController {
                         "answer_" +
                         question.getId());
 
+            // Unanswered
             if (selected == null ||
                 selected.trim().isEmpty()) {
 
                 unanswered++;
+
                 continue;
             }
 
             boolean isCorrect =
                     question.getCorrectAnswer() != null
-                    && question.getCorrectAnswer()
+                    &&
+                    question.getCorrectAnswer()
                         .trim()
                         .equalsIgnoreCase(
                             selected.trim());
@@ -668,38 +708,59 @@ public class StudentPortalController {
             StudentAnswer answer =
                     new StudentAnswer();
 
-            answer.setQuestion(question);
-            answer.setSelectedAnswer(selected);
-            answer.setCorrect(isCorrect);
+            answer.setQuestion(
+                    question);
+
+            answer.setSelectedAnswer(
+                    selected);
+
+            answer.setCorrect(
+                    isCorrect);
 
             answer.setMarksObtained(
                     isCorrect
                     ? questionMarks
                     : 0);
 
-            attempt.addAnswer(answer);
+            attempt.addAnswer(
+                    answer);
 
             if (isCorrect) {
+
                 correct++;
+
                 marks += questionMarks;
+
             } else {
+
                 wrong++;
             }
         }
 
-        attempt.setCorrectAnswers(correct);
-        attempt.setWrongAnswers(wrong);
+        // =====================================================
+        // SAVE RESULT
+        // =====================================================
+
+        attempt.setCorrectAnswers(
+                correct);
+
+        attempt.setWrongAnswers(
+                wrong);
+
         attempt.setUnansweredQuestions(
                 unanswered);
 
-        attempt.setObtainedMarks(marks);
+        attempt.setObtainedMarks(
+                marks);
 
-        attempt.setStatus("SUBMITTED");
+        attempt.setStatus(
+                "SUBMITTED");
 
         attempt.setSubmittedAt(
                 LocalDateTime.now());
 
-        attemptRepository.save(attempt);
+        attemptRepository.save(
+                attempt);
 
         return "redirect:/student/results/"
                 + attemptId;
@@ -733,6 +794,10 @@ public class StudentPortalController {
 
         return "student/results";
     }
+
+    // =========================================================
+    // SINGLE RESULT
+    // =========================================================
 
     @GetMapping("/results/{attemptId}")
     @Transactional(readOnly = true)
@@ -795,6 +860,7 @@ public class StudentPortalController {
                 new ArrayList<>();
 
         double totalFees = 0;
+
         double totalPaid = 0;
 
         for (Enrollment enrollment :
@@ -833,6 +899,7 @@ public class StudentPortalController {
                     pending));
 
             totalFees += fee;
+
             totalPaid += paid;
         }
 
@@ -934,7 +1001,8 @@ public class StudentPortalController {
     // PUBLISHED TEST
     // =========================================================
 
-    private Test publishedTest(Long id) {
+    private Test publishedTest(
+            Long id) {
 
         Test test =
                 testRepository
@@ -956,45 +1024,47 @@ public class StudentPortalController {
     // =========================================================
     // AVAILABLE TESTS
     // =========================================================
-
+    /*
+     * IMPORTANT:
+     *
+     * This now returns ALL tests published by Admin.
+     *
+     * Previously the method filtered tests using the
+     * student's enrolled course.
+     *
+     * That meant a published Admin test could disappear
+     * from the Student Portal if the course name/code
+     * did not exactly match.
+     *
+     * Now:
+     *
+     * Admin publishes test
+     *        ↓
+     * status = PUBLISHED
+     *        ↓
+     * Student Portal
+     *        ↓
+     * /student/tests
+     *        ↓
+     * Test appears
+     */
     private List<Test> availableTests(
             Students student) {
 
-        Set<String> courseKeys =
-                new HashSet<>();
-
-        for (Enrollment enrollment :
-                student.getEnrollments()) {
-
-            if (enrollment.getCourse() == null) {
-                continue;
-            }
-
-            addKey(
-                courseKeys,
-                enrollment.getCourse()
-                    .getCourseName());
-
-            addKey(
-                courseKeys,
-                enrollment.getCourse()
-                    .getCourseCode());
-        }
-
         return testRepository
-                .findAll()
+                .findByStatusIgnoreCase(
+                    "PUBLISHED")
                 .stream()
-                .filter(t ->
-                    "PUBLISHED"
-                        .equalsIgnoreCase(
-                            t.getStatus()))
-                .filter(t ->
-                    t.getCourse() != null
-                    && courseKeys.contains(
-                        normalize(t.getCourse())))
-                .peek(t ->
-                    t.getQuestions().size())
-                .collect(Collectors.toList());
+                .peek(test -> {
+
+                    if (test.getQuestions() != null) {
+
+                        test.getQuestions().size();
+                    }
+
+                })
+                .collect(
+                    Collectors.toList());
     }
 
     // =========================================================
@@ -1005,33 +1075,11 @@ public class StudentPortalController {
             Test test,
             Students student) {
 
-        if (test == null ||
-            test.getCourse() == null) {
-
-            return false;
-        }
-
-        String key =
-                normalize(test.getCourse());
-
-        return student
-                .getEnrollments()
-                .stream()
-                .anyMatch(e ->
-                    e.getCourse() != null
-                    &&
-                    (
-                        key.equals(
-                            normalize(
-                                e.getCourse()
-                                    .getCourseName()))
-                        ||
-                        key.equals(
-                            normalize(
-                                e.getCourse()
-                                    .getCourseCode()))
-                    )
-                );
+        /*
+         * Since all published tests are now available
+         * to students, only check that the test exists.
+         */
+        return test != null;
     }
 
     // =========================================================
@@ -1042,6 +1090,10 @@ public class StudentPortalController {
             Test test,
             List<TestAttempt> attempts) {
 
+        if (test == null) {
+            return false;
+        }
+
         long submitted =
                 attempts.stream()
                     .filter(a ->
@@ -1050,6 +1102,9 @@ public class StudentPortalController {
                                 a.getStatus()))
                     .count();
 
+        /*
+         * Retake enabled
+         */
         if (Boolean.TRUE.equals(
                 test.getAllowTestRetake())) {
 
@@ -1062,29 +1117,15 @@ public class StudentPortalController {
             return submitted < max;
         }
 
+        /*
+         * Retake disabled
+         */
         return submitted == 0;
     }
 
-    private void addKey(
-            Set<String> keys,
-            String value) {
-
-        if (value != null &&
-            !value.isBlank()) {
-
-            keys.add(
-                normalize(value));
-        }
-    }
-
-    private String normalize(
-            String value) {
-
-        return value == null
-                ? ""
-                : value.trim()
-                    .toLowerCase(Locale.ROOT);
-    }
+    // =========================================================
+    // STUDENT FEE ROW
+    // =========================================================
 
     public record StudentFeeRow(
             String courseName,

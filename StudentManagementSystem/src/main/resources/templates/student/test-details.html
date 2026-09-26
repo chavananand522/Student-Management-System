@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{student/student-layout::head}"></head>
 
@@ -13,7 +12,6 @@
     <div class="student-content">
 
         <div th:replace="~{student/student-layout::navbar}"></div>
-
         <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
@@ -23,102 +21,75 @@
                 ← Back to Tests
             </a>
 
-            <!-- TEST DETAILS CARD -->
             <div class="card student-card mb-4">
-
                 <div class="card-body p-4">
 
                     <span class="badge bg-success mb-2">PUBLISHED</span>
 
-                    <h2 class="fw-bold mt-2"
-                        th:text="${test.testName}">
-                        Test Name
-                    </h2>
+                    <h2 class="fw-bold mt-2" th:text="${test.testName}"></h2>
 
                     <div class="row g-3 mt-2">
-
                         <div class="col-md-3">
                             <div class="text-muted small">Course</div>
                             <div class="fw-semibold" th:text="${test.course}"></div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="text-muted small">Subject</div>
                             <div class="fw-semibold" th:text="${test.subject}"></div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="text-muted small">Duration</div>
                             <div class="fw-semibold">
                                 <span th:text="${test.duration}"></span> min
                             </div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="text-muted small">Total Marks</div>
                             <div class="fw-semibold" th:text="${test.totalMarks}"></div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="text-muted small">Questions</div>
                             <div class="fw-semibold"
                                  th:text="${test.questions != null ? test.questions.size() : 0}">
                             </div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="text-muted small">Passing Marks</div>
                             <div class="fw-semibold" th:text="${test.passingMarks}"></div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="text-muted small">Attempts Allowed</div>
                             <div class="fw-semibold"
                                  th:text="${test.allowTestRetake ? test.numberOfAttempts : 1}">
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- START BUTTON -->
                     <form th:if="${canStart}"
                           th:action="@{'/student/tests/' + ${test.id} + '/start'}"
                           method="post"
                           class="mt-4">
-
                         <input type="hidden"
                                th:name="${_csrf.parameterName}"
                                th:value="${_csrf.token}">
-
-                        <button type="submit"
-                                class="btn btn-primary btn-lg">
-                            <i class="bi bi-play-fill me-1"></i>
-                            Start Test
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-play-fill me-1"></i> Start Test
                         </button>
-
                     </form>
 
-                    <div th:unless="${canStart}"
-                         class="alert alert-warning mt-4 mb-0">
+                    <div th:unless="${canStart}" class="alert alert-warning mt-4 mb-0">
                         <i class="bi bi-exclamation-triangle me-2"></i>
                         You have used all allowed attempts for this test.
                     </div>
 
                 </div>
-
             </div>
 
-            <!-- PREVIOUS ATTEMPTS -->
             <div class="card student-card">
-
                 <div class="card-body p-4">
-
                     <h5 class="fw-bold mb-3">Previous Attempts</h5>
-
                     <div class="table-responsive">
-
                         <table class="table">
-
                             <thead>
                             <tr>
                                 <th>Attempt</th>
@@ -128,61 +99,35 @@
                                 <th></th>
                             </tr>
                             </thead>
-
                             <tbody>
-
                             <tr th:each="a : ${attempts}">
-
-                                <td th:text="${a.attemptNumber}">1</td>
-
+                                <td th:text="${a.attemptNumber}"></td>
                                 <td>
                                     <span class="badge bg-success"
-                                          th:if="${a.status == 'SUBMITTED'}">
-                                        Submitted
-                                    </span>
+                                          th:if="${a.status == 'SUBMITTED'}">Submitted</span>
                                     <span class="badge bg-warning text-dark"
-                                          th:unless="${a.status == 'SUBMITTED'}">
-                                        In Progress
-                                    </span>
+                                          th:unless="${a.status == 'SUBMITTED'}">In Progress</span>
                                 </td>
-
-                                <td th:text="${a.obtainedMarks + ' / ' + test.totalMarks}">
-                                    0 / 0
-                                </td>
-
-                                <td th:text="${a.submittedAt != null ? #temporals.format(a.submittedAt, 'dd MMM yyyy HH:mm') : '-'}">
-                                </td>
-
+                                <td th:text="${a.obtainedMarks + ' / ' + test.totalMarks}"></td>
+                                <td th:text="${a.submittedAt != null ? #temporals.format(a.submittedAt, 'dd MMM yyyy HH:mm') : '-'}"></td>
                                 <td>
                                     <a th:if="${a.status == 'SUBMITTED'}"
                                        th:href="@{'/student/results/' + ${a.id}}"
-                                       class="btn btn-sm btn-outline-primary">
-                                        Result
-                                    </a>
-
+                                       class="btn btn-sm btn-outline-primary">Result</a>
                                     <a th:unless="${a.status == 'SUBMITTED'}"
                                        th:href="@{'/student/tests/attempt/' + ${a.id}}"
-                                       class="btn btn-sm btn-warning">
-                                        Resume
-                                    </a>
+                                       class="btn btn-sm btn-warning">Resume</a>
                                 </td>
-
                             </tr>
-
                             <tr th:if="${attempts == null || attempts.isEmpty()}">
                                 <td colspan="5" class="text-center text-muted py-3">
                                     No attempts yet.
                                 </td>
                             </tr>
-
                             </tbody>
-
                         </table>
-
                     </div>
-
                 </div>
-
             </div>
 
         </div>

@@ -2,23 +2,33 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student/student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}">
+</head>
 
 <body>
 
 <div class="d-flex student-layout">
 
-    <div th:replace="~{student/student-layout::sidebar}"></div>
+    <!-- Sidebar -->
+    <div th:replace="~{student/student-layout::sidebar}">
+    </div>
 
+    <!-- Main Content -->
     <div class="student-content">
 
-        <div th:replace="~{student/student-layout::navbar}"></div>
+        <!-- Navbar -->
+        <div th:replace="~{student/student-layout::navbar}">
+        </div>
 
-        <div th:replace="~{student/student-layout::alerts}"></div>
+        <!-- Alerts -->
+        <div th:replace="~{student/student-layout::alerts}">
+        </div>
 
         <div class="container-fluid px-4 py-4">
 
-            <h2 class="fw-bold mb-4">Available Tests</h2>
+            <h2 class="fw-bold mb-4">
+                Available Tests
+            </h2>
 
             <div class="card student-card">
 
@@ -29,65 +39,115 @@
                         <table class="table table-hover align-middle mb-0">
 
                             <thead class="table-light">
+
                             <tr>
+
                                 <th class="px-4">#</th>
+
                                 <th>Test Name</th>
+
                                 <th>Course</th>
+
                                 <th>Subject</th>
+
                                 <th>Questions</th>
+
                                 <th>Duration</th>
+
                                 <th>Total Marks</th>
+
                                 <th>Attempts</th>
-                                <th class="text-center">Action</th>
+
+                                <th class="text-center">
+                                    Action
+                                </th>
+
                             </tr>
+
                             </thead>
 
                             <tbody>
 
+                            <!-- ALL PUBLISHED ADMIN TESTS -->
                             <tr th:each="test, stat : ${tests}">
 
-                                <td class="px-4" th:text="${stat.count}">1</td>
+                                <td class="px-4"
+                                    th:text="${stat.count}">
+                                    1
+                                </td>
 
                                 <td>
-                                    <strong th:text="${test.testName}">
+                                    <strong
+                                        th:text="${test.testName}">
                                         Test Name
                                     </strong>
                                 </td>
 
-                                <td th:text="${test.course}">NEET</td>
+                                <td th:text="${test.course}">
+                                    Course
+                                </td>
 
-                                <td th:text="${test.subject}">Physics</td>
+                                <td th:text="${test.subject}">
+                                    Subject
+                                </td>
 
                                 <td>
+
                                     <span class="badge bg-primary"
                                           th:text="${test.questions != null ? test.questions.size() : 0}">
                                         0
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <span th:text="${test.duration}">60</span> min
+
+                                    <span th:text="${test.duration}">
+                                        0
+                                    </span>
+                                    min
+
                                 </td>
 
-                                <td th:text="${test.totalMarks}">100</td>
+                                <td th:text="${test.totalMarks}">
+                                    0
+                                </td>
 
-                                <td th:text="${attempts[test.id]}">0</td>
+                                <td>
+
+                                    <span th:text="${attempts[test.id]}">
+                                        0
+                                    </span>
+
+                                </td>
 
                                 <td class="text-center">
-                                    <a th:href="@{'/student/tests/' + ${test.id}}"
+
+                                    <a th:href="@{/student/tests/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-primary">
+
+                                        <i class="bi bi-play-fill"></i>
                                         View
+
                                     </a>
+
                                 </td>
 
                             </tr>
 
+                            <!-- NO TESTS -->
                             <tr th:if="${tests == null || tests.isEmpty()}">
+
                                 <td colspan="9"
                                     class="text-center py-5 text-muted">
-                                    <i class="bi bi-file-earmark-x fs-1 d-block mb-3"></i>
-                                    No published tests are available for your enrolled courses.
+
+                                    <i class="bi bi-file-earmark-x fs-1 d-block mb-3">
+                                    </i>
+
+                                    No published tests are available.
+
                                 </td>
+
                             </tr>
 
                             </tbody>
@@ -102,13 +162,16 @@
 
         </div>
 
-        <div th:replace="~{student/student-layout::footer}"></div>
+        <!-- Footer -->
+        <div th:replace="~{student/student-layout::footer}">
+        </div>
 
     </div>
 
 </div>
 
-<th:block th:replace="~{student/student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}">
+</th:block>
 
 </body>
 </html>

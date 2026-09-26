@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex student-layout">
 
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
         <div th:replace="~{student/student-layout::navbar}"></div>
-
         <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
@@ -21,40 +19,29 @@
             <h2 class="fw-bold mb-4">My Fees</h2>
 
             <div class="row g-4 mb-4">
-
                 <div class="col-md-4">
-                    <div class="card student-card">
-                        <div class="card-body">
-                            <div class="text-muted">Total Fees</div>
-                            <h3 th:text="${totalFees}">0</h3>
-                        </div>
-                    </div>
+                    <div class="card student-card"><div class="card-body">
+                        <div class="text-muted">Total Fees</div>
+                        <h3 th:text="${totalFees}">0</h3>
+                    </div></div>
                 </div>
-
                 <div class="col-md-4">
-                    <div class="card student-card">
-                        <div class="card-body">
-                            <div class="text-muted">Total Paid</div>
-                            <h3 class="text-success" th:text="${totalPaid}">0</h3>
-                        </div>
-                    </div>
+                    <div class="card student-card"><div class="card-body">
+                        <div class="text-muted">Total Paid</div>
+                        <h3 class="text-success" th:text="${totalPaid}">0</h3>
+                    </div></div>
                 </div>
-
                 <div class="col-md-4">
-                    <div class="card student-card">
-                        <div class="card-body">
-                            <div class="text-muted">Pending</div>
-                            <h3 class="text-danger" th:text="${totalPending}">0</h3>
-                        </div>
-                    </div>
+                    <div class="card student-card"><div class="card-body">
+                        <div class="text-muted">Pending</div>
+                        <h3 class="text-danger" th:text="${totalPending}">0</h3>
+                    </div></div>
                 </div>
-
             </div>
 
             <div class="card student-card mb-4">
                 <div class="card-body">
                     <h5 class="mb-3">Course Fees</h5>
-
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -88,7 +75,6 @@
             <div class="card student-card">
                 <div class="card-body">
                     <h5 class="mb-3">Payment History</h5>
-
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
