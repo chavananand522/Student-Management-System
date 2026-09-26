@@ -1,248 +1,178 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/test-details.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex student-layout">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
-        <div th:replace="~{student-layout::alerts}"></div>
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <a
-                th:href="@{/student/tests}"
-                class="btn btn-outline-secondary btn-sm mb-3">
-
+            <a th:href="@{/student/tests}"
+               class="btn btn-outline-secondary btn-sm mb-3">
                 ← Back to Tests
-
             </a>
 
-            <div class="card student-card">
+            <!-- TEST DETAILS CARD -->
+            <div class="card student-card mb-4">
 
                 <div class="card-body p-4">
 
-                    <span class="badge bg-success">
-                        PUBLISHED
-                    </span>
+                    <span class="badge bg-success mb-2">PUBLISHED</span>
 
-                    <h2
-                        class="mt-2"
+                    <h2 class="fw-bold mt-2"
                         th:text="${test.testName}">
-                        Test
+                        Test Name
                     </h2>
 
                     <div class="row g-3 mt-2">
 
                         <div class="col-md-3">
-
-                            <strong>Course</strong>
-                            <br>
-
-                            <span
-                                th:text="${test.course}">
-                            </span>
-
+                            <div class="text-muted small">Course</div>
+                            <div class="fw-semibold" th:text="${test.course}"></div>
                         </div>
 
                         <div class="col-md-3">
-
-                            <strong>Subject</strong>
-                            <br>
-
-                            <span
-                                th:text="${test.subject}">
-                            </span>
-
+                            <div class="text-muted small">Subject</div>
+                            <div class="fw-semibold" th:text="${test.subject}"></div>
                         </div>
 
                         <div class="col-md-3">
-
-                            <strong>Duration</strong>
-                            <br>
-
-                            <span
-                                th:text="${test.duration}">
-                            </span>
-                            min
-
+                            <div class="text-muted small">Duration</div>
+                            <div class="fw-semibold">
+                                <span th:text="${test.duration}"></span> min
+                            </div>
                         </div>
 
                         <div class="col-md-3">
+                            <div class="text-muted small">Total Marks</div>
+                            <div class="fw-semibold" th:text="${test.totalMarks}"></div>
+                        </div>
 
-                            <strong>Total Marks</strong>
-                            <br>
+                        <div class="col-md-3">
+                            <div class="text-muted small">Questions</div>
+                            <div class="fw-semibold"
+                                 th:text="${test.questions != null ? test.questions.size() : 0}">
+                            </div>
+                        </div>
 
-                            <span
-                                th:text="${test.totalMarks}">
-                            </span>
+                        <div class="col-md-3">
+                            <div class="text-muted small">Passing Marks</div>
+                            <div class="fw-semibold" th:text="${test.passingMarks}"></div>
+                        </div>
 
+                        <div class="col-md-3">
+                            <div class="text-muted small">Attempts Allowed</div>
+                            <div class="fw-semibold"
+                                 th:text="${test.allowTestRetake ? test.numberOfAttempts : 1}">
+                            </div>
                         </div>
 
                     </div>
 
-                    <hr>
+                    <!-- START BUTTON -->
+                    <form th:if="${canStart}"
+                          th:action="@{'/student/tests/' + ${test.id} + '/start'}"
+                          method="post"
+                          class="mt-4">
 
-                    <p>
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
 
-                        <strong>Questions:</strong>
-
-                        <span
-                            th:text="${test.questions.size()}">
-                        </span>
-
-                    </p>
-
-                    <p>
-
-                        <strong>Passing Marks:</strong>
-
-                        <span
-                            th:text="${test.passingMarks}">
-                        </span>
-
-                    </p>
-
-                    <p>
-
-                        <strong>Attempts allowed:</strong>
-
-                        <span
-                            th:text="${test.allowTestRetake ? test.numberOfAttempts : 1}">
-                        </span>
-
-                    </p>
-
-                    <form
-                        th:if="${canStart}"
-                        th:action="@{'/student/tests/' + test.id + '/start'}"
-                        method="post">
-
-                        <input
-                            type="hidden"
-                            th:name="${_csrf.parameterName}"
-                            th:value="${_csrf.token}">
-
-                        <button
-                            class="btn btn-primary btn-lg"
-                            type="submit">
-
+                        <button type="submit"
+                                class="btn btn-primary btn-lg">
+                            <i class="bi bi-play-fill me-1"></i>
                             Start Test
-
                         </button>
 
                     </form>
 
-                    <div
-                        th:unless="${canStart}"
-                        class="alert alert-warning mb-0">
-
-                        You have used all allowed attempts
-                        for this test.
-
+                    <div th:unless="${canStart}"
+                         class="alert alert-warning mt-4 mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        You have used all allowed attempts for this test.
                     </div>
 
                 </div>
 
             </div>
 
-            <div class="card student-card mt-4">
+            <!-- PREVIOUS ATTEMPTS -->
+            <div class="card student-card">
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    <h5>
-                        Previous Attempts
-                    </h5>
+                    <h5 class="fw-bold mb-3">Previous Attempts</h5>
 
                     <div class="table-responsive">
 
                         <table class="table">
 
                             <thead>
-
                             <tr>
-
                                 <th>Attempt</th>
                                 <th>Status</th>
                                 <th>Marks</th>
                                 <th>Submitted</th>
                                 <th></th>
-
                             </tr>
-
                             </thead>
 
                             <tbody>
 
-                            <tr
-                                th:each="a : ${attempts}">
+                            <tr th:each="a : ${attempts}">
 
-                                <td
-                                    th:text="${a.attemptNumber}">
+                                <td th:text="${a.attemptNumber}">1</td>
+
+                                <td>
+                                    <span class="badge bg-success"
+                                          th:if="${a.status == 'SUBMITTED'}">
+                                        Submitted
+                                    </span>
+                                    <span class="badge bg-warning text-dark"
+                                          th:unless="${a.status == 'SUBMITTED'}">
+                                        In Progress
+                                    </span>
                                 </td>
 
-                                <td
-                                    th:text="${a.status}">
+                                <td th:text="${a.obtainedMarks + ' / ' + test.totalMarks}">
+                                    0 / 0
                                 </td>
 
-                                <td
-                                    th:text="${a.obtainedMarks + ' / ' + test.totalMarks}">
+                                <td th:text="${a.submittedAt != null ? #temporals.format(a.submittedAt, 'dd MMM yyyy HH:mm') : '-'}">
                                 </td>
 
-                                <td
-                                    th:text="${a.submittedAt != null ? #temporals.format(a.submittedAt,'dd MMM yyyy HH:mm') : '-'}">
-                                </td>
-
-                                <td
-                                    th:if="${a.status == 'SUBMITTED'}">
-
-                                    <a
-                                        th:href="@{'/student/results/' + a.id}"
-                                        class="btn btn-sm btn-outline-primary">
-
+                                <td>
+                                    <a th:if="${a.status == 'SUBMITTED'}"
+                                       th:href="@{'/student/results/' + ${a.id}}"
+                                       class="btn btn-sm btn-outline-primary">
                                         Result
-
                                     </a>
 
-                                </td>
-
-                                <td
-                                    th:unless="${a.status == 'SUBMITTED'}">
-
-                                    <a
-                                        th:href="@{'/student/tests/attempt/' + a.id}"
-                                        class="btn btn-sm btn-warning">
-
+                                    <a th:unless="${a.status == 'SUBMITTED'}"
+                                       th:href="@{'/student/tests/attempt/' + ${a.id}}"
+                                       class="btn btn-sm btn-warning">
                                         Resume
-
                                     </a>
-
                                 </td>
 
                             </tr>
 
-                            <tr
-                                th:if="${attempts.isEmpty()}">
-
-                                <td colspan="5">
-
+                            <tr th:if="${attempts == null || attempts.isEmpty()}">
+                                <td colspan="5" class="text-center text-muted py-3">
                                     No attempts yet.
-
                                 </td>
-
                             </tr>
 
                             </tbody>
@@ -257,11 +187,13 @@ src/main/resources/templates/student/test-details.html
 
         </div>
 
+        <div th:replace="~{student/student-layout::footer}"></div>
+
     </div>
 
 </div>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
 </html>

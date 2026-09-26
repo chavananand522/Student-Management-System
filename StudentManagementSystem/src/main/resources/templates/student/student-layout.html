@@ -35,43 +35,101 @@
 
     <nav class="mt-2">
 
+        <!-- Dashboard -->
         <a th:href="@{/student/dashboard}" class="student-link">
             <i class="bi bi-speedometer2"></i>
             <span>Dashboard</span>
         </a>
 
+        <!-- Courses -->
         <a th:href="@{/student/courses}" class="student-link">
             <i class="bi bi-book"></i>
             <span>My Courses</span>
         </a>
 
-        <a th:href="@{/student/study}" class="student-link">
+        <!-- ================================================= -->
+        <!-- STUDY (collapsible) -->
+        <!-- ================================================= -->
+        <a class="student-link"
+           data-bs-toggle="collapse"
+           href="#studySubmenu"
+           role="button"
+           aria-expanded="false"
+           aria-controls="studySubmenu">
             <i class="bi bi-journal-bookmark"></i>
             <span>Study</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
         </a>
 
-        <a th:href="@{/student/tests}" class="student-link">
+        <div class="collapse" id="studySubmenu">
+
+            <a th:href="@{/student/study/physics}" class="student-link student-sub-link">
+                <i class="bi bi-lightning-charge"></i>
+                <span>Physics</span>
+            </a>
+
+            <a th:href="@{/student/study/chemistry}" class="student-link student-sub-link">
+                <i class="bi bi-droplet"></i>
+                <span>Chemistry</span>
+            </a>
+
+            <a th:href="@{/student/study/biology}" class="student-link student-sub-link">
+                <i class="bi bi-heart-pulse"></i>
+                <span>Biology</span>
+            </a>
+
+        </div>
+
+        <!-- ================================================= -->
+        <!-- TESTS (collapsible) -->
+        <!-- ================================================= -->
+        <a class="student-link"
+           data-bs-toggle="collapse"
+           href="#testSubmenu"
+           role="button"
+           aria-expanded="false"
+           aria-controls="testSubmenu">
             <i class="bi bi-pencil-square"></i>
             <span>Tests</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
         </a>
 
-        <a th:href="@{/student/results}" class="student-link">
-            <i class="bi bi-bar-chart"></i>
-            <span>My Results</span>
-        </a>
+        <div class="collapse" id="testSubmenu">
 
+            <a th:href="@{/student/tests}" class="student-link student-sub-link">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Available Tests</span>
+            </a>
+
+            <a th:href="@{/student/results}" class="student-link student-sub-link">
+                <i class="bi bi-bar-chart"></i>
+                <span>My Results</span>
+            </a>
+
+            <a th:href="@{/student/analysis}" class="student-link student-sub-link">
+                <i class="bi bi-activity"></i>
+                <span>Analysis</span>
+            </a>
+
+        </div>
+
+        <!-- Fees -->
         <a th:href="@{/student/fees}" class="student-link">
             <i class="bi bi-wallet2"></i>
             <span>My Fees</span>
         </a>
 
+        <!-- Profile -->
         <a th:href="@{/student/profile}" class="student-link">
             <i class="bi bi-person-circle"></i>
             <span>My Profile</span>
         </a>
 
+        <!-- Logout -->
         <form method="post" th:action="@{/logout}" class="m-0">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
             <button type="submit"
                     class="student-link w-100 border-0 bg-transparent text-start">
                 <i class="bi bi-box-arrow-right"></i>
@@ -85,7 +143,7 @@
 
 
 <!-- ============================================================
-     NAVBAR — NOT a flex item anymore, just a plain block
+     NAVBAR
 ============================================================ -->
 
 <div th:fragment="navbar" class="student-navbar-wrapper">
@@ -147,11 +205,81 @@
 
 
 <!-- ============================================================
-     SCRIPTS
+     SCRIPTS + AUTO-EXPAND LOGIC
 ============================================================ -->
 
 <th:block th:fragment="scripts">
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const path = window.location.pathname;
+
+            /* Auto-open Study submenu */
+            if (path.startsWith("/student/study")) {
+                const submenu = document.getElementById("studySubmenu");
+                if (submenu) {
+                    submenu.classList.add("show");
+                    const toggle = document.querySelector('[href="#studySubmenu"]');
+                    if (toggle) toggle.setAttribute("aria-expanded", "true");
+                }
+            }
+
+            /* Auto-open Tests submenu */
+            if (path.startsWith("/student/tests")
+                || path.startsWith("/student/results")
+                || path.startsWith("/student/analysis")) {
+                const submenu = document.getElementById("testSubmenu");
+                if (submenu) {
+                    submenu.classList.add("show");
+                    const toggle = document.querySelector('[href="#testSubmenu"]');
+                    if (toggle) toggle.setAttribute("aria-expanded", "true");
+                }
+            }
+
+        });
+    </script>
+
 </th:block>
+
+
+<!-- ============================================================
+     INLINE STYLES — sidebar sub-links
+============================================================ -->
+
+<style>
+
+    .student-sub-link {
+        padding-left: 50px !important;
+        font-size: 14px;
+        opacity: 0.85;
+    }
+
+    .student-sub-link i {
+        font-size: 14px;
+        min-width: 18px;
+    }
+
+    .student-sub-link:hover {
+        opacity: 1;
+    }
+
+    .student-link .bi-chevron-down {
+        transition: transform 0.25s ease;
+        font-size: 12px;
+        opacity: 0.6;
+    }
+
+    .student-link[aria-expanded="true"] .bi-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    .student-link:hover .bi-chevron-down {
+        opacity: 1;
+    }
+
+</style>
 
 </html>

@@ -6,7 +6,8 @@
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex student-layout"
+     th:with="subjectLower=${#strings.toLowerCase(subjectName)}">
 
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
@@ -18,57 +19,103 @@
 
         <div class="container-fluid px-4 py-4">
 
-            <a th:href="@{'/student/study/' + #strings.toLowerCase(subjectName)}"
-               class="btn btn-outline-secondary btn-sm mb-3">
-                ← Back to Modules
-            </a>
+            <!-- BREADCRUMB -->
+            <div class="mb-4">
+                <a th:href="@{/student/study}"
+                   class="text-primary text-decoration-none">Study</a>
+                <span class="mx-2">›</span>
 
-            <div class="card student-card">
+                <a th:href="@{'/student/study/' + ${subjectLower}}"
+                   class="text-primary text-decoration-none"
+                   th:text="${subjectName}"></a>
+                <span class="mx-2">›</span>
 
-                <div class="card-body p-4">
+                <span th:text="${module.name}"></span>
+            </div>
 
-                    <div class="text-primary small">
-                        <span th:text="${subjectName}">Subject</span>
-                    </div>
-
-                    <h2 class="fw-bold"
-                        th:text="${module.name}">
-                        Module
-                    </h2>
-
-                    <p class="text-muted"
-                       th:text="${module.description}">
-                    </p>
-
-                    <hr>
-
-                    <h5 class="mb-3">Chapters</h5>
-
-                    <div class="list-group"
-                         th:if="${!chapters.isEmpty()}">
-
-                        <a th:each="chapter : ${chapters}"
-                           th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id + '/chapter/' + chapter.id}"
-                           class="list-group-item list-group-item-action">
-
-                            <div class="d-flex justify-content-between align-items-center">
-
-                                <span class="fw-semibold"
-                                      th:text="${chapter.name}">
-                                    Chapter
-                                </span>
-
-                                <i class="bi bi-chevron-right"></i>
-
+            <!-- MODULE HEADER -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted mb-2"
+                                 th:text="'Module ' + ${module.moduleNumber}">
                             </div>
 
-                        </a>
+                            <h1 class="fw-bold mb-2"
+                                th:text="${module.name}">
+                            </h1>
 
+                            <p class="text-muted mb-0"
+                               th:if="${module.description != null && !module.description.isEmpty()}"
+                               th:text="${module.description}">
+                            </p>
+                        </div>
+
+                        <div class="text-primary" style="font-size: 48px;">
+                            <i th:if="${subjectName == 'Physics'}"
+                               class="bi bi-lightning-charge"></i>
+                            <i th:if="${subjectName == 'Chemistry'}"
+                               class="bi bi-droplet"></i>
+                            <i th:if="${subjectName == 'Biology'}"
+                               class="bi bi-heart-pulse"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAPTERS HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="fw-bold mb-1">Chapters</h3>
+                    <p class="text-muted mb-0">Select a chapter to continue studying.</p>
+                </div>
+                <a th:href="@{'/student/study/' + ${subjectLower}}"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+
+            <!-- NO CHAPTERS -->
+            <div th:if="${chapters == null || chapters.isEmpty()}"
+                 class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-journal-x fs-1 text-muted"></i>
+                    <h5 class="mt-3">No Chapters Found</h5>
+                    <p class="text-muted mb-0">
+                        No chapters have been added to this module yet.
+                    </p>
+                </div>
+            </div>
+
+            <!-- CHAPTER LIST -->
+            <div th:if="${chapters != null && !chapters.isEmpty()}">
+
+                <div th:each="chapter, stat : ${chapters}"
+                     class="mv-row">
+
+                    <div class="mv-info">
+                        <div class="mv-title">
+                            <span class="mv-badge" th:text="${stat.count}">1</span>
+
+                            <a th:href="@{'/student/study/' + ${subjectLower} + '/module/' + ${module.id} + '/chapter/' + ${chapter.id}}"
+                               class="mv-name"
+                               th:text="${chapter.name}">
+                            </a>
+                        </div>
+
+                        <div class="mv-desc"
+                             th:if="${chapter.description != null && !chapter.description.isEmpty()}"
+                             th:text="${chapter.description}">
+                        </div>
                     </div>
 
-                    <div th:if="${chapters.isEmpty()}"
-                         class="alert alert-info">
-                        No chapters are available for this module yet.
+                    <div class="mv-actions">
+                        <a th:href="@{'/student/study/' + ${subjectLower} + '/module/' + ${module.id} + '/chapter/' + ${chapter.id}}"
+                           class="btn btn-sm btn-outline-primary"
+                           title="View">
+                            <i class="bi bi-eye"></i>
+                        </a>
                     </div>
 
                 </div>
@@ -77,11 +124,104 @@
 
         </div>
 
+        <div th:replace="~{student/student-layout::footer}"></div>
+
     </div>
 
 </div>
 
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
+
+<style>
+    .mv-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 16px 22px;
+        margin-bottom: 12px;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .mv-row:hover {
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
+    }
+
+    .mv-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mv-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mv-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #4361ee;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .mv-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #212529;
+        text-decoration: none;
+    }
+
+    .mv-name:hover {
+        color: #4361ee;
+    }
+
+    .mv-desc {
+        color: #6c757d;
+        font-size: 14px;
+        margin-left: 36px;
+    }
+
+    .mv-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .mv-actions .btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    @media (max-width: 768px) {
+        .mv-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .mv-actions {
+            margin-top: 8px;
+        }
+    }
+</style>
 
 </body>
 </html>

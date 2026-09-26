@@ -1707,3 +1707,357 @@ footer {
         font-size: 24px;
     }
 }
+
+/* =========================================================
+   STUDY PAGE STYLES (same as admin)
+   ========================================================= */
+
+.chapter-container {
+    width: 100%;
+}
+
+.chapter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.chapter-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.chapter-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.chapter-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #212529;
+    text-decoration: none;
+}
+
+.chapter-name:hover {
+    color: #4361ee;
+}
+
+.chapter-description {
+    color: #6c757d;
+    font-size: 14px;
+    margin-left: 34px;
+}
+
+.chapter-number-small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #4361ee;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.chapter-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 20px;
+}
+
+.chapter-actions .btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================================
+   STUDY HOME — cards for subjects / modules / chapters
+   ========================================================= */
+
+.study-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 14px;
+    padding: 25px 30px;
+    margin-bottom: 25px;
+}
+
+.study-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #172b4d;
+}
+
+.study-header p {
+    margin-top: 7px;
+    margin-bottom: 0;
+    color: #7b8794;
+}
+
+.breadcrumb {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.breadcrumb a {
+    color: #4361ee;
+    text-decoration: none;
+}
+
+.subject-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: #eaf3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4361ee;
+    font-size: 27px;
+}
+
+.section-title {
+    margin-bottom: 15px;
+}
+
+.section-title h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #172b4d;
+}
+
+.section-title p {
+    margin: 5px 0 0;
+    color: #7b8794;
+    font-size: 13px;
+}
+
+.chapter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chapter-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.chapter-card:hover {
+    border-color: #4361ee;
+    box-shadow: 0 5px 18px rgba(40, 120, 240, 0.08);
+    transform: translateX(3px);
+}
+
+.chapter-number {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: #4361ee;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 17px;
+}
+
+.chapter-info {
+    flex: 1;
+}
+
+.chapter-info h3 {
+    margin: 0 0 8px;
+    color: #172b4d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.chapter-meta {
+    display: flex;
+    gap: 20px;
+    color: #7b8794;
+    font-size: 12px;
+}
+
+.chapter-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.chapter-meta i {
+    color: #4361ee;
+}
+
+.chapter-arrow {
+    color: #9aa7b5;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   MODULE VIEW — chapter rows (mv-*)
+   ========================================================= */
+
+.mv-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px 22px;
+    margin-bottom: 12px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.mv-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.mv-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.mv-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mv-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #4361ee;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.mv-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    text-decoration: none;
+}
+
+.mv-name:hover {
+    color: #4361ee;
+}
+
+.mv-desc {
+    color: #6c757d;
+    font-size: 14px;
+    margin-left: 36px;
+}
+
+.mv-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.mv-actions .btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE — study pages
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .chapter-row,
+    .mv-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chapter-actions,
+    .mv-actions {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .study-header {
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .study-header h1 {
+        font-size: 24px;
+    }
+
+    .study-header p {
+        font-size: 13px;
+    }
+
+    .subject-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 23px;
+    }
+
+    .chapter-card {
+        padding: 15px;
+    }
+
+    .chapter-info h3 {
+        font-size: 14px;
+    }
+
+    .chapter-meta {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+}

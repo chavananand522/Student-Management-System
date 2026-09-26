@@ -1,8 +1,3 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/results.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
@@ -11,7 +6,7 @@ src/main/resources/templates/student/results.html
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex student-layout">
 
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
@@ -23,9 +18,7 @@ src/main/resources/templates/student/results.html
 
         <div class="container-fluid px-4 py-4">
 
-            <h2 class="fw-bold mb-4">
-                My Results
-            </h2>
+            <h2 class="fw-bold mb-4">My Results</h2>
 
             <div class="card student-card">
 
@@ -33,11 +26,9 @@ src/main/resources/templates/student/results.html
 
                     <table class="table table-hover align-middle mb-0">
 
-                        <thead>
-
+                        <thead class="table-light">
                         <tr>
-
-                            <th>Test</th>
+                            <th class="px-4">Test</th>
                             <th>Attempt</th>
                             <th>Marks</th>
                             <th>Correct</th>
@@ -45,82 +36,56 @@ src/main/resources/templates/student/results.html
                             <th>Unanswered</th>
                             <th>Status</th>
                             <th>Submitted</th>
-                            <th>Action</th>
-
+                            <th class="text-center">Action</th>
                         </tr>
-
                         </thead>
 
                         <tbody>
 
                         <tr th:each="attempt : ${attempts}">
 
-                            <td th:text="${attempt.test.testName}">
-                                Test
-                            </td>
-
-                            <td th:text="${attempt.attemptNumber}">
-                                1
-                            </td>
-
-                            <td th:text="${attempt.obtainedMarks + ' / ' + attempt.test.totalMarks}">
-                                0 / 0
-                            </td>
-
-                            <td th:text="${attempt.correctAnswers}">
-                                0
-                            </td>
-
-                            <td th:text="${attempt.wrongAnswers}">
-                                0
-                            </td>
-
-                            <td th:text="${attempt.unansweredQuestions}">
-                                0
-                            </td>
+                            <td class="px-4" th:text="${attempt.test.testName}"></td>
+                            <td th:text="${attempt.attemptNumber}">1</td>
+                            <td th:text="${attempt.obtainedMarks + ' / ' + attempt.test.totalMarks}"></td>
+                            <td th:text="${attempt.correctAnswers}">0</td>
+                            <td th:text="${attempt.wrongAnswers}">0</td>
+                            <td th:text="${attempt.unansweredQuestions}">0</td>
 
                             <td>
-
                                 <span class="badge bg-success"
                                       th:if="${attempt.status == 'SUBMITTED'}">
                                     Submitted
                                 </span>
-
                                 <span class="badge bg-warning text-dark"
                                       th:unless="${attempt.status == 'SUBMITTED'}">
                                     In Progress
                                 </span>
-
                             </td>
 
-                            <td th:text="${attempt.submittedAt != null ? #temporals.format(attempt.submittedAt,'dd MMM yyyy HH:mm') : '-'}">
+                            <td th:text="${attempt.submittedAt != null ? #temporals.format(attempt.submittedAt, 'dd MMM yyyy HH:mm') : '-'}">
                             </td>
 
-                            <td>
-
+                            <td class="text-center">
                                 <a th:if="${attempt.status == 'SUBMITTED'}"
-                                   th:href="@{'/student/results/' + attempt.id}"
+                                   th:href="@{'/student/results/' + ${attempt.id}}"
                                    class="btn btn-sm btn-outline-primary">
                                     View
                                 </a>
-
                                 <a th:unless="${attempt.status == 'SUBMITTED'}"
-                                   th:href="@{'/student/tests/attempt/' + attempt.id}"
+                                   th:href="@{'/student/tests/attempt/' + ${attempt.id}}"
                                    class="btn btn-sm btn-warning">
                                     Resume
                                 </a>
-
                             </td>
 
                         </tr>
 
-                        <tr th:if="${attempts.isEmpty()}">
-
+                        <tr th:if="${attempts == null || attempts.isEmpty()}">
                             <td colspan="9"
                                 class="text-center py-5 text-muted">
+                                <i class="bi bi-bar-chart fs-1 d-block mb-3"></i>
                                 No test results available.
                             </td>
-
                         </tr>
 
                         </tbody>
@@ -132,6 +97,8 @@ src/main/resources/templates/student/results.html
             </div>
 
         </div>
+
+        <div th:replace="~{student/student-layout::footer}"></div>
 
     </div>
 

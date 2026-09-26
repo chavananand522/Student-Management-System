@@ -6,7 +6,7 @@
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex student-layout">
 
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
@@ -21,79 +21,74 @@
                 ← Back to Results
             </a>
 
-            <div class="card student-card">
-
+            <div class="card student-card mb-4">
                 <div class="card-body p-4">
 
-                    <h2 class="fw-bold"
-                        th:text="${test.testName}">
-                        Test Result
-                    </h2>
+                    <h2 class="fw-bold" th:text="${test.testName}"></h2>
 
                     <hr>
 
                     <div class="row g-4">
-
                         <div class="col-md-3">
-                            <div class="text-muted">Obtained Marks</div>
-                            <h3 th:text="${attempt.obtainedMarks + ' / ' + test.totalMarks}">
-                                0 / 0
-                            </h3>
+                            <div class="text-muted small">Obtained Marks</div>
+                            <h3 th:text="${attempt.obtainedMarks + ' / ' + test.totalMarks}"></h3>
                         </div>
-
                         <div class="col-md-3">
-                            <div class="text-muted">Correct</div>
-                            <h3 th:text="${attempt.correctAnswers}">0</h3>
+                            <div class="text-muted small">Correct</div>
+                            <h3 class="text-success" th:text="${attempt.correctAnswers}"></h3>
                         </div>
-
                         <div class="col-md-3">
-                            <div class="text-muted">Wrong</div>
-                            <h3 th:text="${attempt.wrongAnswers}">0</h3>
+                            <div class="text-muted small">Wrong</div>
+                            <h3 class="text-danger" th:text="${attempt.wrongAnswers}"></h3>
                         </div>
-
                         <div class="col-md-3">
-                            <div class="text-muted">Unanswered</div>
-                            <h3 th:text="${attempt.unansweredQuestions}">0</h3>
+                            <div class="text-muted small">Unanswered</div>
+                            <h3 class="text-warning" th:text="${attempt.unansweredQuestions}"></h3>
                         </div>
-
                     </div>
 
-                    <hr>
+                </div>
+            </div>
 
-                    <h5 class="mb-3">Answers</h5>
+            <h5 class="fw-bold mb-3">Answers Review</h5>
 
-                    <div th:each="answer,stat : ${attempt.answers}"
-                         class="card mb-3">
+            <div th:each="answer, stat : ${attempt.answers}"
+                 class="card student-card mb-3">
 
-                        <div class="card-body">
+                <div class="card-body">
 
-                            <div class="small text-muted">
-                                Question <span th:text="${stat.count}"></span>
-                            </div>
+                    <div class="small text-muted mb-2">
+                        Question <span th:text="${stat.count}"></span>
+                    </div>
 
-                            <h6 th:text="${answer.question.questionText}">
-                                Question
-                            </h6>
+                    <h6 th:text="${answer.question.questionText}"></h6>
 
-                            <div>
-                                Your Answer:
-                                <strong th:text="${answer.selectedAnswer}"></strong>
-                            </div>
-
-                            <div>
-                                Correct Answer:
-                                <strong th:text="${answer.question.correctAnswer}"></strong>
-                            </div>
-
-                            <div class="mt-2">
-                                <span th:if="${answer.correct}"
-                                      class="badge bg-success">Correct</span>
-                                <span th:unless="${answer.correct}"
-                                      class="badge bg-danger">Wrong</span>
-                            </div>
-
+                    <div class="mt-3">
+                        <div class="mb-1">
+                            Your Answer:
+                            <strong th:text="${answer.selectedAnswer}"></strong>
+                        </div>
+                        <div class="mb-2">
+                            Correct Answer:
+                            <strong th:text="${answer.question.correctAnswer}"></strong>
                         </div>
 
+                        <span th:if="${answer.correct}"
+                              class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i> Correct
+                        </span>
+                        <span th:unless="${answer.correct}"
+                              class="badge bg-danger">
+                            <i class="bi bi-x-circle me-1"></i> Wrong
+                        </span>
+                    </div>
+
+                    <div class="mt-3 p-3 bg-light rounded"
+                         th:if="${answer.question.explanation != null && !answer.question.explanation.isEmpty()}">
+                        <div class="small text-muted mb-1">
+                            <i class="bi bi-lightbulb me-1"></i> Explanation
+                        </div>
+                        <div th:text="${answer.question.explanation}"></div>
                     </div>
 
                 </div>

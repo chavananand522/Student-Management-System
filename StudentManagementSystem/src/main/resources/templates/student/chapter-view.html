@@ -6,7 +6,8 @@
 
 <body>
 
-<div class="d-flex">
+<div class="d-flex student-layout"
+     th:with="subjectLower=${#strings.toLowerCase(subjectName)}">
 
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
@@ -14,37 +15,86 @@
 
         <div th:replace="~{student/student-layout::navbar}"></div>
 
+        <div th:replace="~{student/student-layout::alerts}"></div>
+
         <div class="container-fluid px-4 py-4">
 
-            <a th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id}"
-               class="btn btn-outline-secondary btn-sm mb-3">
-                ← Back to Chapters
-            </a>
+            <!-- CHAPTER HEADER -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
 
-            <div class="card student-card">
+                            <!-- BREADCRUMB -->
+                            <div class="mb-2">
+                                <a th:href="@{/student/study}"
+                                   class="text-primary text-decoration-none">Study</a>
+                                <span class="mx-2">›</span>
 
-                <div class="card-body p-4">
+                                <a th:href="@{'/student/study/' + ${subjectLower}}"
+                                   class="text-primary text-decoration-none"
+                                   th:text="${subjectName}"></a>
+                                <span class="mx-2">›</span>
 
-                    <div class="text-primary small"
-                         th:text="${subjectName}">
+                                <a th:href="@{'/student/study/' + ${subjectLower} + '/module/' + ${module.id}}"
+                                   class="text-primary text-decoration-none"
+                                   th:text="${module.name}"></a>
+                                <span class="mx-2">›</span>
+
+                                <span th:text="${chapter.name}"></span>
+                            </div>
+
+                            <h1 class="fw-bold mb-1"
+                                th:text="${chapter.name}">
+                            </h1>
+
+                            <p class="text-muted mb-0">
+                                Module: <span th:text="${module.name}"></span>
+                            </p>
+
+                        </div>
+
+                        <div class="subject-icon">
+                            <i th:if="${subjectName == 'Physics'}"
+                               class="bi bi-lightning-charge"></i>
+                            <i th:if="${subjectName == 'Chemistry'}"
+                               class="bi bi-droplet"></i>
+                            <i th:if="${subjectName == 'Biology'}"
+                               class="bi bi-heart-pulse"></i>
+                        </div>
                     </div>
-
-                    <h2 th:text="${chapter.name}">
-                        Chapter
-                    </h2>
-
-                    <hr>
-
-                    <div style="white-space:pre-wrap"
-                         th:text="${chapter.description}">
-                        Chapter content
-                    </div>
-
                 </div>
+            </div>
 
+            <!-- ACTIONS -->
+            <div class="d-flex justify-content-end mb-3">
+                <a th:href="@{'/student/study/' + ${subjectLower} + '/module/' + ${module.id}}"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+
+            <!-- CHAPTER DETAILS -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <i class="bi bi-journal-text me-1"></i> About this chapter
+                </div>
+                <div class="card-body">
+                    <p class="mb-0"
+                       style="white-space: pre-wrap;"
+                       th:if="${chapter.description != null && !chapter.description.isEmpty()}"
+                       th:text="${chapter.description}">
+                    </p>
+                    <p class="text-muted mb-0"
+                       th:if="${chapter.description == null || chapter.description.isEmpty()}">
+                        No description added for this chapter yet.
+                    </p>
+                </div>
             </div>
 
         </div>
+
+        <div th:replace="~{student/student-layout::footer}"></div>
 
     </div>
 
