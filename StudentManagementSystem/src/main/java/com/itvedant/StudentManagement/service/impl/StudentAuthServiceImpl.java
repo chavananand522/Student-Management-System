@@ -32,28 +32,22 @@ public class StudentAuthServiceImpl implements StudentAuthService {
     @Override
     public void register(StudentSignupDTO dto) {
 
-        String email = dto.getEmail().trim();
+        String email = dto.getEmail().trim().toLowerCase();
 
         if (studentRepository.existsByEmailIgnoreCase(email)) {
-            throw new IllegalArgumentException(
-                    "Email is already registered."
-            );
+            throw new IllegalArgumentException("Email is already registered.");
         }
 
         if (userRepository.existsByUserNameIgnoreCase(email)) {
-            throw new IllegalArgumentException(
-                    "Email is already registered."
-            );
+            throw new IllegalArgumentException("Email is already registered.");
         }
 
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new IllegalArgumentException(
-                    "Passwords do not match."
-            );
+            throw new IllegalArgumentException("Passwords do not match.");
         }
 
+        // ---- Create Students row ----
         Students student = new Students();
-
         student.setFirstName(dto.getFirstName().trim());
         student.setLastName(dto.getLastName().trim());
         student.setEmail(email);
@@ -63,34 +57,17 @@ public class StudentAuthServiceImpl implements StudentAuthService {
 
         Students savedStudent = studentRepository.save(student);
 
+        // ---- Create Users row (for login) ----
         Users user = new Users();
-
-        /*
-         * Student logs in using email.
-         */
         user.setUserName(savedStudent.getEmail());
-
-        /*
-         * IMPORTANT:
-         * Password must be BCrypt encoded.
-         */
-        user.setPassword(
-                passwordEncoder.encode(dto.getPassword())
-        );
-
-        user.setActive(true);
-
-        /*
-         * This gives the student ROLE_STUDENT.
-         */
-        user.setRole("STUDENT");
-
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setActive(true);          // ✅ enabled
+        user.setRole("STUDENT");       // ✅ role
         user.setFullName(
                 savedStudent.getFirstName()
                 + " "
                 + savedStudent.getLastName()
         );
-
         user.setEmail(savedStudent.getEmail());
         user.setPhoneNumber(savedStudent.getPhoneNumber());
 
@@ -105,7 +82,7 @@ public class StudentAuthServiceImpl implements StudentAuthService {
             return false;
         }
 
-        String trimmedEmail = email.trim();
+        String trimmedEmail = email.trim().toLowerCase();
 
         return studentRepository.existsByEmailIgnoreCase(trimmedEmail)
                 || userRepository.existsByUserNameIgnoreCase(trimmedEmail);

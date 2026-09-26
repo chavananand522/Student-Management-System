@@ -29,6 +29,8 @@ public class SpringConfig {
                 // =========================================
                 .requestMatchers(
                     "/login",
+                    "/forgot-password",       // ← NEW
+                    "/reset-password",        // ← NEW
                     "/student/signup",
                     "/student/register",
                     "/settings",
@@ -81,9 +83,7 @@ public class SpringConfig {
                 .authenticated()
             )
 
-            // =============================================
             // LOGIN
-            // =============================================
             .formLogin(form -> form
 
                 .loginPage("/login")
@@ -113,9 +113,7 @@ public class SpringConfig {
                 .permitAll()
             )
 
-            // =============================================
             // LOGOUT
-            // =============================================
             .logout(logout -> logout
 
                 .logoutUrl("/logout")
@@ -134,9 +132,6 @@ public class SpringConfig {
         return http.build();
     }
 
-    // =============================================
-    // PASSWORD ENCODER
-    // =============================================
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

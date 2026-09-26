@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserDetailsService {
                                 "Invalid username or password"
                         ));
 
+        // `active` is a primitive boolean on Users, so no null-check needed.
         if (!user.isActive()) {
             throw new DisabledException("User account is disabled");
         }
