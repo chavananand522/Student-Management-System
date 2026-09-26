@@ -1,162 +1,89 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/test-attempt.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
 <div class="d-flex">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <div
-                class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
                 <div>
-
-                    <h2
-                        th:text="${test.testName}">
-                        Test
-                    </h2>
-
+                    <h2 th:text="${test.testName}">Test</h2>
                     <span class="text-muted">
-
-                        Answer all questions and submit
-                        before the timer ends.
-
+                        Answer all questions and submit before the timer ends.
                     </span>
-
                 </div>
 
                 <div class="badge bg-danger fs-6 p-2">
-
-                    Time:
-
-                    <span id="timer">
-                        00:00
-                    </span>
-
+                    Time: <span id="timer">00:00</span>
                 </div>
 
             </div>
 
-            <form
-                id="testForm"
-                th:action="@{'/student/tests/attempt/' + attempt.id + '/submit'}"
-                method="post">
+            <form id="testForm"
+                  th:action="@{'/student/tests/attempt/' + attempt.id + '/submit'}"
+                  method="post">
 
-                <input
-                    type="hidden"
-                    th:name="${_csrf.parameterName}"
-                    th:value="${_csrf.token}">
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}">
 
-                <div
-                    th:each="q,stat : ${questions}"
-                    class="card student-card mb-3">
+                <div th:each="q,stat : ${questions}"
+                     class="card student-card mb-3">
 
                     <div class="card-body">
 
-                        <h5>
+                        <h5>Question <span th:text="${stat.count}"></span></h5>
 
-                            Question
-
-                            <span
-                                th:text="${stat.count}">
-                            </span>
-
-                        </h5>
-
-                        <p
-                            class="fw-semibold"
-                            th:text="${q.questionText}">
+                        <p class="fw-semibold"
+                           th:text="${q.questionText}">
                         </p>
 
-                        <div
-                            th:if="${q.optionA != null}"
-                            class="option-card">
-
+                        <div th:if="${q.optionA != null}" class="option-card">
                             <label class="d-flex gap-2">
-
-                                <input
-                                    type="radio"
-                                    th:name="${'answer_' + q.id}"
-                                    value="A">
-
-                                <span
-                                    th:text="${q.optionA}">
-                                </span>
-
+                                <input type="radio"
+                                       th:name="${'answer_' + q.id}"
+                                       value="A">
+                                <span th:text="${q.optionA}"></span>
                             </label>
-
                         </div>
 
-                        <div
-                            th:if="${q.optionB != null}"
-                            class="option-card">
-
+                        <div th:if="${q.optionB != null}" class="option-card">
                             <label class="d-flex gap-2">
-
-                                <input
-                                    type="radio"
-                                    th:name="${'answer_' + q.id}"
-                                    value="B">
-
-                                <span
-                                    th:text="${q.optionB}">
-                                </span>
-
+                                <input type="radio"
+                                       th:name="${'answer_' + q.id}"
+                                       value="B">
+                                <span th:text="${q.optionB}"></span>
                             </label>
-
                         </div>
 
-                        <div
-                            th:if="${q.optionC != null}"
-                            class="option-card">
-
+                        <div th:if="${q.optionC != null}" class="option-card">
                             <label class="d-flex gap-2">
-
-                                <input
-                                    type="radio"
-                                    th:name="${'answer_' + q.id}"
-                                    value="C">
-
-                                <span
-                                    th:text="${q.optionC}">
-                                </span>
-
+                                <input type="radio"
+                                       th:name="${'answer_' + q.id}"
+                                       value="C">
+                                <span th:text="${q.optionC}"></span>
                             </label>
-
                         </div>
 
-                        <div
-                            th:if="${q.optionD != null}"
-                            class="option-card">
-
+                        <div th:if="${q.optionD != null}" class="option-card">
                             <label class="d-flex gap-2">
-
-                                <input
-                                    type="radio"
-                                    th:name="${'answer_' + q.id}"
-                                    value="D">
-
-                                <span
-                                    th:text="${q.optionD}">
-                                </span>
-
+                                <input type="radio"
+                                       th:name="${'answer_' + q.id}"
+                                       value="D">
+                                <span th:text="${q.optionD}"></span>
                             </label>
-
                         </div>
 
                     </div>
@@ -164,15 +91,10 @@ src/main/resources/templates/student/test-attempt.html
                 </div>
 
                 <div class="text-center mb-5">
-
-                    <button
-                        type="submit"
-                        class="btn btn-success btn-lg px-5">
-
+                    <button type="submit"
+                            class="btn btn-success btn-lg px-5">
                         Submit Test
-
                     </button>
-
                 </div>
 
             </form>
@@ -185,70 +107,53 @@ src/main/resources/templates/student/test-attempt.html
 
 <script th:inline="javascript">
 
-let remaining =
-    /*[[${durationSeconds}]]*/ 3600;
+    let remaining =
+        /*[[${durationSeconds}]]*/ 3600;
 
-const timer =
-    document.getElementById("timer");
+    const timer =
+        document.getElementById("timer");
 
-const form =
-    document.getElementById("testForm");
+    const form =
+        document.getElementById("testForm");
 
-let submittedAutomatically = false;
+    let submittedAutomatically = false;
 
-function tick() {
+    function tick() {
 
-    const minutes =
-        Math.floor(remaining / 60);
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
 
-    const seconds =
-        remaining % 60;
+        timer.textContent =
+            String(minutes).padStart(2, "0")
+            + ":"
+            + String(seconds).padStart(2, "0");
 
-    timer.textContent =
-        String(minutes).padStart(2, "0")
-        + ":"
-        + String(seconds).padStart(2, "0");
-
-    if (remaining <= 0) {
-
-        submittedAutomatically = true;
-
-        form.submit();
-
-        return;
-    }
-
-    remaining--;
-
-    setTimeout(
-        tick,
-        1000
-    );
-}
-
-tick();
-
-form.addEventListener(
-    "submit",
-    function(event) {
-
-        if (submittedAutomatically) {
+        if (remaining <= 0) {
+            submittedAutomatically = true;
+            form.submit();
             return;
         }
 
-        if (!confirm(
-                "Submit your test now?"
-        )) {
+        remaining--;
 
+        setTimeout(tick, 1000);
+    }
+
+    tick();
+
+    form.addEventListener("submit", function (event) {
+        if (submittedAutomatically) {
+            return;
+        }
+        if (!confirm("Submit your test now?")) {
             event.preventDefault();
         }
-
-    }
-);
+    });
 
 </script>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
+
 </html>

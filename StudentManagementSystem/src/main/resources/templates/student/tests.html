@@ -7,19 +7,19 @@ src/main/resources/templates/student/tests.html
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
 <div class="d-flex">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
-        <div th:replace="~{student-layout::alerts}"></div>
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
 
@@ -133,7 +133,7 @@ src/main/resources/templates/student/tests.html
 
 </div>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
 </html>

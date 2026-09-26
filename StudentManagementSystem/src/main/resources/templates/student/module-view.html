@@ -1,34 +1,26 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/module-view.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
 <div class="d-flex">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
-        <div th:replace="~{student-layout::alerts}"></div>
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <a
-                th:href="@{'/student/study/' + #strings.toLowerCase(subjectName)}"
-                class="btn btn-outline-secondary btn-sm mb-3">
-
+            <a th:href="@{'/student/study/' + #strings.toLowerCase(subjectName)}"
+               class="btn btn-outline-secondary btn-sm mb-3">
                 ← Back to Modules
-
             </a>
 
             <div class="card student-card">
@@ -36,44 +28,33 @@ src/main/resources/templates/student/module-view.html
                 <div class="card-body p-4">
 
                     <div class="text-primary small">
-
-                        <span th:text="${subjectName}">
-                            Subject
-                        </span>
-
+                        <span th:text="${subjectName}">Subject</span>
                     </div>
 
-                    <h2
-                        class="fw-bold"
+                    <h2 class="fw-bold"
                         th:text="${module.name}">
                         Module
                     </h2>
 
-                    <p
-                        class="text-muted"
-                        th:text="${module.description}">
+                    <p class="text-muted"
+                       th:text="${module.description}">
                     </p>
 
                     <hr>
 
-                    <h5 class="mb-3">
-                        Chapters
-                    </h5>
+                    <h5 class="mb-3">Chapters</h5>
 
-                    <div
-                        class="list-group"
-                        th:if="${!chapters.isEmpty()}">
+                    <div class="list-group"
+                         th:if="${!chapters.isEmpty()}">
 
-                        <a
-                            th:each="chapter : ${chapters}"
-                            th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id + '/chapter/' + chapter.id}"
-                            class="list-group-item list-group-item-action">
+                        <a th:each="chapter : ${chapters}"
+                           th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id + '/chapter/' + chapter.id}"
+                           class="list-group-item list-group-item-action">
 
                             <div class="d-flex justify-content-between align-items-center">
 
-                                <span
-                                    class="fw-semibold"
-                                    th:text="${chapter.name}">
+                                <span class="fw-semibold"
+                                      th:text="${chapter.name}">
                                     Chapter
                                 </span>
 
@@ -85,12 +66,9 @@ src/main/resources/templates/student/module-view.html
 
                     </div>
 
-                    <div
-                        th:if="${chapters.isEmpty()}"
-                        class="alert alert-info">
-
+                    <div th:if="${chapters.isEmpty()}"
+                         class="alert alert-info">
                         No chapters are available for this module yet.
-
                     </div>
 
                 </div>
@@ -103,7 +81,7 @@ src/main/resources/templates/student/module-view.html
 
 </div>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
 </html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div th:replace="~{student-layout::alerts}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <div class="settings-header mb-4">
+                <h1 class="settings-title">
+                    <i class="bi bi-gear"></i> Settings
+                </h1>
+                <p class="settings-subtitle">
+                    Manage your account preferences and data.
+                </p>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="settings-section mb-4">
+                <h2 class="settings-section-title">Account Settings</h2>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+                        <div class="settings-card">
+                            <div class="settings-card-icon">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="settings-card-content">
+                                <h3>Profile Information</h3>
+                                <p>Update your personal details and contact information.</p>
+                                <a th:href="@{/student/profile}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i> Edit Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="settings-card">
+                            <div class="settings-card-icon">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <div class="settings-card-content">
+                                <h3>Change Password</h3>
+                                <p>Update your password to keep your account secure.</p>
+                                <a th:href="@{/student/profile}" class="btn btn-primary">
+                                    <i class="bi bi-key"></i> Change Password
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Data Export -->
+            <div class="settings-section mb-4">
+                <h2 class="settings-section-title">My Data</h2>
+
+                <div class="settings-card">
+                    <div class="settings-card-icon">
+                        <i class="bi bi-file-earmark-arrow-down"></i>
+                    </div>
+                    <div class="settings-card-content">
+                        <h3>Export My Data</h3>
+                        <p>Download all your personal information, enrollment details, and test results.</p>
+                        <ul class="mb-3">
+                            <li>Personal Information</li>
+                            <li>Enrolled Courses</li>
+                            <li>Test Results & Scores</li>
+                            <li>Fee Payment History</li>
+                        </ul>
+                        <a th:href="@{/student/settings/export}"
+                           class="btn btn-success">
+                            <i class="bi bi-download"></i> Download My Data (Excel)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Preferences -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Preferences</h2>
+
+                <div class="settings-card">
+                    <div class="settings-card-icon">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                    <div class="settings-card-content">
+                        <h3>Notification Preferences</h3>
+                        <p>Choose what notifications you want to receive.</p>
+
+                        <form th:action="@{/student/settings/notifications}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox"
+                                       id="notifyTests" name="notifyTests" value="true"
+                                       th:checked="${preferences.notifyTests}">
+                                <label class="form-check-label" for="notifyTests">
+                                    New test notifications
+                                </label>
+                            </div>
+
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox"
+                                       id="notifyResults" name="notifyResults" value="true"
+                                       th:checked="${preferences.notifyResults}">
+                                <label class="form-check-label" for="notifyResults">
+                                    Result publication notifications
+                                </label>
+                            </div>
+
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox"
+                                       id="notifyFees" name="notifyFees" value="true"
+                                       th:checked="${preferences.notifyFees}">
+                                <label class="form-check-label" for="notifyFees">
+                                    Fee payment reminders
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check"></i> Save Preferences
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .settings-header {
+        padding: 20px 0;
+    }
+
+    .settings-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .settings-title i {
+        color: #4361ee;
+        margin-right: 10px;
+    }
+
+    .settings-subtitle {
+        color: #6b7280;
+        margin-top: 8px;
+    }
+
+    .settings-section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .settings-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        display: flex;
+        gap: 20px;
+        height: 100%;
+    }
+
+    .settings-card-icon {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        border-radius: 14px;
+        background: #eef3ff;
+        color: #4361ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .settings-card-content h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .settings-card-content p {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .settings-card-content ul {
+        color: #6b7280;
+        font-size: 14px;
+        padding-left: 20px;
+    }
+
+    .settings-card-content ul li {
+        margin-bottom: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .settings-card {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<th:block th:replace="~{student-layout::scripts

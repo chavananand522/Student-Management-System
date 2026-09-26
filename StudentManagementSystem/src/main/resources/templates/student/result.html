@@ -1,40 +1,31 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/result.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
 <div class="d-flex">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <a
-                th:href="@{/student/results}"
-                class="btn btn-outline-secondary btn-sm mb-3">
-
+            <a th:href="@{/student/results}"
+               class="btn btn-outline-secondary btn-sm mb-3">
                 ← Back to Results
-
             </a>
 
             <div class="card student-card">
 
                 <div class="card-body p-4">
 
-                    <h2
-                        class="fw-bold"
+                    <h2 class="fw-bold"
                         th:text="${test.testName}">
                         Test Result
                     </h2>
@@ -44,120 +35,61 @@ src/main/resources/templates/student/result.html
                     <div class="row g-4">
 
                         <div class="col-md-3">
-
-                            <div class="text-muted">
-                                Obtained Marks
-                            </div>
-
-                            <h3
-                                th:text="${attempt.obtainedMarks + ' / ' + test.totalMarks}">
+                            <div class="text-muted">Obtained Marks</div>
+                            <h3 th:text="${attempt.obtainedMarks + ' / ' + test.totalMarks}">
                                 0 / 0
                             </h3>
-
                         </div>
 
                         <div class="col-md-3">
-
-                            <div class="text-muted">
-                                Correct
-                            </div>
-
-                            <h3
-                                th:text="${attempt.correctAnswers}">
-                                0
-                            </h3>
-
+                            <div class="text-muted">Correct</div>
+                            <h3 th:text="${attempt.correctAnswers}">0</h3>
                         </div>
 
                         <div class="col-md-3">
-
-                            <div class="text-muted">
-                                Wrong
-                            </div>
-
-                            <h3
-                                th:text="${attempt.wrongAnswers}">
-                                0
-                            </h3>
-
+                            <div class="text-muted">Wrong</div>
+                            <h3 th:text="${attempt.wrongAnswers}">0</h3>
                         </div>
 
                         <div class="col-md-3">
-
-                            <div class="text-muted">
-                                Unanswered
-                            </div>
-
-                            <h3
-                                th:text="${attempt.unansweredQuestions}">
-                                0
-                            </h3>
-
+                            <div class="text-muted">Unanswered</div>
+                            <h3 th:text="${attempt.unansweredQuestions}">0</h3>
                         </div>
 
                     </div>
 
                     <hr>
 
-                    <h5 class="mb-3">
-                        Answers
-                    </h5>
+                    <h5 class="mb-3">Answers</h5>
 
-                    <div
-                        th:each="answer,stat : ${attempt.answers}"
-                        class="card mb-3">
+                    <div th:each="answer,stat : ${attempt.answers}"
+                         class="card mb-3">
 
                         <div class="card-body">
 
                             <div class="small text-muted">
-                                Question
-                                <span th:text="${stat.count}">
-                                </span>
+                                Question <span th:text="${stat.count}"></span>
                             </div>
 
-                            <h6
-                                th:text="${answer.question.questionText}">
+                            <h6 th:text="${answer.question.questionText}">
                                 Question
                             </h6>
 
                             <div>
-
                                 Your Answer:
-
-                                <strong
-                                    th:text="${answer.selectedAnswer}">
-                                </strong>
-
+                                <strong th:text="${answer.selectedAnswer}"></strong>
                             </div>
 
                             <div>
-
                                 Correct Answer:
-
-                                <strong
-                                    th:text="${answer.question.correctAnswer}">
-                                </strong>
-
+                                <strong th:text="${answer.question.correctAnswer}"></strong>
                             </div>
 
                             <div class="mt-2">
-
-                                <span
-                                    th:if="${answer.correct}"
-                                    class="badge bg-success">
-
-                                    Correct
-
-                                </span>
-
-                                <span
-                                    th:unless="${answer.correct}"
-                                    class="badge bg-danger">
-
-                                    Wrong
-
-                                </span>
-
+                                <span th:if="${answer.correct}"
+                                      class="badge bg-success">Correct</span>
+                                <span th:unless="${answer.correct}"
+                                      class="badge bg-danger">Wrong</span>
                             </div>
 
                         </div>
@@ -174,7 +106,7 @@ src/main/resources/templates/student/result.html
 
 </div>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
 </html>

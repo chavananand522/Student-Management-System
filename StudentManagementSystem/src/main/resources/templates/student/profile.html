@@ -1,25 +1,20 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/profile.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
 <div class="d-flex">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
-        <div th:replace="~{student-layout::alerts}"></div>
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
 
@@ -40,59 +35,35 @@ src/main/resources/templates/student/profile.html
                             </h5>
 
                             <div class="mb-3">
-
-                                <label class="text-muted">
-                                    Name
-                                </label>
-
-                                <div
-                                    class="fw-semibold"
-                                    th:text="${student.firstName + ' ' + student.lastName}">
+                                <label class="text-muted">Name</label>
+                                <div class="fw-semibold"
+                                     th:text="${student.firstName + ' ' + student.lastName}">
                                     Student
                                 </div>
-
                             </div>
 
                             <div class="mb-3">
-
-                                <label class="text-muted">
-                                    Email
-                                </label>
-
-                                <div
-                                    class="fw-semibold"
-                                    th:text="${student.email}">
+                                <label class="text-muted">Email</label>
+                                <div class="fw-semibold"
+                                     th:text="${student.email}">
                                     email
                                 </div>
-
                             </div>
 
                             <div class="mb-3">
-
-                                <label class="text-muted">
-                                    Phone
-                                </label>
-
-                                <div
-                                    class="fw-semibold"
-                                    th:text="${student.phoneNumber}">
+                                <label class="text-muted">Phone</label>
+                                <div class="fw-semibold"
+                                     th:text="${student.phoneNumber}">
                                     phone
                                 </div>
-
                             </div>
 
                             <div class="mb-3">
-
-                                <label class="text-muted">
-                                    Address
-                                </label>
-
-                                <div
-                                    class="fw-semibold"
-                                    th:text="${student.address}">
+                                <label class="text-muted">Address</label>
+                                <div class="fw-semibold"
+                                     th:text="${student.address}">
                                     address
                                 </div>
-
                             </div>
 
                         </div>
@@ -111,68 +82,42 @@ src/main/resources/templates/student/profile.html
                                 Change Password
                             </h5>
 
-                            <form
-                                th:action="@{/student/profile/password}"
-                                method="post">
+                            <form th:action="@{/student/profile/password}"
+                                  method="post">
 
-                                <input
-                                    type="hidden"
-                                    th:name="${_csrf.parameterName}"
-                                    th:value="${_csrf.token}">
+                                <input type="hidden"
+                                       th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}">
 
                                 <div class="mb-3">
-
-                                    <label
-                                        class="form-label">
-                                        Current Password
-                                    </label>
-
-                                    <input
-                                        type="password"
-                                        name="currentPassword"
-                                        class="form-control"
-                                        required>
-
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password"
+                                           name="currentPassword"
+                                           class="form-control"
+                                           required>
                                 </div>
 
                                 <div class="mb-3">
-
-                                    <label
-                                        class="form-label">
-                                        New Password
-                                    </label>
-
-                                    <input
-                                        type="password"
-                                        name="newPassword"
-                                        class="form-control"
-                                        minlength="6"
-                                        required>
-
+                                    <label class="form-label">New Password</label>
+                                    <input type="password"
+                                           name="newPassword"
+                                           class="form-control"
+                                           minlength="6"
+                                           required>
                                 </div>
 
                                 <div class="mb-3">
-
-                                    <label
-                                        class="form-label">
-                                        Confirm Password
-                                    </label>
-
-                                    <input
-                                        type="password"
-                                        name="confirmPassword"
-                                        class="form-control"
-                                        minlength="6"
-                                        required>
-
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password"
+                                           name="confirmPassword"
+                                           class="form-control"
+                                           minlength="6"
+                                           required>
                                 </div>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary">
-
+                                <button type="submit"
+                                        class="btn btn-primary">
                                     Change Password
-
                                 </button>
 
                             </form>
@@ -191,7 +136,7 @@ src/main/resources/templates/student/profile.html
 
 </div>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
 </html>

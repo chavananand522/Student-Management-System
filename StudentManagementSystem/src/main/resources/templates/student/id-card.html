@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <h1 class="id-card-page-title mb-4">
+                <i class="bi bi-person-vcard-fill"></i>
+                Student ID Card
+            </h1>
+
+            <div class="id-card-wrapper">
+                <div class="student-id-card">
+
+                    <!-- Card Header -->
+                    <div class="id-card-header">
+                        <div class="id-card-logo">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <div class="id-card-header-text">
+                            <div class="id-card-system-name">
+                                STUDENT MANAGEMENT SYSTEM
+                            </div>
+                            <div class="id-card-type">
+                                STUDENT IDENTITY CARD
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="id-card-body">
+
+                        <!-- Student Photo -->
+                        <div class="id-card-photo">
+                            <img th:src="@{/profile/image}"
+                                 alt="Student Profile"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="photo-placeholder" style="display:none;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                        </div>
+
+                        <!-- Student Details -->
+                        <div class="id-card-details">
+
+                            <h2 class="id-student-name"
+                                th:text="${student.firstName + ' ' + student.lastName}">
+                                Student Name
+                            </h2>
+
+                            <div class="id-detail-row">
+                                <span>Student ID</span>
+                                <strong th:text="${student.studentCode ?: 'STU' + student.id}">
+                                    STU001
+                                </strong>
+                            </div>
+
+                            <div class="id-detail-row">
+                                <span>Email</span>
+                                <strong th:text="${student.email}">
+                                    email
+                                </strong>
+                            </div>
+
+                            <div class="id-detail-row">
+                                <span>Phone</span>
+                                <strong th:text="${student.phoneNumber}">
+                                    phone
+                                </strong>
+                            </div>
+
+                            <div class="id-detail-row">
+                                <span>Status</span>
+                                <strong class="active-status"
+                                        th:text="${student.active ? 'Active' : 'Inactive'}">
+                                    Active
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Card Bottom -->
+                    <div class="id-card-bottom">
+                        <div class="id-card-validity">
+                            <span>VALIDITY</span>
+                            <strong th:text="${validFrom + ' - ' + validTo}">
+                                2026 - 2027
+                            </strong>
+                        </div>
+                        <div class="id-card-qr">
+                            <i class="bi bi-qr-code"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="id-card-footer">
+                        <span>
+                            <i class="bi bi-shield-check"></i>
+                            Official Student Card
+                        </span>
+                        <span>SMS STUDENT</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div th:replace="~{student-layout::footer}"></div>
+
+    </div>
+
+</div>
+
+<style>
+    .id-card-page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #292b45;
+    }
+
+    .id-card-page-title i {
+        color: #4361ee;
+        margin-right: 10px;
+    }
+
+    .id-card-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .student-id-card {
+        width: 420px;
+        background: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+    }
+
+    .id-card-header {
+        background: linear-gradient(135deg, #1e3a8a, #4361ee);
+        color: #ffffff;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .id-card-logo {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .id-card-system-name {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .id-card-type {
+        font-size: 11px;
+        opacity: 0.85;
+        margin-top: 3px;
+        letter-spacing: 1px;
+    }
+
+    .id-card-body {
+        padding: 28px 24px;
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    .id-card-photo {
+        width: 120px;
+        height: 120px;
+        min-width: 120px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #eef3ff;
+        border: 3px solid #4361ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .id-card-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .photo-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 60px;
+        color: #4361ee;
+        background: #eef3ff;
+    }
+
+    .id-card-details {
+        flex: 1;
+    }
+
+    .id-student-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0 0 16px 0;
+    }
+
+    .id-detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border-bottom: 1px dashed #e5e7eb;
+        font-size: 13px;
+    }
+
+    .id-detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .id-detail-row span {
+        color: #6b7280;
+    }
+
+    .id-detail-row strong {
+        color: #1e293b;
+        text-align: right;
+        max-width: 60%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .active-status {
+        color: #16a34a !important;
+    }
+
+    .id-card-bottom {
+        background: #f8fafc;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .id-card-validity span {
+        display: block;
+        font-size: 10px;
+        color: #6b7280;
+        letter-spacing: 1px;
+    }
+
+    .id-card-validity strong {
+        font-size: 15px;
+        color: #1e293b;
+    }
+
+    .id-card-qr {
+        font-size: 40px;
+        color: #1e293b;
+    }
+
+    .id-card-footer {
+        background: linear-gradient(135deg, #1e3a8a, #4361ee);
+        color: #ffffff;
+        padding: 12px 24px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>

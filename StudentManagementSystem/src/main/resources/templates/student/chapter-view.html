@@ -1,53 +1,42 @@
-<!-- ============================================================
-FILE:
-src/main/resources/templates/student/chapter-view.html
-============================================================ -->
-
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}"></head>
 
 <body>
 
 <div class="d-flex">
 
-    <div th:replace="~{student-layout::sidebar}"></div>
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
     <div class="student-content">
 
-        <div th:replace="~{student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::navbar}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <a
-                th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id}"
-                class="btn btn-outline-secondary btn-sm mb-3">
-
+            <a th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id}"
+               class="btn btn-outline-secondary btn-sm mb-3">
                 ← Back to Chapters
-
             </a>
 
             <div class="card student-card">
 
                 <div class="card-body p-4">
 
-                    <div
-                        class="text-primary small"
-                        th:text="${subjectName}">
+                    <div class="text-primary small"
+                         th:text="${subjectName}">
                     </div>
 
-                    <h2
-                        th:text="${chapter.name}">
+                    <h2 th:text="${chapter.name}">
                         Chapter
                     </h2>
 
                     <hr>
 
-                    <div
-                        style="white-space:pre-wrap"
-                        th:text="${chapter.description}">
+                    <div style="white-space:pre-wrap"
+                         th:text="${chapter.description}">
                         Chapter content
                     </div>
 
@@ -61,7 +50,7 @@ src/main/resources/templates/student/chapter-view.html
 
 </div>
 
-<th:block th:replace="~{student-layout::scripts}"></th:block>
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
 </html>

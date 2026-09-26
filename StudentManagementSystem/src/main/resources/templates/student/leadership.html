@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div th:replace="~{student-layout::alerts}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <!-- TITLE -->
+            <div class="d-flex align-items-center mb-4">
+                <div class="trophy-icon">🏆</div>
+                <h1 class="leadership-title">Leadership Board</h1>
+            </div>
+
+            <!-- TOP 3 PODIUM -->
+            <div class="podium-container">
+
+                <!-- RANK 2 - LEFT -->
+                <div class="podium-card rank-two" th:if="${topStudents.size() >= 2}">
+                    <div class="medal">🥈</div>
+                    <div class="student-image">
+                        <div class="default-avatar">👤</div>
+                    </div>
+                    <h3 th:text="${topStudents[1].studentName}">Student 2</h3>
+                    <div class="average-mark"
+                         th:text="${#numbers.formatDecimal(topStudents[1].averageMarks, 1, 2) + '%'}">
+                        85.00%
+                    </div>
+                </div>
+
+                <!-- RANK 1 - CENTER -->
+                <div class="podium-card rank-one" th:if="${!topStudents.isEmpty()}">
+                    <div class="medal">🥇</div>
+                    <div class="student-image">
+                        <div class="default-avatar">👤</div>
+                    </div>
+                    <h3 th:text="${topStudents[0].studentName}">Student 1</h3>
+                    <div class="average-mark"
+                         th:text="${#numbers.formatDecimal(topStudents[0].averageMarks, 1, 2) + '%'}">
+                        95.00%
+                    </div>
+                </div>
+
+                <!-- RANK 3 - RIGHT -->
+                <div class="podium-card rank-three" th:if="${topStudents.size() >= 3}">
+                    <div class="medal">🥉</div>
+                    <div class="student-image">
+                        <div class="default-avatar">👤</div>
+                    </div>
+                    <h3 th:text="${topStudents[2].studentName}">Student 3</h3>
+                    <div class="average-mark"
+                         th:text="${#numbers.formatDecimal(topStudents[2].averageMarks, 1, 2) + '%'}">
+                        80.00%
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CURRENT RANKING MESSAGE -->
+            <div class="current-ranking-card" th:if="${myRank != null}">
+                <div class="current-ranking-text">
+                    Your Ranking at: <strong th:text="${myRank} + '/' + ${totalStudents}">4/10</strong>
+                </div>
+                <div class="ranking-message"
+                     th:if="${myRank > 3}">
+                    "Just a little more effort to shine on the Leadership Board!"
+                </div>
+                <div class="ranking-message text-success"
+                     th:if="${myRank <= 3}">
+                    "Congratulations! You are in the top 3! 🎉"
+                </div>
+            </div>
+
+            <!-- FULL RANKINGS TABLE -->
+            <div class="ranking-table-card">
+
+                <h2>Student Rankings</h2>
+
+                <div class="table-responsive">
+
+                    <table class="table ranking-table">
+
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Student</th>
+                            <th>Total Marks</th>
+                            <th>Average Marks</th>
+                            <th>Tests Taken</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="student, stat : ${rankings}"
+                            th:classappend="${student.studentName == myName} ? 'table-primary' : ''">
+
+                            <td>
+                                <span class="table-rank"
+                                      th:if="${stat.index == 0}">🥇 1</span>
+                                <span class="table-rank"
+                                      th:if="${stat.index == 1}">🥈 2</span>
+                                <span class="table-rank"
+                                      th:if="${stat.index == 2}">🥉 3</span>
+                                <span th:if="${stat.index > 2}"
+                                      th:text="${stat.index + 1}">4</span>
+                            </td>
+
+                            <td>
+                                <strong th:text="${student.studentName}">Student</strong>
+                                <span class="badge bg-info ms-2"
+                                      th:if="${student.studentName == myName}">You</span>
+                            </td>
+
+                            <td th:text="${student.totalMarks}">0</td>
+
+                            <td>
+                                <strong th:text="${#numbers.formatDecimal(student.averageMarks, 1, 2) + '%'}">
+                                    0.00%
+                                </strong>
+                            </td>
+
+                            <td th:text="${student.testsTaken}">0</td>
+
+                        </tr>
+
+                        <tr th:if="${rankings.isEmpty()}">
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-trophy fs-1 d-block mb-3"></i>
+                                No ranking data available yet.
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .trophy-icon {
+        font-size: 55px;
+        margin-right: 18px;
+    }
+
+    .leadership-title {
+        font-size: 42px;
+        font-weight: 800;
+        color: #292b45;
+        margin: 0;
+    }
+
+    .podium-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 35px;
+        margin-top: 40px;
+        margin-bottom: 70px;
+        flex-wrap: wrap;
+    }
+
+    .podium-card {
+        width: 260px;
+        text-align: center;
+        position: relative;
+        padding: 25px 20px 35px 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+    }
+
+    .rank-one {
+        height: 380px;
+        background: linear-gradient(to bottom, #f2c300 0%, #f7d84a 35%, #fff3b5 70%, #ffffff 100%);
+        z-index: 2;
+    }
+
+    .rank-two {
+        height: 330px;
+        background: linear-gradient(to bottom, #969696 0%, #bcbcbc 35%, #e5e5e5 70%, #ffffff 100%);
+    }
+
+    .rank-three {
+        height: 315px;
+        background: linear-gradient(to bottom, #d98535 0%, #e9a263 35%, #f4c79e 70%, #ffffff 100%);
+    }
+
+    .medal {
+        font-size: 38px;
+        margin-bottom: 20px;
+    }
+
+    .student-image {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0 25px 0;
+    }
+
+    .default-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #dce8f5;
+        border: 5px solid white;
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+    }
+
+    .podium-card h3 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #202020;
+        margin: 0 0 12px 0;
+    }
+
+    .average-mark {
+        font-size: 24px;
+        font-weight: 800;
+        color: #292b45;
+    }
+
+    .current-ranking-card {
+        max-width: 750px;
+        margin: 0 auto 60px;
+        padding: 25px 40px;
+        text-align: center;
+        background: linear-gradient(90deg, #d8efff, #f6ffdf);
+        border-radius: 45px;
+        border: 5px solid white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .current-ranking-text {
+        font-size: 25px;
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+    .current-ranking-text strong {
+        color: #222;
+    }
+
+    .ranking-message {
+        font-size: 18px;
+        color: #111;
+        font-weight: 500;
+    }
+
+    .ranking-table-card {
+        background: white;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
+    }
+
+    .ranking-table-card h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #292b45;
+        margin-bottom: 25px;
+    }
+
+    .ranking-table thead {
+        background: #f5f6f8;
+    }
+
+    .ranking-table th {
+        padding: 18px 15px;
+        font-weight: 700;
+        color: #50535d;
+        border: none;
+    }
+
+    .ranking-table td {
+        padding: 18px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #eeeeee;
+        color: #292b45;
+    }
+
+    .ranking-table tbody tr:hover {
+        background: #f8f9fb;
+    }
+
+    .table-rank {
+        font-weight: 800;
+        font-size: 17px;
+    }
+
+    @media (max-width: 768px) {
+        .podium-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .rank-one { order: 1; }
+        .rank-two { order: 2; }
+        .rank-three { order: 3; }
+
+        .leadership-title { font-size: 30px; }
+        .trophy-icon { font-size: 45px; }
+        .current-ranking-card { padding: 20px; }
+        .current-ranking-text { font-size: 21px; }
+    }
+</style>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>
