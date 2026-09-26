@@ -1,73 +1,275 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/layout::head}"></head>	
+<head th:replace="~{fragments/layout::head}">
+</head>
 
 <body class="login-body">
 
-    <div class="card login-card" style="width: 100%; max-width: 420px;">
-        <div class="login-header text-center text-white">
-            <h2 class="mb-1 fw-bold"><i class="bi bi-mortarboard-fill me-2"></i>SMS</h2>
-            <p class="mb-0 opacity-75">Student Management System</p>
-        </div>
-        <div class="card-body p-4 p-md-5">
-            <h4 class="text-center mb-4 fw-bold text-dark">Welcome Back</h4>
-			
-			<div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
-				Invalid username or password. Please try again.
-				</div>
+    <div class="card login-card"
+         style="width: 100%; max-width: 420px;">
 
-				<div th:if="${param.logout}" class="alert alert-success text-center" role="alert">
-				    <i class="bi bi-check-circle-fill me-1"></i>
-				    You have been logged out successfully.
-				</div>
-				
-				<div th:if="${message}" class="alert alert-danger text-center" role="alert" th:text="${message}"></div>
-			
-			
-           <form th:action="@{/login}" method="post">
-				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-               
-				 <div class="mb-4">
-                    <label for="email" class="form-label text-muted small fw-bold">USERNAME</label>
-                    <div class="input-group">
-                        <span class="input-group-text border-end-0"><i class="bi bi-envelope text-muted"></i></span>
-                        <input type="text" class="form-control border-start-0 ps-0" id="username" name="username"
-                            placeholder="username" required>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="form-label text-muted small fw-bold">PASSWORD</label>
-                    <div class="input-group">
-                        <span class="input-group-text border-end-0"><i class="bi bi-lock text-muted"></i></span>
-                        <input type="password" class="form-control border-start-0 ps-0" id="password" name="password"
-                            placeholder="Enter your password" required>
-                    </div>
-                </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary py-2 fs-6">Login</button>
-                </div>
-            </form>
+        <!-- ===================================================== -->
+        <!-- LOGIN HEADER -->
+        <!-- ===================================================== -->
+
+        <div class="login-header text-center text-white">
+
+            <h2 class="mb-1 fw-bold">
+                <i class="bi bi-mortarboard-fill me-2"></i>
+                SMS
+            </h2>
+
+            <p class="mb-0 opacity-75">
+                Student Management System
+            </p>
+
         </div>
+
+
+        <!-- ===================================================== -->
+        <!-- LOGIN BODY -->
+        <!-- ===================================================== -->
+
+        <div class="card-body p-4 p-md-5">
+
+            <h4 class="text-center mb-4 fw-bold text-dark">
+                Welcome Back
+            </h4>
+
+
+            <!-- ================================================= -->
+            <!-- LOGIN ERROR -->
+            <!-- ================================================= -->
+
+            <div th:if="${param.error}"
+                 class="alert alert-danger text-center"
+                 role="alert">
+
+                <i class="bi bi-exclamation-circle-fill me-1"></i>
+
+                Invalid username or password.
+                Please try again.
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- LOGOUT MESSAGE -->
+            <!-- ================================================= -->
+
+            <div th:if="${param.logout}"
+                 class="alert alert-success text-center"
+                 role="alert">
+
+                <i class="bi bi-check-circle-fill me-1"></i>
+
+                You have been logged out successfully.
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- GENERAL MESSAGE -->
+            <!-- ================================================= -->
+
+            <div th:if="${message}"
+                 class="alert alert-danger text-center"
+                 role="alert"
+                 th:text="${message}">
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- SIGNUP SUCCESS MESSAGE -->
+            <!-- ================================================= -->
+
+            <div th:if="${signupSuccess}"
+                 class="alert alert-success text-center"
+                 role="alert">
+
+                <i class="bi bi-check-circle-fill me-1"></i>
+
+                <span th:text="${signupSuccess}">
+                    Registration successful! You can now login.
+                </span>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- LOGIN FORM -->
+            <!-- ================================================= -->
+
+            <form th:action="@{/login}"
+                  method="post">
+
+                <!-- CSRF -->
+
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+
+
+                <!-- ============================================= -->
+                <!-- USERNAME -->
+                <!-- ============================================= -->
+
+                <div class="mb-4">
+
+                    <label for="username"
+                           class="form-label text-muted small fw-bold">
+
+                        USERNAME
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text border-end-0">
+                            <i class="bi bi-envelope text-muted"></i>
+                        </span>
+
+                        <input type="text"
+                               class="form-control border-start-0 ps-0"
+                               id="username"
+                               name="username"
+                               placeholder="Enter username or email"
+                               autocomplete="username"
+                               required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ============================================= -->
+                <!-- PASSWORD -->
+                <!-- ============================================= -->
+
+                <div class="mb-4">
+
+                    <label for="password"
+                           class="form-label text-muted small fw-bold">
+
+                        PASSWORD
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text border-end-0">
+                            <i class="bi bi-lock text-muted"></i>
+                        </span>
+
+                        <input type="password"
+                               class="form-control border-start-0 ps-0"
+                               id="password"
+                               name="password"
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ============================================= -->
+                <!-- LOGIN BUTTON -->
+                <!-- ============================================= -->
+
+                <div class="d-grid">
+
+                    <button type="submit"
+                            class="btn btn-primary py-2 fs-6">
+
+                        <i class="bi bi-box-arrow-in-right me-1"></i>
+
+                        Login
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- ================================================= -->
+            <!-- STUDENT SIGNUP -->
+            <!-- ================================================= -->
+
+            <div class="text-center mt-4 pt-3 border-top">
+
+                <p class="text-muted mb-2">
+                    Don't have a student account?
+                </p>
+
+                <a th:href="@{/student/signup}"
+                   class="btn btn-outline-primary w-100">
+
+                    <i class="bi bi-person-plus-fill me-1"></i>
+
+                    Student Sign Up
+
+                </a>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- ADMIN / STUDENT INFORMATION -->
+            <!-- ================================================= -->
+
+            <div class="text-center mt-3">
+
+                <small class="text-muted">
+                    Students must create an account before logging in.
+                </small>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	
-	<script>
-	    window.addEventListener('pageshow', function (event) {
-	        if (event.persisted) {
-	            // Page was restored from bfcache (e.g. back button) — 
-	            // strip the logout success message and clean the URL.
-	            const url = new URL(window.location);
-	            if (url.searchParams.has('logout')) {
-	                url.searchParams.delete('logout');
-	                window.location.replace(url.toString());
-	            }
-	        }
-	    });
-	</script>
+
+    <!-- ========================================================= -->
+    <!-- BOOTSTRAP -->
+    <!-- ========================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- ========================================================= -->
+    <!-- PAGE SHOW HANDLER -->
+    <!-- ========================================================= -->
+
+    <script>
+
+        window.addEventListener('pageshow', function (event) {
+
+            if (event.persisted) {
+
+                const url = new URL(window.location);
+
+                if (url.searchParams.has('logout')) {
+
+                    url.searchParams.delete('logout');
+
+                    window.location.replace(url.toString());
+
+                }
+
+            }
+
+        });
+
+    </script>
+
 </body>
 
 </html>

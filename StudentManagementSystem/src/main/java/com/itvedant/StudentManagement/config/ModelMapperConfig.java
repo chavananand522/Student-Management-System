@@ -1,3 +1,4 @@
+
 package com.itvedant.StudentManagement.config;
 
 import org.modelmapper.ModelMapper;
@@ -8,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class ModelMapperConfig {
 
     @Bean
-    ModelMapper modelMapper() {
+    public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 }

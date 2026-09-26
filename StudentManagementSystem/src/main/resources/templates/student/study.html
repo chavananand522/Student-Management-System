@@ -1,0 +1,153 @@
+<!-- ============================================================
+FILE:
+src/main/resources/templates/student/study.html
+============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div th:replace="~{student-layout::alerts}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <h2 class="fw-bold mb-4">
+                Study
+            </h2>
+
+            <!-- SUBJECTS -->
+
+            <div
+                th:if="${study == null}"
+                class="row g-4">
+
+                <div
+                    class="col-md-4"
+                    th:each="item : ${subjects}">
+
+                    <div class="card student-card h-100">
+
+                        <div class="card-body">
+
+                            <div class="stat-icon mb-3">
+
+                                <i class="bi bi-book"></i>
+
+                            </div>
+
+                            <h5
+                                th:text="${item.subject}">
+                                Physics
+                            </h5>
+
+                            <p
+                                class="text-muted"
+                                th:text="${item.description}">
+                            </p>
+
+                            <a
+                                th:href="@{'/student/study/' + #strings.toLowerCase(item.subject)}"
+                                class="btn btn-primary">
+
+                                Open Subject
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- MODULES -->
+
+            <div th:if="${study != null}">
+
+                <a
+                    th:href="@{/student/study}"
+                    class="btn btn-outline-secondary btn-sm mb-3">
+
+                    ← All Subjects
+
+                </a>
+
+                <h3 th:text="${subjectName}">
+                    Subject
+                </h3>
+
+                <p
+                    class="text-muted"
+                    th:text="${study.description}">
+                </p>
+
+                <div class="row g-3">
+
+                    <div
+                        class="col-md-6"
+                        th:each="module : ${modules}">
+
+                        <div class="card student-card">
+
+                            <div class="card-body">
+
+                                <div class="small text-primary">
+
+                                    Module
+
+                                    <span
+                                        th:text="${module.moduleNumber}">
+                                    </span>
+
+                                </div>
+
+                                <h5
+                                    th:text="${module.name}">
+                                </h5>
+
+                                <p
+                                    class="text-muted"
+                                    th:text="${module.description}">
+                                </p>
+
+                                <a
+                                    th:href="@{'/student/study/' + #strings.toLowerCase(subjectName) + '/module/' + module.id}"
+                                    class="btn btn-sm btn-primary">
+
+                                    View Chapters
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>

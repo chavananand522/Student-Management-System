@@ -1,0 +1,139 @@
+<!-- ============================================================
+FILE:
+src/main/resources/templates/student/tests.html
+============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div th:replace="~{student-layout::alerts}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <h2 class="fw-bold mb-4">
+                Available Tests
+            </h2>
+
+            <div class="table-responsive card student-card">
+
+                <table
+                    class="table table-hover align-middle mb-0">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Test</th>
+                        <th>Course</th>
+                        <th>Subject</th>
+                        <th>Questions</th>
+                        <th>Duration</th>
+                        <th>Marks</th>
+                        <th>Attempts</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="test : ${tests}">
+
+                        <td
+                            th:text="${test.testName}">
+                            Test
+                        </td>
+
+                        <td
+                            th:text="${test.course}">
+                            Course
+                        </td>
+
+                        <td
+                            th:text="${test.subject}">
+                            Subject
+                        </td>
+
+                        <td
+                            th:text="${test.questions.size()}">
+                            0
+                        </td>
+
+                        <td>
+
+                            <span
+                                th:text="${test.duration}">
+                            </span>
+
+                            min
+
+                        </td>
+
+                        <td
+                            th:text="${test.totalMarks}">
+                            0
+                        </td>
+
+                        <td
+                            th:text="${attempts[test.id]}">
+                            0
+                        </td>
+
+                        <td>
+
+                            <a
+                                th:href="@{'/student/tests/' + test.id}"
+                                class="btn btn-sm btn-primary">
+
+                                View
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    <tr
+                        th:if="${tests.isEmpty()}">
+
+                        <td
+                            colspan="8"
+                            class="text-center py-4">
+
+                            No published tests are available
+                            for your enrolled courses.
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>

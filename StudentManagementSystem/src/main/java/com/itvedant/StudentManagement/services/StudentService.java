@@ -1,3 +1,4 @@
+
 package com.itvedant.StudentManagement.services;
 
 import java.util.List;
@@ -8,20 +9,23 @@ import com.itvedant.StudentManagement.dto.StudentDTO;
 
 public interface StudentService {
 
-	boolean existsByEmailIgnoreCase(String email);
+    boolean existsByEmailIgnoreCase(String email);
 
-	boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+    boolean existsByEmailIgnoreCaseAndIdNot(
+            String email,
+            Long id);
 
-	StudentDTO createStudent(StudentDTO studentDTO);
+    StudentDTO createStudent(StudentDTO studentDTO);
 
-	Page<StudentDTO> getStudents(int page, int size);
+    Page<StudentDTO> getStudents(
+            int page,
+            int size);
 
-	StudentDTO getStudentById(Long id);
+    StudentDTO getStudentById(Long id);
 
-	StudentDTO updateStudent(Long id, StudentDTO studentDTO);
+    StudentDTO updateStudent(
+            Long id,
+            StudentDTO studentDTO);
 
-	List<StudentDTO> getAllStudents();
-
-	
-
+    List<StudentDTO> getAllStudents();
 }

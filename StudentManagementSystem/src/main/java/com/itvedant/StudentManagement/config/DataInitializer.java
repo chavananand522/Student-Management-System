@@ -6,123 +6,206 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.itvedant.StudentManagement.model.Module;
-import com.itvedant.StudentManagement.model.Study;
 import com.itvedant.StudentManagement.model.Users;
 import com.itvedant.StudentManagement.reposatory.ModuleRepository;
-import com.itvedant.StudentManagement.reposatory.StudyRepository;
 import com.itvedant.StudentManagement.reposatory.UserRepository;
 
 @Configuration
 public class DataInitializer {
 
-	@Bean
-	CommandLineRunner loadSampleData(UserRepository usersRepository, PasswordEncoder passwordEncoder,
-			StudyRepository studyRepository, ModuleRepository moduleRepository) {
+    @Bean
+    CommandLineRunner initData(
+            UserRepository usersRepository,
+            ModuleRepository moduleRepository,
+            PasswordEncoder passwordEncoder) {
 
-		return args -> {
+        return args -> {
 
-			// =====================================================
-			// ADMIN USER
-			// =====================================================
+            // =========================================================
+            // ADMIN ACCOUNT
+            // =========================================================
 
-			if (!usersRepository.existsByUserName("Admin")) {
+            if (usersRepository.findByUserName("Admin").isEmpty()) {
 
-				Users users = new Users();
+                Users admin = new Users();
 
-				users.setUserName("Admin");
+                admin.setUserName("Admin");
+                admin.setPassword(
+                        passwordEncoder.encode("admin@123")
+                );
 
-				users.setPassword(passwordEncoder.encode("admin@123"));
+                admin.setActive(true);
+                admin.setRole("ADMIN");
 
-				users.setActive(true);
+                admin.setFullName("Administrator");
+                admin.setEmail("admin@gmail.com");
+                admin.setPhoneNumber("9999999999");
 
-				usersRepository.save(users);
-			}
+                usersRepository.save(admin);
+            }
 
-			// =====================================================
-			// SUBJECTS
-			// =====================================================
 
-			createSubject(studyRepository, "Physics", "Study of matter, energy, motion, and natural laws.");
+            // =========================================================
+            // IMPORTANT
+            // =========================================================
+            //
+            // DO NOT CREATE STUDENT USERS HERE.
+            //
+            // Students can login ONLY after they use the
+            // student signup page.
+            //
+            // Therefore we intentionally do NOT have:
+            //
+            // studentRepository.findAll()
+            //
+            // and we do NOT create:
+            //
+            // student@123
+            //
+            // accounts here.
+            //
+            // =========================================================
 
-			createSubject(studyRepository, "Chemistry", "Study of substances, reactions, and their properties.");
 
-			createSubject(studyRepository, "Biology", "Study of living organisms and their processes.");
+            // =========================================================
+            // CHEMISTRY MODULES
+            // =========================================================
 
-			// =====================================================
-			// PHYSICS
-			// =====================================================
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Chemistry",
+                    "Physical Chemistry",
+                    1
+            );
 
-			// =====================================================
-			// CHEMISTRY MODULES
-			// =====================================================
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Chemistry",
+                    "Inorganic Chemistry",
+                    2
+            );
 
-			createModule(moduleRepository, "Chemistry", 1, "Physical Chemistry",
-					"Study of chemical principles, calculations, and physical properties.");
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Chemistry",
+                    "Organic Chemistry",
+                    3
+            );
 
-			createModule(moduleRepository, "Chemistry", 2, "Inorganic Chemistry",
-					"Study of elements, compounds, and their properties.");
 
-			createModule(moduleRepository, "Chemistry", 3, "Organic Chemistry",
-					"Study of carbon compounds, their structures, and reactions.");
+            // =========================================================
+            // BIOLOGY MODULES
+            // =========================================================
 
-			// =====================================================
-			// BIOLOGY MODULES
-			// =====================================================
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Biology",
+                    "Botany",
+                    1
+            );
 
-			createModule(moduleRepository, "Biology", 1, "Botany",
-					"Study of plants, their structure, growth, and functions.");
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Biology",
+                    "Zoology",
+                    2
+            );
 
-			createModule(moduleRepository, "Biology", 2, "Zoology",
-					"Study of animals, their structure, behavior, and functions.");
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Biology",
+                    "Cell Biology",
+                    3
+            );
 
-			createModule(moduleRepository, "Biology", 3, "Cell Biology",
-					"Study of cells, their structure, and cellular functions.");
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Biology",
+                    "Genetics & Evolution",
+                    4
+            );
 
-			createModule(moduleRepository, "Biology", 4, "Genetics & Evolution",
-					"Study of heredity, genes, variation, and evolution.");
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Biology",
+                    "Ecology & Environment",
+                    5
+            );
 
-			createModule(moduleRepository, "Biology", 5, "Ecology & Environment",
-					"Study of organisms, ecosystems, and their environment.");
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Biology",
+                    "Biotechnology & Applied Biology",
+                    6
+            );
 
-			createModule(moduleRepository, "Biology", 6, "Biotechnology & Applied Biology",
-					"Study of biotechnology and its applications in biology.");
-		};
-	}
 
-	// =========================================================
-	// CREATE SUBJECT
-	// =========================================================
+            // =========================================================
+            // PHYSICS MODULES
+            // =========================================================
 
-	private void createSubject(StudyRepository studyRepository, String subject, String description) {
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Physics",
+                    "Mechanics",
+                    1
+            );
 
-		if (studyRepository.findBySubjectIgnoreCase(subject).isEmpty()) {
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Physics",
+                    "Thermodynamics",
+                    2
+            );
 
-			Study study = new Study();
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Physics",
+                    "Electromagnetism",
+                    3
+            );
 
-			study.setSubject(subject);
-			study.setDescription(description);
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Physics",
+                    "Optics",
+                    4
+            );
 
-			studyRepository.save(study);
-		}
-	}
+            createModuleIfNotExists(
+                    moduleRepository,
+                    "Physics",
+                    "Modern Physics",
+                    5
+            );
+        };
+    }
 
-	// =========================================================
-	// CREATE MODULE
-	// =========================================================
 
-	private Module createModule(ModuleRepository moduleRepository, String subject, int moduleNumber, String name,
-			String description) {
+    // =============================================================
+    // CREATE MODULE IF NOT EXISTS
+    // =============================================================
 
-		return moduleRepository.findBySubjectIgnoreCaseAndNameIgnoreCase(subject, name).orElseGet(() -> {
+    private void createModuleIfNotExists(
+            ModuleRepository moduleRepository,
+            String subject,
+            String name,
+            int moduleNumber) {
 
-			Module module = new Module();
+        if (moduleRepository
+                .findBySubjectIgnoreCaseAndNameIgnoreCase(
+                        subject,
+                        name
+                )
+                .isEmpty()) {
 
-			module.setModuleNumber(moduleNumber);
-			module.setName(name);
-			module.setSubject(subject);
-			module.setDescription(description);
+            Module module = new Module();
 
-			return moduleRepository.save(module);
-		});
-	}
+            module.setSubject(subject);
+            module.setName(name);
+            module.setModuleNumber(moduleNumber);
+
+            moduleRepository.save(module);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.itvedant.StudentManagement.service.impl;
 
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,18 +13,36 @@ import com.itvedant.StudentManagement.reposatory.UserRepository;
 @Service
 public class UserServiceImpl implements UserDetailsService {
 
-	public UserRepository usersReposatory;
-	
-	public UserServiceImpl(UserRepository usersReposatory) {
-		this.usersReposatory=usersReposatory;
-	}
-	
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Users users = usersReposatory.findByUserName(username)
-		        .orElseThrow(() -> new UsernameNotFoundException("Invalid Username"));
-		
-		return User.withUsername(username).password(users.getPassword()).disabled(!users.isActive()).build();
-	}
+    private final UserRepository userRepository;
 
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+
+        Users user = userRepository.findByUserName(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "Invalid username or password"
+                        ));
+
+        if (!user.isActive()) {
+            throw new DisabledException("User account is disabled");
+        }
+
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            throw new UsernameNotFoundException(
+                    "User role is not configured"
+            );
+        }
+
+        return User
+                .withUsername(user.getUserName())
+                .password(user.getPassword())
+                .roles(user.getRole().trim().toUpperCase())
+                .build();
+    }
 }

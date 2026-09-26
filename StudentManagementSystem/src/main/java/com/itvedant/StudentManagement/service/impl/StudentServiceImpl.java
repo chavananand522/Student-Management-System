@@ -1,3 +1,8 @@
+// ============================================================
+// FILE:
+// src/main/java/com/itvedant/StudentManagement/service/impl/StudentServiceImpl.java
+// ============================================================
+
 package com.itvedant.StudentManagement.service.impl;
 
 import java.util.List;
@@ -10,82 +15,247 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itvedant.StudentManagement.dto.StudentDTO;
 import com.itvedant.StudentManagement.model.Students;
+import com.itvedant.StudentManagement.model.Users;
 import com.itvedant.StudentManagement.reposatory.StudentRepositiry;
+import com.itvedant.StudentManagement.reposatory.UserRepository;
 import com.itvedant.StudentManagement.services.StudentService;
 
 @Service
 @Transactional
-public class StudentServiceImpl implements StudentService {
+public class StudentServiceImpl
+        implements StudentService {
 
-	private static final Logger log = LoggerFactory.getLogger(StudentServiceImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(
+                    StudentServiceImpl.class);
 
-	private final StudentRepositiry studentRepository;
-	private final ModelMapper mapper;
+    private final StudentRepositiry studentRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
-	public StudentServiceImpl(StudentRepositiry studentRepository, ModelMapper mapper) {
-		this.studentRepository = studentRepository;
-		this.mapper = mapper;
-	}
+    public StudentServiceImpl(
+            StudentRepositiry studentRepository,
+            UserRepository userRepository,
+            ModelMapper mapper,
+            PasswordEncoder passwordEncoder) {
 
-	public boolean existsByEmailIgnoreCase(String email) {
-		log.info("Email from create student");
-		return studentRepository.existsByEmailIgnoreCase(email);
-	}
+        this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
+        this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-	@Override
-	public StudentDTO createStudent(StudentDTO studentDTO) {
-		log.info("Saving student data");
+    @Override
+    public boolean existsByEmailIgnoreCase(
+            String email) {
 
-		Students students = mapper.map(studentDTO, Students.class);
+        return studentRepository
+                .existsByEmailIgnoreCase(email);
+    }
 
-		// Force insert instead of update: ignore any id that may have
-		// been sent from the client (e.g. leftover from an edit form),
-		// so createStudent() can never accidentally overwrite an
-		// existing row.
-		students.setId(0);
+    @Override
+    public StudentDTO createStudent(
+            StudentDTO studentDTO) {
 
-		Students saved = studentRepository.save(students);
-		return mapper.map(saved, StudentDTO.class);
-	}
+        log.info(
+                "Creating student: {}",
+                studentDTO.getEmail());
 
-	@Override
-	public List<StudentDTO> getAllStudents() {
-		return studentRepository.findByActiveTrue()
-				.stream()
-				.map(student -> mapper.map(student, StudentDTO.class))
-				.collect(Collectors.toList());
-	}
+        Students student =
+                mapper.map(
+                        studentDTO,
+                        Students.class);
 
-	@Override
-	public Page<StudentDTO> getStudents(int page, int size) {
-		log.info("List of Students from {}", page);
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "id"));
-		return studentRepository.findByActiveTrue(pageRequest).map(student -> mapper.map(student, StudentDTO.class));
-	}
+        student.setId(0);
 
-	@Override
-	@Transactional(readOnly = true)
-	public StudentDTO getStudentById(Long id) {
-		Students student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("No Student Found"));
-		return mapper.map(student, StudentDTO.class);
-	}
+        Students saved =
+                studentRepository.save(student);
 
-	@Override
-	public boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id) {
-		log.info("Email from Update student");
-		return studentRepository.existsByEmailIgnoreCaseAndIdNot(email, id);
-	}
+        /*
+         * Automatically create the student's
+         * login account.
+         *
+         * Username = email
+         * Password = student@123
+         * Role     = STUDENT
+         */
+        String email = saved.getEmail();
 
-	@Override
-	public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
-		Students student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("No Student Found"));
-		mapper.map(studentDTO, student);
-		Students updated = studentRepository.save(student);
-		return mapper.map(updated, StudentDTO.class);
-	}
+        if (email != null &&
+            !email.isBlank()) {
+
+            Users user =
+                    userRepository
+                        .findByUserName(email)
+                        .orElse(null);
+
+            if (user == null) {
+
+                user = new Users();
+
+                user.setUserName(email);
+
+                user.setPassword(
+                        passwordEncoder.encode(
+                                "student@123"));
+            }
+
+            user.setActive(saved.isActive());
+
+            user.setRole("STUDENT");
+
+            user.setFullName(
+                    saved.getFirstName()
+                    + " "
+                    + saved.getLastName());
+
+            user.setEmail(saved.getEmail());
+
+            user.setPhoneNumber(
+                    saved.getPhoneNumber());
+
+            userRepository.save(user);
+        }
+
+        return mapper.map(
+                saved,
+                StudentDTO.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentDTO> getAllStudents() {
+
+        return studentRepository
+                .findByActiveTrue()
+                .stream()
+                .map(student ->
+                        mapper.map(
+                                student,
+                                StudentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<StudentDTO> getStudents(
+            int page,
+            int size) {
+
+        PageRequest pageRequest =
+                PageRequest.of(
+                        page,
+                        size,
+                        Sort.by(
+                                Direction.DESC,
+                                "id"));
+
+        return studentRepository
+                .findByActiveTrue(pageRequest)
+                .map(student ->
+                        mapper.map(
+                                student,
+                                StudentDTO.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public StudentDTO getStudentById(
+            Long id) {
+
+        Students student =
+                studentRepository
+                    .findById(id)
+                    .orElseThrow(() ->
+                        new RuntimeException(
+                            "No Student Found"));
+
+        return mapper.map(
+                student,
+                StudentDTO.class);
+    }
+
+    @Override
+    public boolean existsByEmailIgnoreCaseAndIdNot(
+            String email,
+            Long id) {
+
+        return studentRepository
+                .existsByEmailIgnoreCaseAndIdNot(
+                        email,
+                        id);
+    }
+
+    @Override
+    public StudentDTO updateStudent(
+            Long id,
+            StudentDTO studentDTO) {
+
+        Students student =
+                studentRepository
+                    .findById(id)
+                    .orElseThrow(() ->
+                        new RuntimeException(
+                            "No Student Found"));
+
+        mapper.map(
+                studentDTO,
+                student);
+
+        Students updated =
+                studentRepository.save(student);
+
+        /*
+         * Keep student login account synchronized.
+         */
+        if (updated.getEmail() != null &&
+            !updated.getEmail().isBlank()) {
+
+            Users user =
+                    userRepository
+                        .findByUserName(
+                            updated.getEmail())
+                        .orElse(null);
+
+            if (user == null) {
+
+                user = new Users();
+
+                user.setUserName(
+                        updated.getEmail());
+
+                user.setPassword(
+                        passwordEncoder.encode(
+                                "student@123"));
+            }
+
+            user.setRole("STUDENT");
+            user.setActive(
+                    updated.isActive());
+
+            user.setFullName(
+                    updated.getFirstName()
+                    + " "
+                    + updated.getLastName());
+
+            user.setEmail(
+                    updated.getEmail());
+
+            user.setPhoneNumber(
+                    updated.getPhoneNumber());
+
+            userRepository.save(user);
+        }
+
+        return mapper.map(
+                updated,
+                StudentDTO.class);
+    }
 }

@@ -1,0 +1,267 @@
+<!-- ============================================================
+FILE:
+src/main/resources/templates/student/test-details.html
+============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div th:replace="~{student-layout::alerts}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <a
+                th:href="@{/student/tests}"
+                class="btn btn-outline-secondary btn-sm mb-3">
+
+                ← Back to Tests
+
+            </a>
+
+            <div class="card student-card">
+
+                <div class="card-body p-4">
+
+                    <span class="badge bg-success">
+                        PUBLISHED
+                    </span>
+
+                    <h2
+                        class="mt-2"
+                        th:text="${test.testName}">
+                        Test
+                    </h2>
+
+                    <div class="row g-3 mt-2">
+
+                        <div class="col-md-3">
+
+                            <strong>Course</strong>
+                            <br>
+
+                            <span
+                                th:text="${test.course}">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <strong>Subject</strong>
+                            <br>
+
+                            <span
+                                th:text="${test.subject}">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <strong>Duration</strong>
+                            <br>
+
+                            <span
+                                th:text="${test.duration}">
+                            </span>
+                            min
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <strong>Total Marks</strong>
+                            <br>
+
+                            <span
+                                th:text="${test.totalMarks}">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <p>
+
+                        <strong>Questions:</strong>
+
+                        <span
+                            th:text="${test.questions.size()}">
+                        </span>
+
+                    </p>
+
+                    <p>
+
+                        <strong>Passing Marks:</strong>
+
+                        <span
+                            th:text="${test.passingMarks}">
+                        </span>
+
+                    </p>
+
+                    <p>
+
+                        <strong>Attempts allowed:</strong>
+
+                        <span
+                            th:text="${test.allowTestRetake ? test.numberOfAttempts : 1}">
+                        </span>
+
+                    </p>
+
+                    <form
+                        th:if="${canStart}"
+                        th:action="@{'/student/tests/' + test.id + '/start'}"
+                        method="post">
+
+                        <input
+                            type="hidden"
+                            th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}">
+
+                        <button
+                            class="btn btn-primary btn-lg"
+                            type="submit">
+
+                            Start Test
+
+                        </button>
+
+                    </form>
+
+                    <div
+                        th:unless="${canStart}"
+                        class="alert alert-warning mb-0">
+
+                        You have used all allowed attempts
+                        for this test.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card student-card mt-4">
+
+                <div class="card-body">
+
+                    <h5>
+                        Previous Attempts
+                    </h5>
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>Attempt</th>
+                                <th>Status</th>
+                                <th>Marks</th>
+                                <th>Submitted</th>
+                                <th></th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <tr
+                                th:each="a : ${attempts}">
+
+                                <td
+                                    th:text="${a.attemptNumber}">
+                                </td>
+
+                                <td
+                                    th:text="${a.status}">
+                                </td>
+
+                                <td
+                                    th:text="${a.obtainedMarks + ' / ' + test.totalMarks}">
+                                </td>
+
+                                <td
+                                    th:text="${a.submittedAt != null ? #temporals.format(a.submittedAt,'dd MMM yyyy HH:mm') : '-'}">
+                                </td>
+
+                                <td
+                                    th:if="${a.status == 'SUBMITTED'}">
+
+                                    <a
+                                        th:href="@{'/student/results/' + a.id}"
+                                        class="btn btn-sm btn-outline-primary">
+
+                                        Result
+
+                                    </a>
+
+                                </td>
+
+                                <td
+                                    th:unless="${a.status == 'SUBMITTED'}">
+
+                                    <a
+                                        th:href="@{'/student/tests/attempt/' + a.id}"
+                                        class="btn btn-sm btn-warning">
+
+                                        Resume
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            <tr
+                                th:if="${attempts.isEmpty()}">
+
+                                <td colspan="5">
+
+                                    No attempts yet.
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>

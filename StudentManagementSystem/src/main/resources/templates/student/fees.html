@@ -1,0 +1,250 @@
+<!-- ============================================================
+FILE:
+src/main/resources/templates/student/fees.html
+============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <h2 class="fw-bold mb-4">
+                My Fees
+            </h2>
+
+            <div class="row g-4 mb-4">
+
+                <div class="col-md-4">
+
+                    <div class="card student-card">
+
+                        <div class="card-body">
+
+                            <div class="text-muted">
+                                Total Fees
+                            </div>
+
+                            <h3
+                                th:text="${totalFees}">
+                                0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="card student-card">
+
+                        <div class="card-body">
+
+                            <div class="text-muted">
+                                Total Paid
+                            </div>
+
+                            <h3
+                                class="text-success"
+                                th:text="${totalPaid}">
+                                0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <div class="card student-card">
+
+                        <div class="card-body">
+
+                            <div class="text-muted">
+                                Pending
+                            </div>
+
+                            <h3
+                                class="text-danger"
+                                th:text="${totalPending}">
+                                0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card student-card">
+
+                <div class="card-body">
+
+                    <h5>
+                        Course Fees
+                    </h5>
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>Course</th>
+                                <th>Code</th>
+                                <th>Fee</th>
+                                <th>Paid</th>
+                                <th>Pending</th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <tr
+                                th:each="row : ${rows}">
+
+                                <td
+                                    th:text="${row.courseName}">
+                                </td>
+
+                                <td
+                                    th:text="${row.courseCode}">
+                                </td>
+
+                                <td
+                                    th:text="${row.fee}">
+                                </td>
+
+                                <td
+                                    class="text-success"
+                                    th:text="${row.paid}">
+                                </td>
+
+                                <td
+                                    class="text-danger"
+                                    th:text="${row.pending}">
+                                </td>
+
+                            </tr>
+
+                            <tr
+                                th:if="${rows.isEmpty()}">
+
+                                <td
+                                    colspan="5"
+                                    class="text-center text-muted">
+
+                                    No course fee details available.
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card student-card mt-4">
+
+                <div class="card-body">
+
+                    <h5>
+                        Payment History
+                    </h5>
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Course</th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <tr
+                                th:each="payment : ${payments}">
+
+                                <td
+                                    th:text="${payment.paymentDate}">
+                                </td>
+
+                                <td
+                                    th:text="${payment.amount}">
+                                </td>
+
+                                <td
+                                    th:text="${payment.course.courseName}">
+                                </td>
+
+                            </tr>
+
+                            <tr
+                                th:if="${payments.isEmpty()}">
+
+                                <td
+                                    colspan="3"
+                                    class="text-center text-muted">
+
+                                    No payments found.
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>

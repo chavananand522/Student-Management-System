@@ -11,7 +11,12 @@ import com.itvedant.StudentManagement.model.Module;
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, Long> {
 
-	List<Module> findBySubjectIgnoreCaseOrderByModuleNumberAsc(String subject);
+    List<Module> findBySubjectIgnoreCaseOrderByModuleNumberAsc(
+            String subject
+    );
 
-	Optional<Module> findBySubjectIgnoreCaseAndNameIgnoreCase(String subject, String name);
+    Optional<Module> findBySubjectIgnoreCaseAndNameIgnoreCase(
+            String subject,
+            String name
+    );
 }

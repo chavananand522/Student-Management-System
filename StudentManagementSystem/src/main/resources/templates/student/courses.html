@@ -1,0 +1,113 @@
+<!-- ============================================================
+FILE:
+src/main/resources/templates/student/courses.html
+============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex">
+
+    <div th:replace="~{student-layout::sidebar}"></div>
+
+    <div class="student-content">
+
+        <div th:replace="~{student-layout::navbar}"></div>
+
+        <div th:replace="~{student-layout::alerts}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <h2 class="fw-bold mb-4">
+                My Courses
+            </h2>
+
+            <div
+                class="row g-4"
+                th:if="${!enrollments.isEmpty()}">
+
+                <div
+                    class="col-md-6 col-xl-4"
+                    th:each="enrollment : ${enrollments}">
+
+                    <div class="card student-card h-100">
+
+                        <div class="card-body">
+
+                            <span
+                                class="badge bg-primary mb-2"
+                                th:text="${enrollment.course.courseCode}">
+                                CODE
+                            </span>
+
+                            <h5
+                                th:text="${enrollment.course.courseName}">
+                                Course
+                            </h5>
+
+                            <p
+                                class="text-muted"
+                                th:text="${enrollment.course.description}">
+                            </p>
+
+                            <div class="small text-muted">
+
+                                Duration:
+
+                                <span
+                                    th:text="${enrollment.course.duration}">
+                                </span>
+
+                            </div>
+
+                            <div class="small text-muted">
+
+                                Enrolled:
+
+                                <span
+                                    th:text="${#temporals.format(enrollment.enrolledDate,'dd MMM yyyy')}">
+                                </span>
+
+                            </div>
+
+                            <a
+                                th:href="@{/student/study}"
+                                class="btn btn-sm btn-outline-primary mt-3">
+
+                                Study
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                th:if="${enrollments.isEmpty()}"
+                class="alert alert-info">
+
+                You are not enrolled in any course yet.
+
+            </div>
+
+        </div>
+
+        <div th:replace="~{student-layout::footer}"></div>
+
+    </div>
+
+</div>
+
+<th:block th:replace="~{student-layout::scripts}"></th:block>
+
+</body>
+</html>
