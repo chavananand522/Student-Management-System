@@ -1,47 +1,125 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student/student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}">
+    <title>Attempt Test</title>
+</head>
 
 <body>
 
 <div class="d-flex student-layout">
 
+    <!-- SIDEBAR -->
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
+    <!-- CONTENT -->
     <div class="student-content">
 
+        <!-- NAVBAR -->
         <div th:replace="~{student/student-layout::navbar}"></div>
+
+        <!-- ALERTS -->
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid px-4 py-4">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- ========================================================= -->
+            <!-- HEADER                                                    -->
+            <!-- ========================================================= -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
                 <div>
-                    <h2 th:text="${test.testName}"></h2>
+                    <h2 class="mb-1" th:text="${test.testName}">Test Name</h2>
                     <span class="text-muted">
                         Answer all questions and submit before the timer ends.
                     </span>
                 </div>
-                <div class="badge bg-danger fs-6 p-2">
+                <div class="badge bg-danger fs-6 p-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history"></i>
                     Time: <span id="timer">00:00</span>
                 </div>
             </div>
 
-            <!-- NEGATIVE MARKING WARNING -->
+            <!-- ========================================================= -->
+            <!-- NEGATIVE MARKING WARNING                                  -->
+            <!-- ========================================================= -->
             <div class="alert alert-warning d-flex align-items-center mb-3"
                  th:if="${test.negativeMarking != null and test.negativeMarking}">
-
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
                 <span>
                     <strong>Negative Marking Active:</strong>
                     Each wrong answer deducts
                     <strong>−<span th:text="${test.negativeMarks != null ? test.negativeMarks : 1}">1</span></strong>
                     mark(s). Leave questions blank if unsure.
                 </span>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- PROGRESS + NAVIGATION PANEL (STICKY)                      -->
+            <!-- ========================================================= -->
+            <div class="card student-card mb-4 position-sticky" style="top: 80px; z-index: 100;">
+
+                <div class="card-body py-3">
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot legend-answered"></span>
+                                <small>Answered:</small>
+                                <strong id="answeredCount" class="text-success">0</strong>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="legend-dot legend-unanswered"></span>
+                                <small>Unanswered:</small>
+                                <strong id="unansweredCount" class="text-danger"
+                                        th:text="${questions != null ? questions.size() : 0}">0</strong>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <small>Total:</small>
+                                <strong th:text="${questions != null ? questions.size() : 0}">0</strong>
+                            </div>
+                        </div>
+
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                onclick="jumpToFirstUnanswered()">
+                            <i class="bi bi-arrow-down-circle me-1"></i>
+                            Jump to First Unanswered
+                        </button>
+
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress mb-3" style="height: 8px;">
+                        <div id="progressBar"
+                             class="progress-bar bg-success"
+                             role="progressbar"
+                             style="width: 0%;"
+                             aria-valuemin="0"
+                             aria-valuemax="100">0%</div>
+                    </div>
+
+                    <!-- Question Number Grid -->
+                    <div class="question-nav-grid">
+                        <a th:each="q, stat : ${questions}"
+                           th:id="'nav-q-' + ${q.id}"
+                           th:href="'#question-' + ${q.id}"
+                           class="question-nav-btn"
+                           th:data-question-id="${q.id}"
+                           th:text="${stat.count}">
+                            1
+                        </a>
+                    </div>
+
+                </div>
 
             </div>
 
+            <!-- ========================================================= -->
+            <!-- TEST FORM                                                 -->
+            <!-- ========================================================= -->
             <form id="testForm"
                   th:action="@{'/student/tests/attempt/' + ${attempt.id} + '/submit'}"
                   method="post">
@@ -50,43 +128,95 @@
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}">
 
-                <div th:each="q, stat : ${questions}" class="card student-card mb-3">
-                    <div class="card-body">
-                        <h5>
-                            <span class="badge bg-primary me-2" th:text="${stat.count}">1</span>
-                            Question
-                        </h5>
-                        <p class="fw-semibold" th:text="${q.questionText}"></p>
+                <!-- QUESTION CARDS -->
+                <div th:each="q, stat : ${questions}"
+                     class="card student-card mb-3 question-card"
+                     th:id="'question-' + ${q.id}"
+                     th:data-question-id="${q.id}">
 
-                        <div th:if="${q.optionA != null}" class="option-card">
-                            <label class="d-flex gap-2">
-                                <input type="radio" th:name="${'answer_' + q.id}" value="A">
-                                <span th:text="${q.optionA}"></span>
+                    <div class="card-body">
+
+                        <h5 class="d-flex align-items-center justify-content-between mb-3">
+                            <span>
+                                <span class="badge bg-primary me-2" th:text="${stat.count}">1</span>
+                                Question
+                            </span>
+
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-star me-1"></i>
+                                <span th:text="${q.marks != null ? q.marks : 1}">1</span>
+                                <span th:text="${q.marks != null and q.marks > 1 ? 'marks' : 'mark'}">mark</span>
+                            </span>
+                        </h5>
+
+                        <p class="fw-semibold question-text" th:text="${q.questionText}">Question text</p>
+
+                        <!-- OPTION A -->
+                        <div class="option-card" th:if="${q.optionA != null}">
+                            <label class="d-flex gap-2 align-items-start">
+                                <input type="radio"
+                                       class="form-check-input mt-1"
+                                       th:name="${'answer_' + q.id}"
+                                       th:value="'A'"
+                                       th:data-question-id="${q.id}">
+                                <span><strong>A.</strong> <span th:text="${q.optionA}">Option A</span></span>
                             </label>
                         </div>
-                        <div th:if="${q.optionB != null}" class="option-card">
-                            <label class="d-flex gap-2">
-                                <input type="radio" th:name="${'answer_' + q.id}" value="B">
-                                <span th:text="${q.optionB}"></span>
+
+                        <!-- OPTION B -->
+                        <div class="option-card" th:if="${q.optionB != null}">
+                            <label class="d-flex gap-2 align-items-start">
+                                <input type="radio"
+                                       class="form-check-input mt-1"
+                                       th:name="${'answer_' + q.id}"
+                                       th:value="'B'"
+                                       th:data-question-id="${q.id}">
+                                <span><strong>B.</strong> <span th:text="${q.optionB}">Option B</span></span>
                             </label>
                         </div>
-                        <div th:if="${q.optionC != null}" class="option-card">
-                            <label class="d-flex gap-2">
-                                <input type="radio" th:name="${'answer_' + q.id}" value="C">
-                                <span th:text="${q.optionC}"></span>
+
+                        <!-- OPTION C -->
+                        <div class="option-card" th:if="${q.optionC != null}">
+                            <label class="d-flex gap-2 align-items-start">
+                                <input type="radio"
+                                       class="form-check-input mt-1"
+                                       th:name="${'answer_' + q.id}"
+                                       th:value="'C'"
+                                       th:data-question-id="${q.id}">
+                                <span><strong>C.</strong> <span th:text="${q.optionC}">Option C</span></span>
                             </label>
                         </div>
-                        <div th:if="${q.optionD != null}" class="option-card">
-                            <label class="d-flex gap-2">
-                                <input type="radio" th:name="${'answer_' + q.id}" value="D">
-                                <span th:text="${q.optionD}"></span>
+
+                        <!-- OPTION D -->
+                        <div class="option-card" th:if="${q.optionD != null}">
+                            <label class="d-flex gap-2 align-items-start">
+                                <input type="radio"
+                                       class="form-check-input mt-1"
+                                       th:name="${'answer_' + q.id}"
+                                       th:value="'D'"
+                                       th:data-question-id="${q.id}">
+                                <span><strong>D.</strong> <span th:text="${q.optionD}">Option D</span></span>
                             </label>
                         </div>
+
+                        <!-- CLEAR ANSWER -->
+                        <div class="mt-2 text-end">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary clear-answer-btn"
+                                    th:data-question-id="${q.id}">
+                                <i class="bi bi-x-circle me-1"></i> Clear
+                            </button>
+                        </div>
+
                     </div>
+
                 </div>
 
+                <!-- SUBMIT BUTTON -->
                 <div class="text-center mb-5">
-                    <button type="submit" class="btn btn-success btn-lg px-5">
+                    <button type="submit"
+                            class="btn btn-success btn-lg px-5"
+                            id="submitBtn">
                         <i class="bi bi-check-circle me-1"></i> Submit Test
                     </button>
                 </div>
@@ -95,20 +225,155 @@
 
         </div>
 
+        <!-- FOOTER -->
+        <div th:replace="~{student/student-layout::footer}"></div>
+
     </div>
 
 </div>
 
+<!-- ========================================================= -->
+<!-- PAGE STYLES                                               -->
+<!-- ========================================================= -->
+<style>
+    .legend-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #b8c5d5;
+        background: #ffffff;
+    }
+
+    .legend-answered {
+        background: #20a568;
+        border-color: #20a568;
+    }
+
+    .legend-unanswered {
+        background: #ffffff;
+        border-color: #b8c5d5;
+    }
+
+    /* Question navigation grid */
+    .question-nav-grid {
+        display: grid;
+        grid-template-columns: repeat(20, minmax(38px, 1fr));
+        gap: 8px;
+        max-height: 180px;
+        overflow-y: auto;
+        padding: 4px 0;
+    }
+
+    .question-nav-btn {
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        border: 1px solid #e1e7ef;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #26374c;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .question-nav-btn:hover {
+        background: #f7f9fc;
+        border-color: #b8c4d4;
+        transform: translateY(-1px);
+        color: #26374c;
+    }
+
+    .question-nav-btn.answered {
+        background: #effbf5;
+        border-color: #bdebd2;
+        color: #168452;
+    }
+
+    .question-nav-btn.answered::after {
+        content: "✓";
+        font-size: 10px;
+        margin-left: 3px;
+    }
+
+    .question-nav-btn.active {
+        background: #e9eef7;
+        border-color: #4361ee;
+        box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.15);
+    }
+
+    /* Option cards */
+    .option-card {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        background: #fff;
+        transition: all 0.15s ease;
+        cursor: pointer;
+    }
+
+    .option-card:hover {
+        background: #f8f9fb;
+        border-color: #c4cdd8;
+    }
+
+    .option-card.selected {
+        background: #eef4ff;
+        border-color: #4361ee;
+        box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.10);
+    }
+
+    .option-card input[type="radio"] {
+        cursor: pointer;
+    }
+
+    .question-card {
+        scroll-margin-top: 200px;
+    }
+
+    /* Scrollbar for nav grid */
+    .question-nav-grid::-webkit-scrollbar {
+        width: 6px;
+    }
+    .question-nav-grid::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .question-nav-grid { grid-template-columns: repeat(14, minmax(38px, 1fr)); }
+    }
+    @media (max-width: 768px) {
+        .question-nav-grid { grid-template-columns: repeat(8, 1fr); max-height: 140px; }
+        .question-nav-btn { height: 38px; font-size: 12px; }
+    }
+</style>
+
+<!-- ========================================================= -->
+<!-- PAGE SCRIPT                                               -->
+<!-- ========================================================= -->
 <script th:inline="javascript">
+
+    /* ========================================================= */
+    /* TIMER                                                     */
+    /* ========================================================= */
     let remaining = /*[[${durationSeconds}]]*/ 3600;
-    const timer = document.getElementById("timer");
+    const timerEl = document.getElementById("timer");
     const form = document.getElementById("testForm");
     let submittedAutomatically = false;
 
     function tick() {
         const minutes = Math.floor(remaining / 60);
         const seconds = remaining % 60;
-        timer.textContent = String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+        timerEl.textContent =
+            String(minutes).padStart(2, "0") + ":" +
+            String(seconds).padStart(2, "0");
+
         if (remaining <= 0) {
             submittedAutomatically = true;
             form.submit();
@@ -119,13 +384,178 @@
     }
     tick();
 
+    /* ========================================================= */
+    /* ANSWER TRACKING + NAV HIGHLIGHT                           */
+    /* ========================================================= */
+    const navButtons = document.querySelectorAll(".question-nav-btn");
+    const questionCards = document.querySelectorAll(".question-card");
+    const radios = document.querySelectorAll('input[type="radio"][data-question-id]');
+    const clearButtons = document.querySelectorAll(".clear-answer-btn");
+    const answeredCountEl = document.getElementById("answeredCount");
+    const unansweredCountEl = document.getElementById("unansweredCount");
+    const progressBar = document.getElementById("progressBar");
+    const totalQuestions = questionCards.length;
+
+    // Set initial total questions count
+    if (unansweredCountEl) unansweredCountEl.textContent = totalQuestions;
+
+    function updateProgress() {
+        let answered = 0;
+        radios.forEach(r => {
+            if (r.checked) answered++;
+        });
+
+        answeredCountEl.textContent = answered;
+        unansweredCountEl.textContent = totalQuestions - answered;
+
+        const pct = totalQuestions > 0 ? (answered * 100.0 / totalQuestions) : 0;
+        progressBar.style.width = pct + "%";
+        progressBar.textContent = Math.round(pct) + "%";
+        progressBar.setAttribute("aria-valuenow", Math.round(pct));
+
+        // Toggle bar colour based on progress
+        progressBar.classList.remove("bg-success", "bg-warning", "bg-danger");
+        if (pct >= 80)      progressBar.classList.add("bg-success");
+        else if (pct >= 40) progressBar.classList.add("bg-warning");
+        else                progressBar.classList.add("bg-danger");
+    }
+
+    // Radio change → mark nav button answered
+    radios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            const qId = this.dataset.questionId;
+            const navBtn = document.getElementById("nav-q-" + qId);
+            if (navBtn) navBtn.classList.add("answered");
+
+            // Highlight selected option card
+            const card = document.getElementById("question-" + qId);
+            if (card) {
+                card.querySelectorAll(".option-card").forEach(c => c.classList.remove("selected"));
+                this.closest(".option-card").classList.add("selected");
+            }
+
+            updateProgress();
+        });
+    });
+
+    // Clear answer button
+    clearButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            const qId = this.dataset.questionId;
+            document.querySelectorAll('input[name="answer_' + qId + '"]')
+                .forEach(r => r.checked = false);
+
+            const navBtn = document.getElementById("nav-q-" + qId);
+            if (navBtn) navBtn.classList.remove("answered");
+
+            const card = document.getElementById("question-" + qId);
+            if (card) {
+                card.querySelectorAll(".option-card").forEach(c => c.classList.remove("selected"));
+            }
+
+            updateProgress();
+        });
+    });
+
+    // Click anywhere on the option card → toggle the radio
+    document.querySelectorAll(".option-card").forEach(card => {
+        card.addEventListener("click", function (e) {
+            if (e.target.tagName !== "INPUT") {
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio && !radio.checked) {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+            }
+        });
+    });
+
+    /* ========================================================= */
+    /* NAV GRID CLICK → SCROLL TO QUESTION                       */
+    /* ========================================================= */
+    navButtons.forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const qId = this.dataset.questionId;
+            const card = document.getElementById("question-" + qId);
+            if (!card) return;
+
+            navButtons.forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+
+            card.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    });
+
+    /* ========================================================= */
+    /* SCROLL SPY → HIGHLIGHT ACTIVE NAV BUTTON                  */
+    /* ========================================================= */
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const qId = entry.target.dataset.questionId;
+                const navBtn = document.getElementById("nav-q-" + qId);
+                if (!navBtn) return;
+                navButtons.forEach(b => b.classList.remove("active"));
+                navBtn.classList.add("active");
+            }
+        });
+    }, { threshold: 0.45 });
+
+    questionCards.forEach(card => observer.observe(card));
+
+    /* ========================================================= */
+    /* JUMP TO FIRST UNANSWERED                                  */
+    /* ========================================================= */
+    function jumpToFirstUnanswered() {
+        for (const card of questionCards) {
+            const qId = card.dataset.questionId;
+            const answered = document.querySelector(
+                'input[name="answer_' + qId + '"]:checked'
+            );
+            if (!answered) {
+                card.scrollIntoView({ behavior: "smooth", block: "start" });
+
+                navButtons.forEach(b => b.classList.remove("active"));
+                const navBtn = document.getElementById("nav-q-" + qId);
+                if (navBtn) navBtn.classList.add("active");
+                return;
+            }
+        }
+        alert("All questions are answered. You can submit now!");
+    }
+
+    /* ========================================================= */
+    /* SUBMIT CONFIRMATION                                       */
+    /* ========================================================= */
     form.addEventListener("submit", function (event) {
         if (submittedAutomatically) return;
-        if (!confirm("Submit your test now?")) event.preventDefault();
+
+        const answered = parseInt(answeredCountEl.textContent, 10);
+        const unanswered = totalQuestions - answered;
+
+        let msg = "Submit your test now?";
+        if (unanswered > 0) {
+            msg = "⚠ You still have " + unanswered +
+                  " unanswered question" + (unanswered > 1 ? "s" : "") +
+                  ".\n\nSubmit anyway?";
+        }
+
+        if (!confirm(msg)) {
+            event.preventDefault();
+        }
     });
+
+    /* ========================================================= */
+    /* INITIALISE PROGRESS                                       */
+    /* ========================================================= */
+    updateProgress();
+
 </script>
 
+<!-- LAYOUT SCRIPTS -->
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
+
 </html>

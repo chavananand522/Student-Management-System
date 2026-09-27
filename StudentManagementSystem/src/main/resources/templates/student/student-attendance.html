@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{'student/student-layout' :: head}"></head>
+
+<body>
+
+<div class="d-flex student-layout">
+
+    <!-- SIDEBAR -->
+    <div th:replace="~{'student/student-layout' :: sidebar}"></div>
+
+    <!-- CONTENT -->
+    <div class="student-content">
+
+        <!-- NAVBAR -->
+        <div th:replace="~{'student/student-layout' :: navbar}"></div>
+
+        <!-- MAIN CONTENT -->
+        <div class="container-fluid px-4 py-4">
+
+            <!-- ALERTS -->
+            <div th:replace="~{'student/student-layout' :: alerts}"></div>
+
+            <!-- ========================================================= -->
+            <!-- HEADER                                                    -->
+            <!-- ========================================================= -->
+            <div class="bg-primary text-white rounded-3 p-4 mb-4">
+                <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                    <div>
+                        <h2 class="mb-1">My Attendance</h2>
+                        <p class="mb-0 opacity-75">
+                            Welcome,
+                            <strong th:text="${student != null ? student.firstName + ' ' + student.lastName : 'Student'}">
+                                Student
+                            </strong>!
+                            Here is your attendance summary.
+                        </p>
+                    </div>
+
+                    <div class="bg-white bg-opacity-25 rounded-3 px-3 py-2"
+                         th:if="${totalCount > 0}">
+                        <small class="d-block opacity-75">Overall</small>
+                        <span class="fs-4 fw-bold"
+                              th:text="${#numbers.formatDecimal(overallPercentage, 1, 1)} + '%'">0.0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- EMPTY STATE                                               -->
+            <!-- ========================================================= -->
+            <div class="card mb-4" th:if="${totalCount == 0}">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3 mb-2">No Attendance Records Yet</h4>
+                    <p class="text-muted mb-0">
+                        Once your attendance is marked by your instructor, it will appear here.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- MAIN DASHBOARD                                            -->
+            <!-- ========================================================= -->
+            <div th:if="${totalCount > 0}">
+
+                <!-- ========== FILTER CARD ========== -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-funnel me-1"></i> Filter Attendance</span>
+                        <span class="text-muted small"
+                              th:if="${selectedCourseId != null or startDate != null or endDate != null}">
+                            <i class="bi bi-funnel-fill text-primary"></i> Filters Active
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/student/attendance}" method="get" class="row g-3 align-items-end">
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Course</label>
+                                <select name="courseId" class="form-select">
+                                    <option value="">All Courses</option>
+                                    <option th:each="c : ${subjectSummary}"
+                                            th:value="${c.courseId}"
+                                            th:text="${c.courseName + ' (' + c.courseCode + ')'}"
+                                            th:selected="${selectedCourseId != null and selectedCourseId.equals(c.courseId)}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">From Date</label>
+                                <input type="date" name="startDate" class="form-control"
+                                       th:value="${startDate}">
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">To Date</label>
+                                <input type="date" name="endDate" class="form-control"
+                                       th:value="${endDate}">
+                            </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search me-1"></i> Apply
+                                </button>
+                            </div>
+
+                            <div class="col-md-1">
+                                <a th:href="@{/student/attendance}"
+                                   class="btn btn-outline-secondary w-100"
+                                   title="Reset">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ========== STAT CARDS ========== -->
+                <div class="row g-3 mb-4">
+
+                    <div class="col-6 col-md-3">
+                        <div class="card h-100"><div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Classes</h6>
+                                    <h3 class="mb-0" th:text="${totalCount}">0</h3>
+                                </div>
+                                <div class="text-primary fs-2"><i class="bi bi-people-fill"></i></div>
+                            </div>
+                        </div></div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="card h-100"><div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Present</h6>
+                                    <h3 class="mb-0 text-success" th:text="${presentCount}">0</h3>
+                                    <small class="text-muted"
+                                           th:text="${totalCount > 0
+                                                     ? #numbers.formatDecimal((presentCount * 100.0 / totalCount), 1, 1) + '% of total'
+                                                     : '0%'}">
+                                        0% of total
+                                    </small>
+                                </div>
+                                <div class="text-success fs-2"><i class="bi bi-check-circle-fill"></i></div>
+                            </div>
+                        </div></div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="card h-100"><div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Absent</h6>
+                                    <h3 class="mb-0 text-danger" th:text="${absentCount}">0</h3>
+                                    <small class="text-muted"
+                                           th:text="${totalCount > 0
+                                                     ? #numbers.formatDecimal((absentCount * 100.0 / totalCount), 1, 1) + '% of total'
+                                                     : '0%'}">
+                                        0% of total
+                                    </small>
+                                </div>
+                                <div class="text-danger fs-2"><i class="bi bi-x-circle-fill"></i></div>
+                            </div>
+                        </div></div>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <div class="card h-100"><div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Late</h6>
+                                    <h3 class="mb-0 text-warning" th:text="${lateCount}">0</h3>
+                                    <small class="text-muted"
+                                           th:text="${totalCount > 0
+                                                     ? #numbers.formatDecimal((lateCount * 100.0 / totalCount), 1, 1) + '% of total'
+                                                     : '0%'}">
+                                        0% of total
+                                    </small>
+                                </div>
+                                <div class="text-warning fs-2"><i class="bi bi-clock-fill"></i></div>
+                            </div>
+                        </div></div>
+                    </div>
+
+                </div>
+
+                <!-- ========== GAUGE ========== -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center me-3"
+                                 style="width:56px;height:56px;background:#e8f0fe;">
+                                <i class="bi bi-calendar-check" style="font-size:1.6rem;color:#1a73e8;"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-bold text-dark">Overall Attendance Percentage</h4>
+                                <p class="mb-0 text-muted small">Late is counted as present for percentage.</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 align-items-center">
+                            <div class="col-lg-7">
+                                <div id="gaugeWrapper" style="position: relative; height: 320px;">
+                                    <canvas id="attendanceGauge"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-5">
+                                <div class="p-3 rounded-3"
+                                     th:style="${overallPercentage >= 90}
+                                               ? 'background:#f1f8f4;border:1px solid #d7ecdf;'
+                                               : (${overallPercentage >= 75}
+                                                  ? 'background:#fffbf0;border:1px solid #f2e2a8;'
+                                                  : 'background:#fdf2f0;border:1px solid #f2c8c2;')">
+
+                                    <div class="d-flex align-items-start mb-3"
+                                         th:classappend="${overallPercentage >= 90} ? ' fw-bold'">
+                                        <span style="display:inline-block;width:14px;height:14px;background:#28a745;border-radius:50%;margin-top:5px;margin-right:12px;"></span>
+                                        <div>
+                                            <div class="fw-bold" style="color:#1f7a3a;">Good</div>
+                                            <div class="text-muted small">90% – 100%</div>
+                                        </div>
+                                        <i class="bi bi-check-circle-fill ms-auto text-success"
+                                           th:if="${overallPercentage >= 90}"></i>
+                                    </div>
+
+                                    <div class="d-flex align-items-start mb-3"
+                                         th:classappend="${overallPercentage >= 75 and overallPercentage < 90} ? ' fw-bold'">
+                                        <span style="display:inline-block;width:14px;height:14px;background:#ffc107;border-radius:50%;margin-top:5px;margin-right:12px;"></span>
+                                        <div>
+                                            <div class="fw-bold" style="color:#b8860b;">Warning</div>
+                                            <div class="text-muted small">75% – 89%</div>
+                                        </div>
+                                        <i class="bi bi-exclamation-triangle-fill ms-auto text-warning"
+                                           th:if="${overallPercentage >= 75 and overallPercentage < 90}"></i>
+                                    </div>
+
+                                    <div class="d-flex align-items-start"
+                                         th:classappend="${overallPercentage < 75} ? ' fw-bold'">
+                                        <span style="display:inline-block;width:14px;height:14px;background:#e74c3c;border-radius:50%;margin-top:5px;margin-right:12px;"></span>
+                                        <div>
+                                            <div class="fw-bold" style="color:#c0392b;">Low</div>
+                                            <div class="text-muted small">0% – 74%</div>
+                                        </div>
+                                        <i class="bi bi-x-circle-fill ms-auto text-danger"
+                                           th:if="${overallPercentage < 75}"></i>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SUBJECT-WISE BREAKDOWN ========== -->
+                <div class="card mb-4" th:if="${subjectSummary != null and !subjectSummary.isEmpty()}">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-book me-1"></i> Subject-wise Breakdown</span>
+                        <span class="badge bg-secondary"
+                              th:text="${subjectSummary.size() + ' course' + (subjectSummary.size() > 1 ? 's' : '')}">
+                            0 courses
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6 col-lg-4" th:each="sub : ${subjectSummary}">
+
+                                <div class="border rounded-3 p-3 h-100 position-relative">
+
+                                    <span class="badge position-absolute top-0 end-0 m-2"
+                                          th:classappend="${sub.attendancePercentage >= 90} ? ' bg-success'
+                                                          : (${sub.attendancePercentage >= 75} ? ' bg-warning text-dark' : ' bg-danger')"
+                                          th:text="${sub.attendancePercentage >= 90} ? 'Good'
+                                                  : (${sub.attendancePercentage >= 75} ? 'Warning' : 'Low')">
+                                        Good
+                                    </span>
+
+                                    <div class="d-flex justify-content-between align-items-start mb-2 pe-5">
+                                        <div>
+                                            <h6 class="mb-0 fw-bold" th:text="${sub.courseName}">Course</h6>
+                                            <small class="text-muted" th:text="${sub.courseCode}">CODE</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                        <span class="fs-4 fw-bold"
+                                              th:classappend="${sub.attendancePercentage >= 90} ? ' text-success'
+                                                              : (${sub.attendancePercentage >= 75} ? ' text-warning' : ' text-danger')"
+                                              th:text="${#numbers.formatDecimal(sub.attendancePercentage, 1, 1)} + '%'">
+                                            85.0%
+                                        </span>
+                                        <span class="text-muted small"
+                                              th:text="${sub.totalClasses} + ' classes'">0 classes</span>
+                                    </div>
+
+                                    <div class="progress mb-3" style="height: 8px;">
+                                        <div class="progress-bar"
+                                             th:classappend="${sub.attendancePercentage >= 90} ? ' bg-success'
+                                                             : (${sub.attendancePercentage >= 75} ? ' bg-warning' : ' bg-danger')"
+                                             th:style="'width: ' + ${sub.attendancePercentage} + '%'">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between small text-muted">
+                                        <span><i class="bi bi-check-circle text-success"></i>
+                                            <span th:text="${sub.presentCount}">0</span> Present</span>
+                                        <span><i class="bi bi-x-circle text-danger"></i>
+                                            <span th:text="${sub.absentCount}">0</span> Absent</span>
+                                        <span><i class="bi bi-clock text-warning"></i>
+                                            <span th:text="${sub.lateCount}">0</span> Late</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== DETAILED RECORDS ========== -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-table me-1"></i> Detailed Attendance Records</span>
+                        <span class="text-muted small">
+                            Page <span th:text="${attendancePage.number + 1}">1</span>
+                            of <span th:text="${attendancePage.totalPages}">1</span>
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="text-muted text-center py-4"
+                             th:if="${attendancePage == null or attendancePage.isEmpty()}">
+                            <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+                            <strong>No records match your filters.</strong>
+                            <div class="small mt-1">Try changing the course or date range.</div>
+                        </div>
+
+                        <div class="table-responsive"
+                             th:if="${attendancePage != null and !attendancePage.isEmpty()}">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Course</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="a, stat : ${attendancePage.content}">
+                                    <td th:text="${attendancePage.number * attendancePage.size + stat.index + 1}">1</td>
+                                    <td th:text="${a.attendanceDate}">2026-09-27</td>
+                                    <td class="text-muted small"
+                                        th:text="${a.attendanceDate != null ? a.attendanceDate.dayOfWeek : ''}">MON</td>
+                                    <td th:text="${a.course.courseName}">Course</td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${a.status == 'PRESENT'} ? ' bg-success'
+                                                              : (${a.status == 'ABSENT'} ? ' bg-danger' : ' bg-warning text-dark')">
+                                            <i class="bi"
+                                               th:classappend="${a.status == 'PRESENT'} ? ' bi-check-circle'
+                                                               : (${a.status == 'ABSENT'} ? ' bi-x-circle' : ' bi-clock')"></i>
+                                            <span th:text="${a.status}">PRESENT</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav th:if="${attendancePage.totalPages > 1}" aria-label="Attendance pagination">
+                            <ul class="pagination justify-content-end mb-0">
+
+                                <li class="page-item" th:classappend="${attendancePage.first} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/student/attendance(
+                                           page=0,
+                                           size=${attendancePage.size},
+                                           courseId=${selectedCourseId},
+                                           startDate=${startDate},
+                                           endDate=${endDate})}">
+                                        <i class="bi bi-chevron-double-left"></i>
+                                    </a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${attendancePage.first} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/student/attendance(
+                                           page=${attendancePage.number - 1},
+                                           size=${attendancePage.size},
+                                           courseId=${selectedCourseId},
+                                           startDate=${startDate},
+                                           endDate=${endDate})}">
+                                        Previous
+                                    </a>
+                                </li>
+
+                                <li class="page-item"
+                                    th:each="pageNum : ${#numbers.sequence(0, attendancePage.totalPages - 1)}"
+                                    th:classappend="${pageNum == attendancePage.number} ? 'active'">
+                                    <a class="page-link"
+                                       th:href="@{/student/attendance(
+                                           page=${pageNum},
+                                           size=${attendancePage.size},
+                                           courseId=${selectedCourseId},
+                                           startDate=${startDate},
+                                           endDate=${endDate})}"
+                                       th:text="${pageNum + 1}">1</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${attendancePage.last} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/student/attendance(
+                                           page=${attendancePage.number + 1},
+                                           size=${attendancePage.size},
+                                           courseId=${selectedCourseId},
+                                           startDate=${startDate},
+                                           endDate=${endDate})}">
+                                        Next
+                                    </a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${attendancePage.last} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/student/attendance(
+                                           page=${attendancePage.totalPages - 1},
+                                           size=${attendancePage.size},
+                                           courseId=${selectedCourseId},
+                                           startDate=${startDate},
+                                           endDate=${endDate})}">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /MAIN DASHBOARD -->
+
+        </div>
+
+        <!-- FOOTER -->
+        <div th:replace="~{'student/student-layout' :: footer}"></div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPTS -->
+<th:block th:replace="~{'student/student-layout' :: scripts}"></th:block>
+
+<!-- GAUGE SCRIPT -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const percentage = /*[[${overallPercentage}]]*/ 0;
+        const totalCount = /*[[${totalCount}]]*/ 0;
+
+        if (totalCount === 0) return;
+        if (typeof Chart === "undefined") return;
+
+        const canvas = document.getElementById("attendanceGauge");
+        if (!canvas) return;
+
+        const centerTextPlugin = {
+            id: "centerText",
+            afterDraw(chart) {
+                const { ctx, chartArea } = chart;
+                const cx = (chartArea.left + chartArea.right) / 2;
+                const cy = chartArea.bottom - 10;
+
+                ctx.save();
+                ctx.textAlign = "center";
+                ctx.font = "700 56px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+                ctx.fillStyle = "#1a2b50";
+                ctx.fillText(percentage.toFixed(0) + "%", cx, cy - 20);
+
+                ctx.font = "500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+                ctx.fillStyle = "#6c7a92";
+                ctx.fillText("Attendance", cx, cy + 8);
+                ctx.restore();
+            }
+        };
+
+        const needlePlugin = {
+            id: "needle",
+            afterDatasetDraw(chart) {
+                const { ctx, chartArea } = chart;
+                const startAngle = Math.PI;
+                const endAngle = 2 * Math.PI;
+                const angle = startAngle + (percentage / 100) * (endAngle - startAngle);
+
+                const cx = (chartArea.left + chartArea.right) / 2;
+                const cy = chartArea.bottom;
+                const radius = Math.min(chartArea.width, chartArea.height * 2) / 2 - 10;
+                const needleLength = radius * 0.75;
+
+                const tipX = cx + Math.cos(angle) * needleLength;
+                const tipY = cy + Math.sin(angle) * needleLength;
+
+                ctx.save();
+                ctx.strokeStyle = "#1a2b50";
+                ctx.lineWidth = 6;
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(tipX, tipY);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+                ctx.fillStyle = "#1a2b50";
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+                ctx.fillStyle = "#ffffff";
+                ctx.fill();
+                ctx.restore();
+            }
+        };
+
+        new Chart(canvas.getContext("2d"), {
+            type: "doughnut",
+            data: {
+                labels: ["Low (0–74%)", "Warning (75–89%)", "Good (90–100%)"],
+                datasets: [{
+                    data: [74, 15, 11],
+                    backgroundColor: ["#e74c3c", "#ffc107", "#28a745"],
+                    borderColor: "#ffffff",
+                    borderWidth: 2,
+                    circumference: 180,
+                    rotation: 270,
+                    cutout: "78%"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { top: 20, bottom: 30 } },
+                plugins: { legend: { display: false } }
+            },
+            plugins: [centerTextPlugin, needlePlugin]
+        });
+
+        const wrapper = document.getElementById("gaugeWrapper");
+        const ticks = [
+            { text: "0%",   xPct: 3,   yPct: 88 },
+            { text: "75%",  xPct: 60,  yPct: 12 },
+            { text: "90%",  xPct: 90,  yPct: 30 },
+            { text: "100%", xPct: 97,  yPct: 88 }
+        ];
+        ticks.forEach(t => {
+            const el = document.createElement("span");
+            el.textContent = t.text;
+            el.style.position = "absolute";
+            el.style.left = t.xPct + "%";
+            el.style.top  = t.yPct + "%";
+            el.style.transform = "translate(-50%, -50%)";
+            el.style.fontSize = "14px";
+            el.style.color = "#8892a6";
+            el.style.pointerEvents = "none";
+            wrapper.appendChild(el);
+        });
+    });
+</script>
+
+</body>
+</html>

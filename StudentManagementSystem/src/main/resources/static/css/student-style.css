@@ -22,7 +22,7 @@
     --text-dark: #2b2d42;
     --text-muted: #8d99ae;
     --sidebar-bg: #1e2129;
-    --sidebar-width: 260px;
+    --sidebar-width: 360px;              /* ← changed from 260px */
     --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
                    0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
@@ -41,7 +41,6 @@
 
 /* =========================================================
    STAT ICON COLORS
-   (base .stat-icon size is inlined; only colors here)
    ========================================================= */
 
 .stat-icon.text-primary {
@@ -62,7 +61,7 @@
 
 
 /* =========================================================
-   BUTTON SIZES (base .btn is inlined)
+   BUTTON SIZES
    ========================================================= */
 
 .btn-sm {

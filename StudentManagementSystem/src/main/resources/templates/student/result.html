@@ -10,12 +10,16 @@
 
 <div class="d-flex student-layout">
 
+    <!-- SIDEBAR -->
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
+    <!-- CONTENT -->
     <div class="student-content">
 
+        <!-- NAVBAR -->
         <div th:replace="~{student/student-layout::navbar}"></div>
 
+        <!-- ALERTS -->
         <div th:replace="~{student/student-layout::alerts}"></div>
 
         <div class="container-fluid p-0">
@@ -23,7 +27,6 @@
             <div class="result-container">
 
                 <!-- PAGE TITLE -->
-
                 <div class="page-title">
                     <div class="page-title-icon">
                         <i class="fas fa-chart-column"></i>
@@ -35,7 +38,6 @@
                 </div>
 
                 <!-- SCORE SUMMARY -->
-
                 <div class="score-summary">
 
                     <div class="score-item score-primary">
@@ -68,7 +70,6 @@
                 </div>
 
                 <!-- NEGATIVE MARKING NOTICE -->
-
                 <div class="alert alert-warning d-flex align-items-center"
                      th:if="${test.negativeMarking != null and test.negativeMarking}">
                     <i class="fas fa-exclamation-triangle me-2"></i>
@@ -80,9 +81,7 @@
                 </div>
 
                 <!-- INFO GRID -->
-
                 <div class="info-grid">
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-file-lines"></i></div>
                         <div>
@@ -90,7 +89,6 @@
                             <div class="info-value" th:text="${test.testName}">Test Name</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-book"></i></div>
                         <div>
@@ -98,7 +96,6 @@
                             <div class="info-value" th:text="${test.course}">Course</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-book-open"></i></div>
                         <div>
@@ -106,7 +103,6 @@
                             <div class="info-value" th:text="${test.subject}">Subject</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-layer-group"></i></div>
                         <div>
@@ -114,7 +110,6 @@
                             <div class="info-value" th:text="${test.chapter}">Chapter</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-star"></i></div>
                         <div>
@@ -122,18 +117,14 @@
                             <div class="info-value" th:text="${test.totalMarks}">100</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-clock"></i></div>
                         <div>
                             <div class="info-label">Submitted</div>
                             <div class="info-value"
-                                 th:text="${attempt.submittedAt != null ? #temporals.format(attempt.submittedAt, 'dd MMM yyyy, HH:mm') : '-'}">
-                                -
-                            </div>
+                                 th:text="${attempt.submittedAt != null ? #temporals.format(attempt.submittedAt, 'dd MMM yyyy, HH:mm') : '-'}">-</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-list-ol"></i></div>
                         <div>
@@ -142,7 +133,6 @@
                                  th:text="${attempt.answers != null ? attempt.answers.size() : 0}">0</div>
                         </div>
                     </div>
-
                     <div class="info-card">
                         <div class="info-icon"><i class="fas fa-circle-check"></i></div>
                         <div>
@@ -150,46 +140,33 @@
                             <div class="info-value" th:text="'#' + ${attempt.attemptNumber}">#1</div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- QUESTION NAVIGATION PANEL -->
-
+                <!-- STATUS PANEL -->
                 <div class="status-panel"
                      th:if="${attempt.answers != null and !attempt.answers.isEmpty()}">
 
                     <div class="status-summary">
-
                         <div class="status-left">
-
                             <div class="status-item">
-                                <div class="status-icon wrong-icon">
-                                    <i class="fas fa-xmark"></i>
-                                </div>
+                                <div class="status-icon wrong-icon"><i class="fas fa-xmark"></i></div>
                                 <span>Wrong</span>
                                 <strong th:text="${attempt.wrongAnswers != null ? attempt.wrongAnswers : 0}">0</strong>
                             </div>
-
                             <div class="status-item">
                                 <div class="status-icon never-icon"></div>
                                 <span>Unanswered</span>
                                 <strong th:text="${attempt.unansweredQuestions != null ? attempt.unansweredQuestions : 0}">0</strong>
                             </div>
-
                         </div>
-
                         <div class="status-right">
-                            <div class="status-icon correct-icon">
-                                <i class="fas fa-check"></i>
-                            </div>
+                            <div class="status-icon correct-icon"><i class="fas fa-check"></i></div>
                             <span>Correct</span>
                             <strong th:text="${attempt.correctAnswers != null ? attempt.correctAnswers : 0}">0</strong>
                         </div>
-
                     </div>
 
                     <div class="question-grid">
-
                         <a th:each="answer, stat : ${attempt.answers}"
                            th:id="'nav-question-' + ${answer.question.id}"
                            th:href="'#question-' + ${answer.question.id}"
@@ -197,57 +174,39 @@
                            th:classappend="${answer.correct ? 'correct' : ((answer.selectedAnswer == null or answer.selectedAnswer.isEmpty()) ? 'never-opened' : 'wrong')}"
                            th:data-question-id="${answer.question.id}"
                            th:title="'Question ' + ${stat.index + 1}">
-
                             <span th:text="${stat.index + 1}">1</span>
                             <span class="question-circle"></span>
-
                         </a>
-
                     </div>
 
                 </div>
 
                 <!-- QUESTION CARDS -->
-
                 <div th:if="${attempt.answers != null and !attempt.answers.isEmpty()}">
-
                     <div class="question-card"
                          th:each="answer, stat : ${attempt.answers}"
                          th:id="'question-' + ${answer.question.id}">
 
                         <div class="question-header">
-
                             <div class="question-label">
                                 <i class="fas fa-circle-question"></i>
-                                Question
-                                <span th:text="${stat.index + 1}">1</span>
+                                Question <span th:text="${stat.index + 1}">1</span>
                             </div>
-
                             <div class="header-right">
-
                                 <div class="marks-badge"
                                      th:classappend="${(answer.marksObtained != null and answer.marksObtained < 0) ? 'marks-negative' : ((answer.marksObtained != null and answer.marksObtained > 0) ? 'marks-positive' : 'marks-zero')}">
-
                                     <i class="fas fa-star"></i>
-
                                     <span th:if="${answer.marksObtained != null and answer.marksObtained > 0}"
                                           th:text="'+' + ${answer.marksObtained}">+1</span>
-
                                     <span th:if="${answer.marksObtained != null and answer.marksObtained < 0}"
                                           th:text="${answer.marksObtained}">-1</span>
-
                                     <span th:if="${answer.marksObtained == null or answer.marksObtained == 0}">0</span>
-
                                     <span>Mark</span>
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="question-body">
-
                             <div class="question-text"
                                  th:text="${answer.question.questionText}">Question text</div>
 
@@ -256,103 +215,79 @@
                                 <!-- OPTION A -->
                                 <div class="option"
                                      th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('A')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('A') or answer.question.correctAnswer.equals(answer.question.optionA))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('A')) ? 'user-correct' : ''))}">
-
                                     <strong class="option-letter">A.</strong>
                                     <div class="option-text" th:text="${answer.question.optionA}">Option A</div>
-
                                     <span class="answer-badge user-badge"
                                           th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('A')}">
                                         <i class="fas fa-user"></i> Your Answer
                                     </span>
-
                                     <span class="answer-badge correct-badge"
                                           th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('A') or answer.question.correctAnswer.equals(answer.question.optionA))}">
                                         <i class="fas fa-check"></i> Correct Answer
                                     </span>
-
                                 </div>
 
                                 <!-- OPTION B -->
                                 <div class="option"
                                      th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('B')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('B') or answer.question.correctAnswer.equals(answer.question.optionB))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('B')) ? 'user-correct' : ''))}">
-
                                     <strong class="option-letter">B.</strong>
                                     <div class="option-text" th:text="${answer.question.optionB}">Option B</div>
-
                                     <span class="answer-badge user-badge"
                                           th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('B')}">
                                         <i class="fas fa-user"></i> Your Answer
                                     </span>
-
                                     <span class="answer-badge correct-badge"
                                           th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('B') or answer.question.correctAnswer.equals(answer.question.optionB))}">
                                         <i class="fas fa-check"></i> Correct Answer
                                     </span>
-
                                 </div>
 
                                 <!-- OPTION C -->
                                 <div class="option"
                                      th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('C')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('C') or answer.question.correctAnswer.equals(answer.question.optionC))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('C')) ? 'user-correct' : ''))}">
-
                                     <strong class="option-letter">C.</strong>
                                     <div class="option-text" th:text="${answer.question.optionC}">Option C</div>
-
                                     <span class="answer-badge user-badge"
                                           th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('C')}">
                                         <i class="fas fa-user"></i> Your Answer
                                     </span>
-
                                     <span class="answer-badge correct-badge"
                                           th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('C') or answer.question.correctAnswer.equals(answer.question.optionC))}">
                                         <i class="fas fa-check"></i> Correct Answer
                                     </span>
-
                                 </div>
 
                                 <!-- OPTION D -->
                                 <div class="option"
                                      th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('D')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('D') or answer.question.correctAnswer.equals(answer.question.optionD))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('D')) ? 'user-correct' : ''))}">
-
                                     <strong class="option-letter">D.</strong>
                                     <div class="option-text" th:text="${answer.question.optionD}">Option D</div>
-
                                     <span class="answer-badge user-badge"
                                           th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('D')}">
                                         <i class="fas fa-user"></i> Your Answer
                                     </span>
-
                                     <span class="answer-badge correct-badge"
                                           th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('D') or answer.question.correctAnswer.equals(answer.question.optionD))}">
                                         <i class="fas fa-check"></i> Correct Answer
                                     </span>
-
                                 </div>
 
                             </div>
 
                             <!-- EXPLANATION -->
-
                             <div class="explanation"
                                  th:if="${answer.question.explanation != null and !answer.question.explanation.isEmpty()}">
-
                                 <div class="explanation-title">
                                     <i class="fas fa-lightbulb"></i> Explanation
                                 </div>
-
                                 <div class="explanation-text"
                                      th:text="${answer.question.explanation}">Explanation</div>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- NO QUESTIONS -->
-
                 <div class="no-question"
                      th:if="${attempt.answers == null or attempt.answers.isEmpty()}">
                     <i class="fas fa-circle-question"></i>
@@ -376,7 +311,11 @@
 <style>
     * { box-sizing: border-box; }
 
-    .result-container { width: 100%; max-width: 1900px; margin: 0 auto; padding: 18px; }
+    .result-container {
+        width: 100%;
+        margin: 0 auto;
+        padding: 18px;
+    }
 
     .page-title { display: flex; align-items: center; gap: 14px; margin: 20px 0 25px; }
     .page-title-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #0d6efd; color: white; font-size: 22px; }
@@ -527,4 +466,5 @@ document.addEventListener("DOMContentLoaded", function () {
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 
 </body>
+
 </html>

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -675,7 +676,7 @@ public class StudentPortalController {
     }
 
     // =========================================================
-    // SINGLE RESULT
+    // SINGLE RESULT — WITH ALL QUESTIONS (answered + unanswered)
     // =========================================================
 
     @GetMapping("/results/{attemptId:\\d+}")
@@ -698,10 +699,61 @@ public class StudentPortalController {
             return "redirect:/student/results";
         }
 
-        attempt.getAnswers().size();
+        Test test = attempt.getTest();
+
+        // =========================================================
+        // BUILD A COMPLETE ANSWER LIST
+        // =========================================================
+        // The attempt only stores answers for questions the student
+        // actually interacted with. We build one entry per question
+        // in the test so the navigation grid can show correct,
+        // wrong, AND unanswered tiles.
+        // =========================================================
+
+        // 1. All questions belonging to the test
+        List<Question> allQuestions = new ArrayList<>(test.getQuestions());
+
+        // 2. Index the student's existing answers by question id
+        Map<Long, StudentAnswer> answeredByQuestionId = new HashMap<>();
+
+        List<StudentAnswer> existingAnswers = attempt.getAnswers();
+        if (existingAnswers != null) {
+            for (StudentAnswer ans : existingAnswers) {
+                if (ans.getQuestion() != null) {
+                    answeredByQuestionId.put(ans.getQuestion().getId(), ans);
+                }
+            }
+        }
+
+        // 3. Build the full list — one entry per question
+        List<StudentAnswer> fullAnswerList = new ArrayList<>();
+
+        for (Question q : allQuestions) {
+
+            StudentAnswer ans = answeredByQuestionId.get(q.getId());
+
+            if (ans == null) {
+                // Placeholder for unanswered questions
+                ans = new StudentAnswer();
+                ans.setQuestion(q);
+                ans.setSelectedAnswer(null);   // triggers 'never-opened' CSS
+                ans.setCorrect(false);
+                ans.setMarksObtained(0);
+                ans.setAttempt(attempt);       // ← matches mappedBy = "attempt"
+            }
+
+            fullAnswerList.add(ans);
+        }
+
+        // 4. Sort by question id
+        fullAnswerList.sort(
+                Comparator.comparing(a -> a.getQuestion().getId()));
+
+        // 5. Replace the answer list with the complete one
+        attempt.setAnswers(fullAnswerList);
 
         model.addAttribute("attempt", attempt);
-        model.addAttribute("test", attempt.getTest());
+        model.addAttribute("test", test);
 
         return "student/result";
     }
@@ -786,7 +838,7 @@ public class StudentPortalController {
     }
 
     // =========================================================
-    // ID CARD  ← NEW
+    // ID CARD
     // =========================================================
 
     @GetMapping("/id-card")
@@ -797,9 +849,6 @@ public class StudentPortalController {
 
         Students student = currentStudent(authentication);
 
-        // ---------------------------------------------------------
-        // Count enrollments for the card
-        // ---------------------------------------------------------
         List<Enrollment> enrollments = new ArrayList<>();
 
         try {
@@ -815,9 +864,6 @@ public class StudentPortalController {
             }
         }
 
-        // ---------------------------------------------------------
-        // Force-load student fields
-        // ---------------------------------------------------------
         student.getFirstName();
         student.getLastName();
         student.getEmail();
