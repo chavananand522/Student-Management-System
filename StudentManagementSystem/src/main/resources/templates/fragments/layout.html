@@ -79,9 +79,7 @@
          id="sidebarMenu">
 
 
-        <!-- ================================================= -->
         <!-- DASHBOARD -->
-        <!-- ================================================= -->
 
         <a th:href="@{/dashboard}"
            class="sidebar-link">
@@ -93,9 +91,7 @@
         </a>
 
 
-        <!-- ================================================= -->
         <!-- COURSES -->
-        <!-- ================================================= -->
 
         <a th:href="@{/course/list}"
            class="sidebar-link">
@@ -107,9 +103,7 @@
         </a>
 
 
-        <!-- ================================================= -->
         <!-- STUDENTS -->
-        <!-- ================================================= -->
 
         <a th:href="@{/students/list}"
            class="sidebar-link">
@@ -121,9 +115,7 @@
         </a>
 
 
-        <!-- ================================================= -->
         <!-- STUDY MAIN MENU -->
-        <!-- ================================================= -->
 
         <a class="sidebar-link study-main-link"
            href="javascript:void(0)"
@@ -142,9 +134,7 @@
         </a>
 
 
-        <!-- ================================================= -->
         <!-- STUDY SUB MENU -->
-        <!-- ================================================= -->
 
         <div class="collapse"
              id="studyMenu"
@@ -180,9 +170,7 @@
         </div>
 
 
-        <!-- ================================================= -->
         <!-- TESTS MAIN MENU -->
-        <!-- ================================================= -->
 
         <a class="sidebar-link test-main-link"
            href="javascript:void(0)"
@@ -201,9 +189,7 @@
         </a>
 
 
-        <!-- ================================================= -->
         <!-- TESTS SUB MENU -->
-        <!-- ================================================= -->
 
         <div class="collapse"
              id="testMenu"
@@ -239,9 +225,7 @@
         </div>
 
 
-        <!-- ================================================= -->
         <!-- ENROLLED STUDENTS -->
-        <!-- ================================================= -->
 
         <a th:href="@{/enrollments/enrollmentList}"
            class="sidebar-link">
@@ -253,9 +237,19 @@
         </a>
 
 
-        <!-- ================================================= -->
+        <!-- ATTENDANCE -->
+
+        <a th:href="@{/attendance}"
+           class="sidebar-link">
+
+            <i class="bi bi-calendar-check"></i>
+
+            <span>Attendance</span>
+
+        </a>
+
+
         <!-- ENROLL TO COURSE -->
-        <!-- ================================================= -->
 
         <a th:href="@{/enrollments/showEnroll}"
            class="sidebar-link">
@@ -267,9 +261,7 @@
         </a>
 
 
-        <!-- ================================================= -->
         <!-- AI ASSISTANT -->
-        <!-- ================================================= -->
 
         <a th:href="@{/ai-assistant}"
            class="sidebar-link ai-sidebar-link">
@@ -294,11 +286,6 @@
 
     <div class="container-fluid">
 
-
-        <!-- ================================================= -->
-        <!-- SIDEBAR TOGGLE -->
-        <!-- ================================================= -->
-
         <button class="btn btn-outline-secondary"
                 id="sidebarToggle"
                 type="button">
@@ -306,11 +293,6 @@
             <i class="bi bi-list"></i>
 
         </button>
-
-
-        <!-- ================================================= -->
-        <!-- MOBILE NAVBAR TOGGLE -->
-        <!-- ================================================= -->
 
         <button class="navbar-toggler"
                 type="button"
@@ -324,26 +306,12 @@
 
         </button>
 
-
-        <!-- ================================================= -->
-        <!-- NAVBAR CONTENT -->
-        <!-- ================================================= -->
-
         <div class="collapse navbar-collapse"
              id="navbarSupportedContent">
 
-
             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
 
-
-                <!-- ================================================= -->
-                <!-- PROFILE -->
-                <!-- ================================================= -->
-
                 <li class="nav-item dropdown">
-
-
-                    <!-- PROFILE BUTTON -->
 
                     <a class="nav-link dropdown-toggle d-flex align-items-center"
                        href="#"
@@ -352,35 +320,20 @@
                        data-bs-toggle="dropdown"
                        aria-expanded="false">
 
-
-                        <!-- Profile Image -->
-
                         <img th:src="@{/profile/image}"
                              alt="Profile"
                              class="rounded-circle me-2 navbar-profile-img"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
 
-
-                        <!-- Fallback Icon -->
-
                         <i class="bi bi-person-circle me-2"
                            style="display:none;"></i>
-
 
                         <span>Admin User</span>
 
                     </a>
 
-
-                    <!-- ================================================= -->
-                    <!-- PROFILE DROPDOWN -->
-                    <!-- ================================================= -->
-
                     <div class="dropdown-menu dropdown-menu-end shadow"
                          aria-labelledby="navbarDropdown">
-
-
-                        <!-- PROFILE -->
 
                         <a class="dropdown-item py-2"
                            th:href="@{/profile}">
@@ -391,9 +344,6 @@
 
                         </a>
 
-
-                        <!-- LEADERSHIP BOARD -->
-
                         <a class="dropdown-item py-2"
                            th:href="@{/leadership}">
 
@@ -402,9 +352,6 @@
                             Leadership Board
 
                         </a>
-
-
-                        <!-- ID CARD -->
 
                         <a class="dropdown-item py-2"
                            th:href="@{/id-card}">
@@ -415,9 +362,6 @@
 
                         </a>
 
-
-                        <!-- FEES DETAILS -->
-
                         <a class="dropdown-item py-2"
                            th:href="@{/fees-details}">
 
@@ -426,9 +370,6 @@
                             Fees Details
 
                         </a>
-
-
-                        <!-- SYSTEM TOOLS -->
 
                         <a class="dropdown-item py-2"
                            th:href="@{/settings}">
@@ -439,13 +380,7 @@
 
                         </a>
 
-
-                        <!-- DIVIDER -->
-
                         <div class="dropdown-divider"></div>
-
-
-                        <!-- LOGOUT -->
 
                         <form method="post"
                               th:action="@{/logout}"
@@ -521,6 +456,14 @@
     <!-- ================================================= -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- ================================================= -->
+    <!-- CHART.JS (required for attendance gauge) -->
+    <!-- ================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js">
     </script>
 
 
@@ -650,6 +593,7 @@
                 );
 
             }
+
 
             /* =================================================
                AUTO-OPEN MENU FOR CURRENT PAGE
