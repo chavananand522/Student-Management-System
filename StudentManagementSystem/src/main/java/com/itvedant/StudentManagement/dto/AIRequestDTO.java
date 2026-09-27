@@ -11,5 +11,4 @@ public class AIRequestDTO {
     public void setMessage(String message) {
         this.message = message;
     }
-
 }

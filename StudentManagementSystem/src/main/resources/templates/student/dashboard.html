@@ -1,98 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student/student-layout::head}"></head>
+<head th:replace="~{'student/student-layout' :: head}"></head>
 
 <body>
 
-<div class="d-flex student-layout">
+    <div class="d-flex student-layout">
 
-    <div th:replace="~{student/student-layout::sidebar}"></div>
+        <!-- SIDEBAR -->
 
-    <div class="student-content">
+        <div th:replace="~{'student/student-layout' :: sidebar}"></div>
 
-        <div th:replace="~{student/student-layout::navbar}"></div>
-        <div th:replace="~{student/student-layout::alerts}"></div>
+        <!-- CONTENT -->
 
-        <div class="container-fluid px-4 py-4">
+        <div class="student-content">
 
-            <h2 class="fw-bold mb-4">
-                Welcome, <span th:text="${student.firstName}">Student</span>
-            </h2>
+            <!-- NAVBAR -->
 
-            <div class="row g-4">
+            <div th:replace="~{'student/student-layout' :: navbar}"></div>
 
-                <div class="col-md-6 col-xl-3">
-                    <div class="card student-card h-100">
-                        <div class="card-body">
-                            <div class="stat-icon mb-3">
-                                <i class="bi bi-book text-primary"></i>
-                            </div>
-                            <div class="text-muted">My Courses</div>
-                            <h2 class="fw-bold" th:text="${courseCount}">0</h2>
-                            <a th:href="@{/student/courses}" class="btn btn-sm btn-outline-primary">
-                                View Courses
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <!-- MAIN CONTENT -->
 
-                <div class="col-md-6 col-xl-3">
-                    <div class="card student-card h-100">
-                        <div class="card-body">
-                            <div class="stat-icon mb-3">
-                                <i class="bi bi-pencil-square text-primary"></i>
-                            </div>
-                            <div class="text-muted">Available Tests</div>
-                            <h2 class="fw-bold" th:text="${testCount}">0</h2>
-                            <a th:href="@{/student/tests}" class="btn btn-sm btn-outline-primary">
-                                View Tests
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <div class="container-fluid px-4 py-3">
 
-                <div class="col-md-6 col-xl-3">
-                    <div class="card student-card h-100">
-                        <div class="card-body">
-                            <div class="stat-icon mb-3">
-                                <i class="bi bi-bar-chart text-success"></i>
-                            </div>
-                            <div class="text-muted">Completed Tests</div>
-                            <h2 class="fw-bold" th:text="${completedTests}">0</h2>
-                            <a th:href="@{/student/results}" class="btn btn-sm btn-outline-success">
-                                My Results
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <div th:replace="~{'student/student-layout' :: alerts}"></div>
 
-                <div class="col-md-6 col-xl-3">
-                    <div class="card student-card h-100">
-                        <div class="card-body">
-                            <div class="stat-icon mb-3">
-                                <i class="bi bi-journal-bookmark text-warning"></i>
-                            </div>
-                            <div class="text-muted">Study</div>
-                            <h2 class="fw-bold">Learn</h2>
-                            <a th:href="@{/student/study}" class="btn btn-sm btn-outline-warning">
-                                Start Studying
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <h1 class="mt-4">Dashboard</h1>
+
+                <p>Welcome to the Student Portal.</p>
 
             </div>
 
-        </div>
+            <!-- FOOTER -->
 
-        <div th:replace="~{student/student-layout::footer}"></div>
+            <div th:replace="~{'student/student-layout' :: footer}"></div>
+
+        </div>
 
     </div>
 
-</div>
-
-<th:block th:replace="~{student/student-layout::scripts}"></th:block>
+    <th:block th:replace="~{'student/student-layout' :: scripts}"></th:block>
 
 </body>
+
 </html>

@@ -12,18 +12,37 @@ import java.util.List;
 @Repository
 public interface TestAttemptRepository extends JpaRepository<TestAttempt, Long> {
 
-	List<TestAttempt> findByTestIdAndStudentUsername(Long testId, String studentUsername);
+    // ---------------------------------------------------------
+    // Existing methods
+    // ---------------------------------------------------------
 
-	List<TestAttempt> findByStudentUsername(String studentUsername);
+    List<TestAttempt> findByTestIdAndStudentUsername(Long testId, String studentUsername);
 
-	// Query to retrieve highest obtained marks for a specific test among submitted attempts
-	@Query("SELECT MAX(t.obtainedMarks) FROM TestAttempt t WHERE t.test.id = :testId AND UPPER(t.status) = 'SUBMITTED'")
-	Integer findMaxObtainedMarksByTestId(@Param("testId") Long testId);
+    List<TestAttempt> findByStudentUsername(String studentUsername);
 
-	// Option 1: Native Spring Data JPA Query Method (Recommended)
-	List<TestAttempt> findFirstByTestIdAndStatusIgnoreCaseOrderByObtainedMarksDesc(Long testId, String status);
+    // ---------------------------------------------------------
+    // Needed by LeadershipController
+    // ---------------------------------------------------------
 
-	// Option 2: Using Pageable with JPQL Query
-	@Query("SELECT t.studentUsername FROM TestAttempt t WHERE t.test.id = :testId AND UPPER(t.status) = 'SUBMITTED' ORDER BY t.obtainedMarks DESC")
-	List<String> findTopperNameByTestId(@Param("testId") Long testId, Pageable pageable);
+    List<TestAttempt> findByTestId(Long testId);
+
+    // ---------------------------------------------------------
+    // Highest obtained marks for a specific test
+    // ---------------------------------------------------------
+
+    @Query("SELECT MAX(t.obtainedMarks) FROM TestAttempt t WHERE t.test.id = :testId AND UPPER(t.status) = 'SUBMITTED'")
+    Integer findMaxObtainedMarksByTestId(@Param("testId") Long testId);
+
+    // ---------------------------------------------------------
+    // Top-scoring attempt for a test
+    // ---------------------------------------------------------
+
+    List<TestAttempt> findFirstByTestIdAndStatusIgnoreCaseOrderByObtainedMarksDesc(Long testId, String status);
+
+    // ---------------------------------------------------------
+    // Topper username(s) for a test
+    // ---------------------------------------------------------
+
+    @Query("SELECT t.studentUsername FROM TestAttempt t WHERE t.test.id = :testId AND UPPER(t.status) = 'SUBMITTED' ORDER BY t.obtainedMarks DESC")
+    List<String> findTopperNameByTestId(@Param("testId") Long testId, Pageable pageable);
 }

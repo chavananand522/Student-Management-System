@@ -7,76 +7,47 @@
 <div class="d-flex" id="wrapper">
 
     <!-- SIDEBAR -->
-    <div th:replace="~{fragments/layout::sidebar}">
-    </div>
+    <div th:replace="~{fragments/layout::sidebar}"></div>
 
     <div class="flex-grow-1">
 
         <!-- NAVBAR -->
-        <div th:replace="~{fragments/layout::navbar}">
-        </div>
+        <div th:replace="~{fragments/layout::navbar}"></div>
 
         <main class="container-fluid p-4">
 
-            <!-- ================================================= -->
-            <!-- FLASH MESSAGES -->
-            <!-- ================================================= -->
-
+            <!-- FLASH -->
             <div th:if="${message}"
                  class="alert alert-success alert-dismissible fade show text-center mx-auto flash-alert"
                  role="alert">
-
                 <i class="bi bi-check-circle me-2"></i>
-
-                <span th:text="${message}">
-                    Success
-                </span>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                </button>
-
+                <span th:text="${message}">Success</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-
 
             <div th:if="${error}"
                  class="alert alert-danger alert-dismissible fade show text-center mx-auto flash-alert"
                  role="alert">
-
                 <i class="bi bi-exclamation-circle me-2"></i>
-
-                <span th:text="${error}">
-                    Error
-                </span>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                </button>
-
+                <span th:text="${error}">Error</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
 
-
-            <!-- PAGE HEADER -->
+            <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h3 class="fw-bold mb-1">
                         <i class="bi bi-pencil-square me-2"></i>
                         Edit Test
                     </h3>
-                    <p class="text-muted mb-0">
-                        Update test information
-                    </p>
+                    <p class="text-muted mb-0">Update test information</p>
                 </div>
-
                 <a th:href="@{/tests/list}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>
-                    Back to Tests
+                    <i class="bi bi-arrow-left me-1"></i> Back to Tests
                 </a>
             </div>
 
-            <!-- EDIT TEST FORM -->
+            <!-- FORM -->
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
 
@@ -93,76 +64,45 @@
                         <div class="row g-3 mb-4">
 
                             <div class="col-md-6">
-                                <label class="form-label">
-                                    Test Name
-                                </label>
-                                <input type="text"
-                                       class="form-control"
-                                       th:field="*{testName}"
-                                       required>
+                                <label class="form-label">Test Name</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{testName}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">
-                                    Course
-                                </label>
-                                <input type="text"
-                                       class="form-control"
-                                       th:field="*{course}"
-                                       required>
+                                <label class="form-label">Course</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{course}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">
-                                    Subject
-                                </label>
-                                <input type="text"
-                                       class="form-control"
-                                       th:field="*{subject}"
-                                       required>
+                                <label class="form-label">Subject</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{subject}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">
-                                    Chapter
-                                </label>
-                                <input type="text"
-                                       class="form-control"
-                                       th:field="*{chapter}"
-                                       required>
+                                <label class="form-label">Chapter</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{chapter}" required>
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label">
-                                    Duration (Minutes)
-                                </label>
-                                <input type="number"
-                                       class="form-control"
-                                       th:field="*{duration}"
-                                       min="1"
-                                       required>
+                                <label class="form-label">Duration (Minutes)</label>
+                                <input type="number" class="form-control"
+                                       th:field="*{duration}" min="1" required>
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label">
-                                    Total Marks
-                                </label>
-                                <input type="number"
-                                       class="form-control"
-                                       th:field="*{totalMarks}"
-                                       min="1"
-                                       required>
+                                <label class="form-label">Total Marks</label>
+                                <input type="number" class="form-control"
+                                       th:field="*{totalMarks}" min="1" required>
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label">
-                                    Passing Marks
-                                </label>
-                                <input type="number"
-                                       class="form-control"
-                                       th:field="*{passingMarks}"
-                                       min="0"
-                                       required>
+                                <label class="form-label">Passing Marks</label>
+                                <input type="number" class="form-control"
+                                       th:field="*{passingMarks}" min="0" required>
                             </div>
 
                         </div>
@@ -220,21 +160,14 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label">
-                                    Number of Attempts
-                                </label>
-                                <input type="number"
-                                       class="form-control"
-                                       th:field="*{numberOfAttempts}"
-                                       min="1">
+                                <label class="form-label">Number of Attempts</label>
+                                <input type="number" class="form-control"
+                                       th:field="*{numberOfAttempts}" min="1">
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label">
-                                    Status
-                                </label>
-                                <select class="form-select"
-                                        th:field="*{status}">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" th:field="*{status}">
                                     <option value="DRAFT">Draft</option>
                                     <option value="PUBLISHED">Published</option>
                                 </select>
@@ -242,21 +175,56 @@
 
                         </div>
 
+                        <!-- NEGATIVE MARKING -->
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Negative Marking (NEET-style)
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="negativeMarking"
+                                           th:field="*{negativeMarking}">
+                                    <label class="form-check-label" for="negativeMarking">
+                                        Enable Negative Marking
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-1">
+                                    Deduct marks for each wrong answer.
+                                </small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Negative Marks per Wrong Answer
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="negativeMarks"
+                                       min="0"
+                                       step="1"
+                                       th:field="*{negativeMarks}"
+                                       placeholder="1">
+                                <small class="text-muted d-block mt-1">
+                                    Default: 1. Example: set to 1 to deduct 1 mark
+                                    per wrong answer.
+                                </small>
+                            </div>
+
+                        </div>
+
                         <!-- BUTTONS -->
                         <div class="d-flex justify-content-end gap-2">
-
-                            <a th:href="@{/tests/list}"
-                               class="btn btn-secondary">
-                                <i class="bi bi-x-circle me-1"></i>
-                                Cancel
+                            <a th:href="@{/tests/list}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
                             </a>
-
-                            <button type="submit"
-                                    class="btn btn-primary">
-                                <i class="bi bi-check-circle me-1"></i>
-                                Update Test
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Update Test
                             </button>
-
                         </div>
 
                     </form>
@@ -268,11 +236,6 @@
     </div>
 </div>
 
-
-<!-- ===================================================== -->
-<!-- PAGE-SPECIFIC STYLE -->
-<!-- ===================================================== -->
-
 <style>
     .flash-alert {
         max-width: 720px;
@@ -280,11 +243,6 @@
         margin-right: auto;
     }
 </style>
-
-
-<!-- ===================================================== -->
-<!-- COMMON SCRIPTS -->
-<!-- ===================================================== -->
 
 <div th:replace="~{fragments/layout::scripts}"></div>
 

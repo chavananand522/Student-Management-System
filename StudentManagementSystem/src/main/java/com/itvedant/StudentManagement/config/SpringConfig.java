@@ -29,8 +29,8 @@ public class SpringConfig {
                 // =========================================
                 .requestMatchers(
                     "/login",
-                    "/forgot-password",       // ← NEW
-                    "/reset-password",        // ← NEW
+                    "/forgot-password",
+                    "/reset-password",
                     "/student/signup",
                     "/student/register",
                     "/settings",
@@ -38,12 +38,23 @@ public class SpringConfig {
                     "/css/**",
                     "/js/**",
                     "/images/**",
-                    "/error"
+                    "/error",
+                    "/favicon.ico"
                 )
                 .permitAll()
 
                 // =========================================
+                // LEADERSHIP BOARD — both ADMIN and STUDENT
+                // =========================================
+                .requestMatchers(
+                    "/leadership",
+                    "/admin/leadership"
+                )
+                .hasAnyRole("ADMIN", "STUDENT")
+
+                // =========================================
                 // STUDENT URLS
+                // (covers /student/ai and /student/ai/ask too)
                 // =========================================
                 .requestMatchers("/student/**")
                 .hasRole("STUDENT")
@@ -70,7 +81,6 @@ public class SpringConfig {
                     "/dashboard",
                     "/profile/**",
                     "/id-card",
-                    "/leadership",
                     "/ai-assistant",
                     "/study/**"
                 )

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{student/student-layout::head}"></head>
+
+<body>
+
+<div class="d-flex student-layout">
+
+    <!-- SIDEBAR -->
+    <div th:replace="~{student/student-layout::sidebar}"></div>
+
+    <!-- CONTENT -->
+    <div class="student-content">
+
+        <!-- NAVBAR -->
+        <div th:replace="~{student/student-layout::navbar}"></div>
+
+        <!-- ALERTS -->
+        <div th:replace="~{student/student-layout::alerts}"></div>
+
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- INLINE PAGE CSS -->
+        <style>
+
+            .analysis-page {
+                padding: 30px;
+                background: #f0f2f5;
+                flex: 1 1 auto;
+                width: 100%;
+            }
+
+            /* =========================================
+               HEADER
+               ========================================= */
+
+            .analysis-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #ffffff;
+                border: 1px solid #e5eaf1;
+                border-radius: 14px;
+                padding: 25px 30px;
+                margin-bottom: 25px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            }
+
+            .analysis-header h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #172b4d;
+            }
+
+            .analysis-header p {
+                margin: 6px 0 0;
+                color: #7b8794;
+                font-size: 14px;
+            }
+
+            .analysis-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 14px;
+                background: #eaf3ff;
+                color: #4361ee;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 27px;
+                flex-shrink: 0;
+            }
+
+            /* =========================================
+               CHART CARDS
+               ========================================= */
+
+            .chart-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            @media (max-width: 992px) {
+                .chart-row { grid-template-columns: 1fr; }
+            }
+
+            .chart-card {
+                background: #ffffff;
+                border: 1px solid #e5eaf1;
+                border-radius: 14px;
+                padding: 22px 22px 18px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            }
+
+            .chart-card h5 {
+                margin: 0 0 15px;
+                font-size: 16px;
+                font-weight: 600;
+                color: #50535d;
+            }
+
+            .chart-container {
+                position: relative;
+                height: 320px;
+                width: 100%;
+            }
+
+            /* =========================================
+               SECTION TITLE
+               ========================================= */
+
+            .section-heading {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .section-heading h4 {
+                margin: 0;
+                font-size: 20px;
+                font-weight: 700;
+                color: #172b4d;
+            }
+
+            /* =========================================
+               TEST CARDS GRID
+               ========================================= */
+
+            .test-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 18px;
+            }
+
+            .test-card {
+                background: #ffffff;
+                border: 2px solid transparent;
+                border-radius: 14px;
+                padding: 20px;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            }
+
+            .test-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+            }
+
+            .test-card.selected {
+                border-color: #4361ee;
+                box-shadow: 0 10px 22px rgba(67, 97, 238, 0.20);
+            }
+
+            .test-card-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .test-card-head h5 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 700;
+                color: #172b4d;
+                word-break: break-word;
+            }
+
+            .marks-badge {
+                background: #eef3ff;
+                color: #4361ee;
+                font-weight: 600;
+                font-size: 12px;
+                padding: 4px 12px;
+                border-radius: 20px;
+                white-space: nowrap;
+            }
+
+            .test-divider {
+                height: 1px;
+                background: #eef0f4;
+                margin: 12px 0;
+            }
+
+            .test-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                text-align: center;
+                gap: 8px;
+            }
+
+            .test-stats .value {
+                font-weight: 700;
+                font-size: 18px;
+                display: block;
+            }
+
+            .test-stats .label {
+                font-size: 12px;
+                color: #7b8794;
+            }
+
+            .stat-correct    { color: #198754; }
+            .stat-wrong      { color: #dc3545; }
+            .stat-skipped    { color: #f59e0b; }
+
+            .topper-line {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 14px;
+                padding-top: 12px;
+                border-top: 1px solid #eef0f4;
+                font-size: 13px;
+                color: #7b8794;
+            }
+
+            .topper-line strong {
+                color: #172b4d;
+                font-weight: 600;
+            }
+
+            /* =========================================
+               EMPTY STATE
+               ========================================= */
+
+            .empty-state {
+                background: #ffffff;
+                border: 1px solid #e9ecef;
+                border-radius: 14px;
+                text-align: center;
+                padding: 60px 20px;
+            }
+
+            .empty-state i {
+                font-size: 48px;
+                color: #adb5bd;
+            }
+
+            .empty-state h5 {
+                margin-top: 15px;
+                color: #212529;
+                font-weight: 600;
+            }
+
+            .empty-state p {
+                color: #7b8794;
+                margin-bottom: 0;
+                font-size: 14px;
+            }
+
+            /* =========================================
+               RESET BUTTON
+               ========================================= */
+
+            .btn-reset {
+                background: #ffffff;
+                border: 1px solid #d6dae1;
+                color: #50535d;
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .btn-reset:hover {
+                background: #f5f6f8;
+                border-color: #4361ee;
+                color: #4361ee;
+            }
+
+            .btn-reset.d-none {
+                display: none !important;
+            }
+
+            /* =========================================
+               RESPONSIVE
+               ========================================= */
+
+            @media (max-width: 768px) {
+
+                .analysis-page { padding: 20px 15px; }
+
+                .analysis-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                    padding: 20px;
+                }
+
+                .analysis-header h1 { font-size: 22px; }
+
+                .test-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+        </style>
+
+        <div class="analysis-page">
+
+            <!-- PAGE HEADER -->
+
+            <div class="analysis-header">
+
+                <div>
+
+                    <div style="font-size:13px; color:#7b8794; margin-bottom:8px;">
+
+                        <a th:href="@{/student/tests}"
+                           style="color:#4361ee; text-decoration:none;">Tests</a>
+
+                        <span class="mx-2">›</span>
+
+                        <span>Analysis</span>
+
+                    </div>
+
+                    <h1>Test Performance Analysis</h1>
+
+                    <p>Track test scores, answer breakdown, and compare against topper marks</p>
+
+                </div>
+
+                <div class="analysis-icon">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+
+            </div>
+
+            <!-- CHART ROW -->
+
+            <div class="chart-row" th:if="${rows != null and !rows.isEmpty()}">
+
+                <div class="chart-card">
+                    <h5>Answers Distribution</h5>
+                    <div class="chart-container">
+                        <canvas id="answersChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h5>Your Marks vs Topper Marks</h5>
+                    <div class="chart-container">
+                        <canvas id="topperChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECTION HEADING + RESET -->
+
+            <div class="section-heading"
+                 th:if="${rows != null and !rows.isEmpty()}">
+
+                <h4>All Attempted Tests</h4>
+
+                <button id="resetBtn"
+                        class="btn-reset d-none"
+                        type="button"
+                        onclick="resetCharts()">
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Reset Filter
+
+                </button>
+
+            </div>
+
+            <!-- TEST CARDS -->
+
+            <div class="test-grid"
+                 th:if="${rows != null and !rows.isEmpty()}">
+
+                <div th:each="row, iter : ${rows}"
+                     class="test-card"
+                     th:attr="data-index=${iter.index}"
+                     th:onclick="'filterByTest(' + ${iter.index} + ', this)'">
+
+                    <div class="test-card-head">
+
+                        <h5 th:text="${row.testName}">Test Name</h5>
+
+                        <span class="marks-badge"
+                              th:text="${row.obtainedMarks} + ' Marks'">
+                            0 Marks
+                        </span>
+
+                    </div>
+
+                    <div class="test-divider"></div>
+
+                    <div class="test-stats">
+
+                        <div>
+                            <span class="value stat-correct"
+                                  th:text="${row.correct}">0</span>
+                            <span class="label">Correct</span>
+                        </div>
+
+                        <div>
+                            <span class="value stat-wrong"
+                                  th:text="${row.wrong}">0</span>
+                            <span class="label">Wrong</span>
+                        </div>
+
+                        <div>
+                            <span class="value stat-skipped"
+                                  th:text="${row.unanswered}">0</span>
+                            <span class="label">Skipped</span>
+                        </div>
+
+                    </div>
+
+                    <div class="topper-line"
+                         th:if="${row.topperName != null}">
+
+                        <span>
+                            Topper (<span th:text="${row.topperName}">Topper</span>):
+                        </span>
+
+                        <strong th:text="${row.topperMarks} + ' Marks'">
+                            0 Marks
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- EMPTY STATE -->
+
+            <div class="empty-state"
+                 th:if="${rows == null or rows.isEmpty()}">
+
+                <i class="bi bi-clipboard-x"></i>
+
+                <h5>No test records available to analyze</h5>
+
+                <p>Attempt a test to see your performance analysis here.</p>
+
+                <a th:href="@{/student/tests}"
+                   class="btn btn-primary mt-3">
+
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Take a Test
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div th:replace="~{student/student-layout::footer}"></div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPTS -->
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
+
+<!-- PAGE SCRIPT -->
+<script th:inline="javascript">
+/*<![CDATA[*/
+
+    const rowsData = /*[[${rows}]]*/ [];
+
+    let answersChartRef = null;
+    let topperChartRef  = null;
+
+    function renderCharts(data) {
+
+        if (!data || data.length === 0) return;
+
+        const labels       = data.map(r => r.testName);
+        const correct      = data.map(r => r.correct);
+        const wrong        = data.map(r => r.wrong);
+        const unanswered   = data.map(r => r.unanswered);
+        const myMarks      = data.map(r => r.obtainedMarks);
+        const topperMarks  = data.map(r =>
+            r.topperMarks != null ? r.topperMarks : r.obtainedMarks);
+
+        let topperLabel = 'Topper Marks';
+        if (data.length === 1 && data[0].topperName) {
+            topperLabel = `Topper Marks (${data[0].topperName})`;
+        }
+
+        /* ---------- Chart 1: Answers Distribution ---------- */
+
+        const ctxA = document.getElementById('answersChart');
+        if (!ctxA) return;
+
+        if (answersChartRef) answersChartRef.destroy();
+
+        answersChartRef = new Chart(ctxA.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Correct',
+                        data: correct,
+                        backgroundColor: '#198754',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Wrong',
+                        data: wrong,
+                        backgroundColor: '#dc3545',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Unanswered',
+                        data: unanswered,
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+
+        /* ---------- Chart 2: Marks vs Topper ---------- */
+
+        const ctxT = document.getElementById('topperChart');
+        if (!ctxT) return;
+
+        if (topperChartRef) topperChartRef.destroy();
+
+        topperChartRef = new Chart(ctxT.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Your Marks',
+                        data: myMarks,
+                        backgroundColor: '#4361ee',
+                        borderRadius: 6
+                    },
+                    {
+                        label: topperLabel,
+                        data: topperMarks,
+                        backgroundColor: '#f4b400',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const item = data[context.dataIndex];
+                                if (context.datasetIndex === 1 && item.topperName) {
+                                    return `Topper Marks (${item.topperName}): ${context.raw}`;
+                                }
+                                return `${context.dataset.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+    }
+
+    function filterByTest(index, element) {
+
+        document.querySelectorAll('.test-card')
+            .forEach(c => c.classList.remove('selected'));
+
+        element.classList.add('selected');
+
+        document.getElementById('resetBtn')
+            .classList.remove('d-none');
+
+        renderCharts([rowsData[index]]);
+    }
+
+    function resetCharts() {
+
+        document.querySelectorAll('.test-card')
+            .forEach(c => c.classList.remove('selected'));
+
+        document.getElementById('resetBtn')
+            .classList.add('d-none');
+
+        renderCharts(rowsData);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (rowsData && rowsData.length > 0) {
+            renderCharts(rowsData);
+        }
+    });
+
+/*]]>*/
+</script>
+
+</body>
+</html>

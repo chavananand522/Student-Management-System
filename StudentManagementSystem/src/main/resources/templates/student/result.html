@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student/student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}">
+    <title>Test Result</title>
+</head>
 
 <body>
 
@@ -13,77 +16,513 @@
 
         <div th:replace="~{student/student-layout::navbar}"></div>
 
-        <div class="container-fluid px-4 py-4">
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
-            <a th:href="@{/student/results}"
-               class="btn btn-outline-secondary btn-sm mb-3">
-                ← Back to Results
-            </a>
+        <div class="container-fluid p-0">
 
-            <div class="card student-card mb-4">
-                <div class="card-body p-4">
-                    <h2 class="fw-bold" th:text="${test.testName}"></h2>
-                    <hr>
-                    <div class="row g-4">
-                        <div class="col-md-3">
-                            <div class="text-muted small">Obtained Marks</div>
-                            <h3 th:text="${attempt.obtainedMarks + ' / ' + test.totalMarks}"></h3>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-muted small">Correct</div>
-                            <h3 class="text-success" th:text="${attempt.correctAnswers}"></h3>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-muted small">Wrong</div>
-                            <h3 class="text-danger" th:text="${attempt.wrongAnswers}"></h3>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-muted small">Unanswered</div>
-                            <h3 class="text-warning" th:text="${attempt.unansweredQuestions}"></h3>
-                        </div>
+            <div class="result-container">
+
+                <!-- PAGE TITLE -->
+
+                <div class="page-title">
+                    <div class="page-title-icon">
+                        <i class="fas fa-chart-column"></i>
+                    </div>
+                    <div>
+                        <h2>Test Result</h2>
+                        <p>Review all test questions, your answers, and correct answers</p>
                     </div>
                 </div>
-            </div>
 
-            <h5 class="fw-bold mb-3">Answers Review</h5>
+                <!-- SCORE SUMMARY -->
 
-            <div th:each="answer, stat : ${attempt.answers}" class="card student-card mb-3">
-                <div class="card-body">
-                    <div class="small text-muted mb-2">
-                        Question <span th:text="${stat.count}"></span>
-                    </div>
-                    <h6 th:text="${answer.question.questionText}"></h6>
-                    <div class="mt-3">
-                        <div class="mb-1">
-                            Your Answer:
-                            <strong th:text="${answer.selectedAnswer}"></strong>
+                <div class="score-summary">
+
+                    <div class="score-item score-primary">
+                        <div class="score-label">Obtained Marks</div>
+                        <div class="score-value"
+                             th:classappend="${(attempt.obtainedMarks != null and attempt.obtainedMarks >= 0) ? 'text-success' : 'text-danger'}">
+                            <span th:text="${attempt.obtainedMarks}">0</span>
+                            <span class="score-total" th:text="'/ ' + ${test.totalMarks}">/ 100</span>
                         </div>
-                        <div class="mb-2">
-                            Correct Answer:
-                            <strong th:text="${answer.question.correctAnswer}"></strong>
-                        </div>
-                        <span th:if="${answer.correct}" class="badge bg-success">
-                            <i class="bi bi-check-circle me-1"></i> Correct
-                        </span>
-                        <span th:unless="${answer.correct}" class="badge bg-danger">
-                            <i class="bi bi-x-circle me-1"></i> Wrong
-                        </span>
                     </div>
-                    <div class="mt-3 p-3 bg-light rounded"
-                         th:if="${answer.question.explanation != null && !answer.question.explanation.isEmpty()}">
-                        <div class="small text-muted mb-1">
-                            <i class="bi bi-lightbulb me-1"></i> Explanation
-                        </div>
-                        <div th:text="${answer.question.explanation}"></div>
+
+                    <div class="score-item">
+                        <div class="score-label">Correct</div>
+                        <div class="score-value text-success"
+                             th:text="${attempt.correctAnswers}">0</div>
                     </div>
+
+                    <div class="score-item">
+                        <div class="score-label">Wrong</div>
+                        <div class="score-value text-danger"
+                             th:text="${attempt.wrongAnswers}">0</div>
+                    </div>
+
+                    <div class="score-item">
+                        <div class="score-label">Unanswered</div>
+                        <div class="score-value text-warning"
+                             th:text="${attempt.unansweredQuestions}">0</div>
+                    </div>
+
                 </div>
+
+                <!-- NEGATIVE MARKING NOTICE -->
+
+                <div class="alert alert-warning d-flex align-items-center"
+                     th:if="${test.negativeMarking != null and test.negativeMarking}">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span>
+                        Negative marking was active for this test —
+                        <strong>−<span th:text="${test.negativeMarks != null ? test.negativeMarks : 1}">1</span></strong>
+                        mark per wrong answer.
+                    </span>
+                </div>
+
+                <!-- INFO GRID -->
+
+                <div class="info-grid">
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-file-lines"></i></div>
+                        <div>
+                            <div class="info-label">Test</div>
+                            <div class="info-value" th:text="${test.testName}">Test Name</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-book"></i></div>
+                        <div>
+                            <div class="info-label">Course</div>
+                            <div class="info-value" th:text="${test.course}">Course</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-book-open"></i></div>
+                        <div>
+                            <div class="info-label">Subject</div>
+                            <div class="info-value" th:text="${test.subject}">Subject</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-layer-group"></i></div>
+                        <div>
+                            <div class="info-label">Chapter</div>
+                            <div class="info-value" th:text="${test.chapter}">Chapter</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-star"></i></div>
+                        <div>
+                            <div class="info-label">Total Marks</div>
+                            <div class="info-value" th:text="${test.totalMarks}">100</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <div class="info-label">Submitted</div>
+                            <div class="info-value"
+                                 th:text="${attempt.submittedAt != null ? #temporals.format(attempt.submittedAt, 'dd MMM yyyy, HH:mm') : '-'}">
+                                -
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-list-ol"></i></div>
+                        <div>
+                            <div class="info-label">Questions</div>
+                            <div class="info-value"
+                                 th:text="${attempt.answers != null ? attempt.answers.size() : 0}">0</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-circle-check"></i></div>
+                        <div>
+                            <div class="info-label">Attempt</div>
+                            <div class="info-value" th:text="'#' + ${attempt.attemptNumber}">#1</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- QUESTION NAVIGATION PANEL -->
+
+                <div class="status-panel"
+                     th:if="${attempt.answers != null and !attempt.answers.isEmpty()}">
+
+                    <div class="status-summary">
+
+                        <div class="status-left">
+
+                            <div class="status-item">
+                                <div class="status-icon wrong-icon">
+                                    <i class="fas fa-xmark"></i>
+                                </div>
+                                <span>Wrong</span>
+                                <strong th:text="${attempt.wrongAnswers != null ? attempt.wrongAnswers : 0}">0</strong>
+                            </div>
+
+                            <div class="status-item">
+                                <div class="status-icon never-icon"></div>
+                                <span>Unanswered</span>
+                                <strong th:text="${attempt.unansweredQuestions != null ? attempt.unansweredQuestions : 0}">0</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="status-right">
+                            <div class="status-icon correct-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span>Correct</span>
+                            <strong th:text="${attempt.correctAnswers != null ? attempt.correctAnswers : 0}">0</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="question-grid">
+
+                        <a th:each="answer, stat : ${attempt.answers}"
+                           th:id="'nav-question-' + ${answer.question.id}"
+                           th:href="'#question-' + ${answer.question.id}"
+                           class="question-number"
+                           th:classappend="${answer.correct ? 'correct' : ((answer.selectedAnswer == null or answer.selectedAnswer.isEmpty()) ? 'never-opened' : 'wrong')}"
+                           th:data-question-id="${answer.question.id}"
+                           th:title="'Question ' + ${stat.index + 1}">
+
+                            <span th:text="${stat.index + 1}">1</span>
+                            <span class="question-circle"></span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- QUESTION CARDS -->
+
+                <div th:if="${attempt.answers != null and !attempt.answers.isEmpty()}">
+
+                    <div class="question-card"
+                         th:each="answer, stat : ${attempt.answers}"
+                         th:id="'question-' + ${answer.question.id}">
+
+                        <div class="question-header">
+
+                            <div class="question-label">
+                                <i class="fas fa-circle-question"></i>
+                                Question
+                                <span th:text="${stat.index + 1}">1</span>
+                            </div>
+
+                            <div class="header-right">
+
+                                <div class="marks-badge"
+                                     th:classappend="${(answer.marksObtained != null and answer.marksObtained < 0) ? 'marks-negative' : ((answer.marksObtained != null and answer.marksObtained > 0) ? 'marks-positive' : 'marks-zero')}">
+
+                                    <i class="fas fa-star"></i>
+
+                                    <span th:if="${answer.marksObtained != null and answer.marksObtained > 0}"
+                                          th:text="'+' + ${answer.marksObtained}">+1</span>
+
+                                    <span th:if="${answer.marksObtained != null and answer.marksObtained < 0}"
+                                          th:text="${answer.marksObtained}">-1</span>
+
+                                    <span th:if="${answer.marksObtained == null or answer.marksObtained == 0}">0</span>
+
+                                    <span>Mark</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="question-body">
+
+                            <div class="question-text"
+                                 th:text="${answer.question.questionText}">Question text</div>
+
+                            <div class="options-container">
+
+                                <!-- OPTION A -->
+                                <div class="option"
+                                     th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('A')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('A') or answer.question.correctAnswer.equals(answer.question.optionA))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('A')) ? 'user-correct' : ''))}">
+
+                                    <strong class="option-letter">A.</strong>
+                                    <div class="option-text" th:text="${answer.question.optionA}">Option A</div>
+
+                                    <span class="answer-badge user-badge"
+                                          th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('A')}">
+                                        <i class="fas fa-user"></i> Your Answer
+                                    </span>
+
+                                    <span class="answer-badge correct-badge"
+                                          th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('A') or answer.question.correctAnswer.equals(answer.question.optionA))}">
+                                        <i class="fas fa-check"></i> Correct Answer
+                                    </span>
+
+                                </div>
+
+                                <!-- OPTION B -->
+                                <div class="option"
+                                     th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('B')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('B') or answer.question.correctAnswer.equals(answer.question.optionB))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('B')) ? 'user-correct' : ''))}">
+
+                                    <strong class="option-letter">B.</strong>
+                                    <div class="option-text" th:text="${answer.question.optionB}">Option B</div>
+
+                                    <span class="answer-badge user-badge"
+                                          th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('B')}">
+                                        <i class="fas fa-user"></i> Your Answer
+                                    </span>
+
+                                    <span class="answer-badge correct-badge"
+                                          th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('B') or answer.question.correctAnswer.equals(answer.question.optionB))}">
+                                        <i class="fas fa-check"></i> Correct Answer
+                                    </span>
+
+                                </div>
+
+                                <!-- OPTION C -->
+                                <div class="option"
+                                     th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('C')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('C') or answer.question.correctAnswer.equals(answer.question.optionC))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('C')) ? 'user-correct' : ''))}">
+
+                                    <strong class="option-letter">C.</strong>
+                                    <div class="option-text" th:text="${answer.question.optionC}">Option C</div>
+
+                                    <span class="answer-badge user-badge"
+                                          th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('C')}">
+                                        <i class="fas fa-user"></i> Your Answer
+                                    </span>
+
+                                    <span class="answer-badge correct-badge"
+                                          th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('C') or answer.question.correctAnswer.equals(answer.question.optionC))}">
+                                        <i class="fas fa-check"></i> Correct Answer
+                                    </span>
+
+                                </div>
+
+                                <!-- OPTION D -->
+                                <div class="option"
+                                     th:classappend="${((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('D')) and !answer.correct) ? 'user-wrong' : ((answer.correct and answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('D') or answer.question.correctAnswer.equals(answer.question.optionD))) ? 'correct-answer' : ((answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('D')) ? 'user-correct' : ''))}">
+
+                                    <strong class="option-letter">D.</strong>
+                                    <div class="option-text" th:text="${answer.question.optionD}">Option D</div>
+
+                                    <span class="answer-badge user-badge"
+                                          th:if="${answer.selectedAnswer != null and answer.selectedAnswer.equalsIgnoreCase('D')}">
+                                        <i class="fas fa-user"></i> Your Answer
+                                    </span>
+
+                                    <span class="answer-badge correct-badge"
+                                          th:if="${answer.question.correctAnswer != null and (answer.question.correctAnswer.equalsIgnoreCase('D') or answer.question.correctAnswer.equals(answer.question.optionD))}">
+                                        <i class="fas fa-check"></i> Correct Answer
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <!-- EXPLANATION -->
+
+                            <div class="explanation"
+                                 th:if="${answer.question.explanation != null and !answer.question.explanation.isEmpty()}">
+
+                                <div class="explanation-title">
+                                    <i class="fas fa-lightbulb"></i> Explanation
+                                </div>
+
+                                <div class="explanation-text"
+                                     th:text="${answer.question.explanation}">Explanation</div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- NO QUESTIONS -->
+
+                <div class="no-question"
+                     th:if="${attempt.answers == null or attempt.answers.isEmpty()}">
+                    <i class="fas fa-circle-question"></i>
+                    <h4>No Answers Found</h4>
+                    <p>This attempt does not contain any answers to review.</p>
+                </div>
+
             </div>
 
         </div>
 
+        <div th:replace="~{student/student-layout::footer}"></div>
+
     </div>
 
 </div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      rel="stylesheet">
+
+<style>
+    * { box-sizing: border-box; }
+
+    .result-container { width: 100%; max-width: 1900px; margin: 0 auto; padding: 18px; }
+
+    .page-title { display: flex; align-items: center; gap: 14px; margin: 20px 0 25px; }
+    .page-title-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #0d6efd; color: white; font-size: 22px; }
+    .page-title h2 { margin: 0; font-size: 28px; font-weight: 700; }
+    .page-title p { margin: 4px 0 0; color: #6c757d; font-size: 14px; }
+
+    .score-summary { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 18px; margin-bottom: 25px; }
+    .score-item { background: #ffffff; border: 1px solid #e9ecef; border-radius: 14px; padding: 20px 22px; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; justify-content: center; min-height: 90px; }
+    .score-item.score-primary { background: linear-gradient(135deg, #eef4ff, #dfe9ff); border-color: #cfe2ff; }
+    .score-label { font-size: 12px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; font-weight: 600; }
+    .score-value { font-size: 26px; font-weight: 800; color: #212529; line-height: 1.1; }
+    .score-total { font-size: 16px; color: #6c757d; font-weight: 500; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 25px; }
+    .info-card { background: white; border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 14px; border: 1px solid #e9ecef; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04); }
+    .info-icon { width: 45px; height: 45px; min-width: 45px; border-radius: 10px; background: #eef4ff; color: #0d6efd; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .info-label { font-size: 12px; color: #6c757d; margin-bottom: 3px; }
+    .info-value { font-size: 16px; font-weight: 600; color: #212529; word-break: break-word; }
+
+    .status-panel { width: 100%; background: #ffffff; border: 1px solid #e5eaf1; border-radius: 12px; padding: 18px 22px 20px; margin-top: 4px; margin-bottom: 25px; box-shadow: 0 3px 15px rgba(0, 0, 0, 0.04); }
+    .status-summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+    .status-left { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+    .status-item, .status-right { display: flex; align-items: center; gap: 9px; color: #64748b; font-size: 15px; font-weight: 500; }
+    .status-item strong, .status-right strong { color: #27364a; font-size: 16px; font-weight: 700; }
+    .status-icon { width: 27px; height: 27px; min-width: 27px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .wrong-icon { background: #ef4444; color: #ffffff; }
+    .never-icon { background: #f1f4f8; border: 2px solid #9ba9bb; }
+    .correct-icon { background: #20a568; color: #ffffff; }
+
+    .question-grid { display: grid; grid-template-columns: repeat(26, minmax(40px, 1fr)); gap: 8px; width: 100%; }
+    .question-number { width: 100%; min-width: 40px; height: 47px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; border: 1px solid #e1e7ef; border-radius: 12px; background: #ffffff; color: #26374c; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .question-number:hover { background: #f7f9fc; border-color: #b8c4d4; transform: translateY(-1px); }
+    .question-circle { width: 9px; height: 9px; margin-top: 3px; border-radius: 50%; border: 2px solid #b8c5d5; background: #ffffff; }
+    .question-number.never-opened { background: #ffffff; color: #26374c; border-color: #e1e7ef; }
+    .question-number.never-opened .question-circle { background: #ffffff; border-color: #b8c5d5; }
+    .question-number.active { background: #e9eef7; border-color: #cbd5e1; box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.06); }
+    .question-number.wrong { background: #fff0f0; border-color: #ffd0d0; color: #c62828; }
+    .question-number.wrong .question-circle { width: 14px; height: 14px; border: none; background: #ef4444; position: relative; }
+    .question-number.wrong .question-circle::before { content: ""; position: absolute; width: 8px; height: 2px; background: #ffffff; left: 3px; top: 6px; transform: rotate(45deg); border-radius: 2px; }
+    .question-number.wrong .question-circle::after { content: ""; position: absolute; width: 8px; height: 2px; background: #ffffff; left: 3px; top: 6px; transform: rotate(-45deg); border-radius: 2px; }
+    .question-number.correct { background: #effbf5; border-color: #bdebd2; color: #168452; }
+    .question-number.correct .question-circle { width: 14px; height: 14px; border: none; background: #20a568; position: relative; }
+    .question-number.correct .question-circle::before { content: ""; position: absolute; width: 7px; height: 4px; border-left: 2px solid white; border-bottom: 2px solid white; transform: rotate(-45deg); left: 3px; top: 3px; }
+
+    .question-card { background: white; border: 1px solid #e9ecef; border-radius: 15px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04); scroll-margin-top: 20px; }
+    .question-header { padding: 18px 22px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+    .question-label { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .question-label i { color: #0d6efd; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .marks-badge { background: #e9f2ff; color: #0d6efd; padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .marks-badge.marks-positive { background: #d1f7e4; color: #0b5f3a; }
+    .marks-badge.marks-negative { background: #fddce0; color: #842029; }
+    .marks-badge.marks-zero { background: #e9ecef; color: #495057; }
+
+    .question-body { padding: 25px; }
+    .question-text { font-size: 18px; line-height: 1.7; font-weight: 500; margin-bottom: 25px; white-space: pre-wrap; }
+
+    .options-container { display: flex; flex-direction: column; gap: 12px; }
+    .option { border: 1px solid #dee2e6; border-radius: 10px; padding: 15px 18px; display: flex; align-items: flex-start; gap: 12px; background: #fff; }
+    .option-letter { min-width: 30px; color: #495057; }
+    .option-text { flex: 1; line-height: 1.5; }
+    .correct-answer { background: #eaf7ef; border-color: #9fd5b5; }
+    .correct-answer .option-letter { color: #198754; }
+    .user-wrong { background: #fff5f5; border-color: #f5c2c7; }
+    .user-wrong .option-letter { color: #dc3545; }
+    .user-correct { background: #eaf7ef; border-color: #9fd5b5; }
+    .user-correct .option-letter { color: #198754; }
+
+    .answer-badge { white-space: nowrap; padding: 4px 9px; border-radius: 15px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .correct-badge { background: #198754; color: white; }
+    .user-badge { background: #0d6efd; color: white; }
+
+    .explanation { margin-top: 25px; padding: 18px; border-radius: 10px; background: #eef4ff; border: 1px solid #cfe2ff; }
+    .explanation-title { color: #0d6efd; font-weight: 700; margin-bottom: 8px; }
+    .explanation-text { color: #495057; line-height: 1.6; white-space: pre-wrap; }
+
+    .no-question { background: white; border: 1px solid #e9ecef; border-radius: 15px; padding: 50px 20px; text-align: center; color: #6c757d; }
+    .no-question i { font-size: 45px; margin-bottom: 15px; color: #adb5bd; }
+
+    @media (max-width: 1600px) { .question-grid { grid-template-columns: repeat(20, minmax(40px, 1fr)); } }
+    @media (max-width: 1200px) {
+        .question-grid { grid-template-columns: repeat(14, minmax(40px, 1fr)); }
+        .info-grid { grid-template-columns: repeat(2, 1fr); }
+        .score-summary { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+        .result-container { padding: 12px; }
+        .status-summary { flex-direction: column; align-items: flex-start; }
+        .status-left { gap: 15px; }
+        .question-grid { grid-template-columns: repeat(8, 1fr); gap: 6px; }
+        .question-number { min-width: 0; height: 43px; font-size: 12px; }
+        .info-grid { grid-template-columns: 1fr; }
+        .score-summary { grid-template-columns: 1fr 1fr; }
+        .page-title h2 { font-size: 23px; }
+        .question-body { padding: 18px; }
+        .question-text { font-size: 16px; }
+        .question-header { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+        .question-grid { grid-template-columns: repeat(5, 1fr); }
+        .question-number { height: 42px; border-radius: 9px; }
+        .status-left { flex-direction: column; align-items: flex-start; }
+        .option { padding: 12px; font-size: 14px; }
+        .score-summary { grid-template-columns: 1fr; }
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const navigation = document.querySelectorAll(".question-number");
+    const questionCards = document.querySelectorAll(".question-card");
+
+    function openQuestion(nav) {
+        const questionId = nav.dataset.questionId;
+        const card = document.getElementById("question-" + questionId);
+        if (!card) return;
+        navigation.forEach(item => item.classList.remove("active"));
+        nav.classList.add("active");
+        card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    navigation.forEach(nav => {
+        nav.addEventListener("click", function (event) {
+            event.preventDefault();
+            openQuestion(nav);
+        });
+    });
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const questionId = entry.target.id.replace("question-", "");
+                const nav = document.getElementById("nav-question-" + questionId);
+                if (!nav) return;
+                navigation.forEach(item => item.classList.remove("active"));
+                nav.classList.add("active");
+            }
+        });
+    }, { threshold: 0.45 });
+
+    questionCards.forEach(card => observer.observe(card));
+
+    if (navigation.length > 0) navigation[0].classList.add("active");
+});
+</script>
 
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 

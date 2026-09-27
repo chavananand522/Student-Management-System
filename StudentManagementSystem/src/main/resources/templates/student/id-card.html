@@ -1,102 +1,473 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student/student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}">
+    <title>My ID Card</title>
+</head>
 
 <body>
 
 <div class="d-flex student-layout">
 
+    <!-- SIDEBAR -->
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
+    <!-- CONTENT -->
     <div class="student-content">
 
+        <!-- NAVBAR -->
         <div th:replace="~{student/student-layout::navbar}"></div>
 
-        <div class="container-fluid px-4 py-4">
+        <!-- ALERTS -->
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
-            <h1 class="id-card-page-title mb-4">
-                <i class="bi bi-person-vcard-fill"></i> Student ID Card
+        <!-- ID CARD PAGE -->
+
+        <div class="container-fluid id-card-page">
+
+            <!-- PAGE TITLE -->
+
+            <h1 class="id-card-page-title">
+                <i class="bi bi-person-vcard-fill"></i>
+                My ID Card
             </h1>
 
+            <!-- ID CARD WRAPPER -->
+
             <div class="id-card-wrapper">
+
                 <div class="student-id-card">
 
+                    <!-- CARD HEADER -->
+
                     <div class="id-card-header">
+
                         <div class="id-card-logo">
                             <i class="bi bi-mortarboard-fill"></i>
                         </div>
+
                         <div class="id-card-header-text">
-                            <div class="id-card-system-name">STUDENT MANAGEMENT SYSTEM</div>
-                            <div class="id-card-type">STUDENT IDENTITY CARD</div>
+
+                            <div class="id-card-system-name">
+                                STUDENT MANAGEMENT SYSTEM
+                            </div>
+
+                            <div class="id-card-type">
+                                STUDENT IDENTITY CARD
+                            </div>
+
                         </div>
+
                     </div>
+
+                    <!-- CARD BODY -->
 
                     <div class="id-card-body">
+
+                        <!-- STUDENT PHOTO -->
+
                         <div class="id-card-photo">
-                            <img th:src="@{/profile/image}"
-                                 alt="Profile"
+
+                            <img th:src="@{/student/profile/image}"
+                                 alt="Student Photo"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="photo-placeholder" style="display:none;">
-                                <i class="bi bi-person-fill"></i>
-                            </div>
+
+                            <i class="bi bi-person-fill"
+                               style="display: none;">
+                            </i>
+
                         </div>
+
+                        <!-- STUDENT DETAILS -->
 
                         <div class="id-card-details">
+
                             <h2 class="id-student-name"
-                                th:text="${student.firstName + ' ' + student.lastName}"></h2>
+                                th:text="${student != null ? student.firstName + ' ' + student.lastName : 'Student Name'}">
+                                Student Name
+                            </h2>
+
+                            <!-- STUDENT ID -->
 
                             <div class="id-detail-row">
+
                                 <span>Student ID</span>
-                                <strong th:text="${'STU' + student.id}">STU001</strong>
+
+                                <strong th:text="${student != null ? 'STU' + student.id : 'STU000'}">
+                                    STU000
+                                </strong>
+
                             </div>
 
+                            <!-- EMAIL -->
+
                             <div class="id-detail-row">
+
                                 <span>Email</span>
-                                <strong th:text="${student.email}"></strong>
+
+                                <strong th:text="${student != null and student.email != null ? student.email : '—'}">
+                                    —
+                                </strong>
+
                             </div>
 
+                            <!-- PHONE -->
+
                             <div class="id-detail-row">
+
                                 <span>Phone</span>
-                                <strong th:text="${student.phoneNumber}"></strong>
+
+                                <strong th:text="${student != null and student.phoneNumber != null ? student.phoneNumber : '—'}">
+                                    —
+                                </strong>
+
                             </div>
 
+                            <!-- COURSE COUNT -->
+
                             <div class="id-detail-row">
-                                <span>Status</span>
-                                <strong class="active-status"
-                                        th:text="${student.active ? 'Active' : 'Inactive'}"></strong>
+
+                                <span>Enrolled Courses</span>
+
+                                <strong th:text="${courseCount != null ? courseCount : 0}">
+                                    0
+                                </strong>
+
                             </div>
+
+                            <!-- STATUS -->
+
+                            <div class="id-detail-row">
+
+                                <span>Status</span>
+
+                                <strong class="active-status">
+                                    Active
+                                </strong>
+
+                            </div>
+
                         </div>
+
                     </div>
 
+                    <!-- CARD BOTTOM -->
+
                     <div class="id-card-bottom">
+
                         <div class="id-card-validity">
+
                             <span>VALIDITY</span>
-                            <strong>2026 - 2027</strong>
+
+                            <strong>
+                                2026 - 2027
+                            </strong>
+
                         </div>
+
                         <div class="id-card-qr">
                             <i class="bi bi-qr-code"></i>
                         </div>
+
                     </div>
 
+                    <!-- CARD FOOTER -->
+
                     <div class="id-card-footer">
+
                         <span>
                             <i class="bi bi-shield-check"></i>
                             Official Student Card
                         </span>
-                        <span>SMS STUDENT</span>
+
+                        <span>
+                            SMS STUDENT
+                        </span>
+
                     </div>
 
                 </div>
+
             </div>
 
         </div>
 
+        <!-- FOOTER -->
         <div th:replace="~{student/student-layout::footer}"></div>
 
     </div>
 
 </div>
+
+<!-- ========================================================= -->
+<!-- ID CARD CSS                                                -->
+<!-- ========================================================= -->
+
+<style>
+
+    .id-card-page {
+        padding: 25px;
+    }
+
+    .id-card-page-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #292b45;
+        margin: 0 0 30px 0;
+    }
+
+    .id-card-page-title i {
+        color: #f4b400;
+        font-size: 30px;
+    }
+
+    .id-card-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 5px 0 35px;
+    }
+
+    .student-id-card {
+        width: 560px;
+        max-width: 100%;
+        background: #ffffff;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+        border: 1px solid #eeeeee;
+        transition: all 0.3s ease;
+    }
+
+    .student-id-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.16);
+    }
+
+    /* HEADER */
+
+    .id-card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 19px 24px;
+        background: #292b45;
+        color: #ffffff;
+    }
+
+    .id-card-logo {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f4b400;
+        color: #ffffff;
+        font-size: 25px;
+    }
+
+    .id-card-system-name {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+    }
+
+    .id-card-type {
+        margin-top: 4px;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        opacity: 0.75;
+    }
+
+    /* BODY */
+
+    .id-card-body {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding: 30px 25px;
+    }
+
+    .id-card-photo {
+        width: 135px;
+        height: 155px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f1f3f6;
+        border: 2px solid #e0e3e7;
+        border-radius: 10px;
+        overflow: hidden;
+        color: #292b45;
+    }
+
+    .id-card-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .id-card-photo i {
+        font-size: 78px;
+    }
+
+    .id-card-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .id-student-name {
+        margin: 0 0 17px;
+        color: #292b45;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .id-detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 9px;
+        font-size: 13px;
+    }
+
+    .id-detail-row span {
+        color: #777777;
+    }
+
+    .id-detail-row strong {
+        color: #292b45;
+        font-weight: 600;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .active-status {
+        color: #198754 !important;
+    }
+
+    /* BOTTOM */
+
+    .id-card-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 25px;
+        background: #f8f9fa;
+        border-top: 1px solid #eeeeee;
+    }
+
+    .id-card-validity span {
+        font-size: 9px;
+        color: #777777;
+        font-weight: 600;
+        letter-spacing: 0.7px;
+    }
+
+    .id-card-validity strong {
+        font-size: 13px;
+        color: #292b45;
+        font-weight: 600;
+    }
+
+    .id-card-qr {
+        font-size: 38px;
+        color: #292b45;
+    }
+
+    /* FOOTER */
+
+    .id-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 25px;
+        background: #292b45;
+        color: #ffffff;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .id-card-footer i {
+        margin-right: 5px;
+        color: #f4b400;
+    }
+
+    /* ========================================================= */
+    /* RESPONSIVE                                                */
+    /* ========================================================= */
+
+    @media (max-width: 576px) {
+
+        .id-card-page {
+            padding: 15px;
+        }
+
+        .id-card-header {
+            padding: 15px;
+        }
+
+        .id-card-logo {
+            width: 45px;
+            height: 45px;
+            font-size: 21px;
+        }
+
+        .id-card-system-name {
+            font-size: 11px;
+        }
+
+        .id-card-type {
+            font-size: 8px;
+        }
+
+        .id-card-body {
+            gap: 15px;
+            padding: 20px 15px;
+        }
+
+        .id-card-photo {
+            width: 95px;
+            height: 115px;
+        }
+
+        .id-card-photo i {
+            font-size: 55px;
+        }
+
+        .id-student-name {
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .id-detail-row {
+            font-size: 11px;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
+
+        .id-card-bottom {
+            padding: 11px 15px;
+        }
+
+        .id-card-footer {
+            padding: 9px 15px;
+        }
+
+    }
+
+</style>
 
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 

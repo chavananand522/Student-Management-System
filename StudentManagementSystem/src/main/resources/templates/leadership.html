@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
@@ -10,467 +9,239 @@
 
 <div class="d-flex" id="wrapper">
 
-    <!-- ================================================= -->
     <!-- SIDEBAR -->
-    <!-- ================================================= -->
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
 
-    <div th:replace="~{fragments/layout :: sidebar}">
-    </div>
-
-
-    <!-- ================================================= -->
     <!-- PAGE CONTENT -->
-    <!-- ================================================= -->
-
     <div id="page-content-wrapper" class="w-100">
 
-
-        <!-- ================================================= -->
         <!-- NAVBAR -->
-        <!-- ================================================= -->
+        <div th:replace="~{fragments/layout :: navbar}"></div>
 
-        <div th:replace="~{fragments/layout :: navbar}">
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- MAIN CONTENT -->
-        <!-- ================================================= -->
-
+        <!-- MAIN -->
         <div class="container-fluid px-4 py-4">
 
+            <!-- TITLE + LATEST TEST -->
+            <div class="d-flex align-items-center flex-wrap mb-4">
 
-            <!-- ================================================= -->
-            <!-- TITLE -->
-            <!-- ================================================= -->
+                <div class="trophy-icon">🏆</div>
 
-            <div class="d-flex align-items-center mb-4">
+                <div>
 
-                <div class="trophy-icon">
-                    🏆
+                    <h1 class="leadership-title mb-1">
+                        Leadership Board
+                    </h1>
+
+                    <p class="text-muted mb-0"
+                       th:if="${latestTest != null}">
+
+                        Latest Test:
+
+                        <strong th:text="${latestTest.testName}">
+                            Test Name
+                        </strong>
+
+                        <span th:if="${latestTest.totalMarks != null}">
+                            —
+                            Total:
+                            <strong th:text="${latestTest.totalMarks} + ' marks'">
+                                100 marks
+                            </strong>
+                        </span>
+
+                    </p>
+
                 </div>
-
-                <h1 class="leadership-title">
-                    Leadership Board
-                </h1>
 
             </div>
 
+            <!-- EMPTY STATE -->
+            <div th:if="${rankings == null or rankings.isEmpty()}"
+                 class="alert alert-info text-center py-5"
+                 style="border-radius: 16px;">
 
-            <!-- ================================================= -->
+                <h4 class="mb-2">No rankings yet</h4>
+
+                <p class="mb-0"
+                   th:if="${latestTest == null}">
+                    No published test available.
+                </p>
+
+                <p class="mb-0"
+                   th:if="${latestTest != null}">
+                    No students have attempted
+                    <strong th:text="${latestTest.testName}"></strong> yet.
+                </p>
+
+            </div>
+
             <!-- TOP 3 PODIUM -->
-            <!-- ================================================= -->
+            <div th:if="${rankings != null and !rankings.isEmpty()}"
+                 class="podium-container">
 
-            <div class="podium-container">
+                <!-- RANK 2 -->
+                <div class="podium-card rank-two"
+                     th:if="${secondPlace != null}">
 
+                    <div class="medal">🥈</div>
 
-                <!-- ================================================= -->
-                <!-- RANK 2 - LEFT -->
-                <!-- ================================================= -->
-
-                <div class="podium-card rank-two">
-
-                    <!-- Medal -->
-                    <div class="medal">
-                        🥈
-                    </div>
-
-
-                    <!-- Student Image -->
                     <div class="student-image">
-
-                        <div class="default-avatar">
-                            👤
-                        </div>
-
+                        <div class="default-avatar">👤</div>
                     </div>
 
+                    <h3 th:text="${secondPlace.displayName}">Student 2</h3>
 
-                    <!-- Student Name -->
-                    <h3>
-                        Student 2
-                    </h3>
+                    <div class="average-mark"
+                         th:text="${secondPlace.marks} + ' Marks'">
+                        0 Marks
+                    </div>
 
-
-                    <!-- Average Marks -->
-                    <div class="average-mark">
-                        85.00%
+                    <div class="percent-hint"
+                         th:text="${secondPlace.percentFormatted}">
+                        0.00%
                     </div>
 
                 </div>
 
+                <!-- RANK 1 -->
+                <div class="podium-card rank-one"
+                     th:if="${firstPlace != null}">
 
-                <!-- ================================================= -->
-                <!-- RANK 1 - CENTER -->
-                <!-- ================================================= -->
+                    <div class="medal">🥇</div>
 
-                <div class="podium-card rank-one">
-
-                    <!-- Medal -->
-                    <div class="medal">
-                        🥇
-                    </div>
-
-
-                    <!-- Student Image -->
                     <div class="student-image">
-
-                        <div class="default-avatar">
-                            👤
-                        </div>
-
+                        <div class="default-avatar">👤</div>
                     </div>
 
+                    <h3 th:text="${firstPlace.displayName}">Student 1</h3>
 
-                    <!-- Student Name -->
-                    <h3>
-                        Student 1
-                    </h3>
+                    <div class="average-mark"
+                         th:text="${firstPlace.marks} + ' Marks'">
+                        0 Marks
+                    </div>
 
-
-                    <!-- Average Marks -->
-                    <div class="average-mark">
-                        95.00%
+                    <div class="percent-hint"
+                         th:text="${firstPlace.percentFormatted}">
+                        0.00%
                     </div>
 
                 </div>
 
+                <!-- RANK 3 -->
+                <div class="podium-card rank-three"
+                     th:if="${thirdPlace != null}">
 
-                <!-- ================================================= -->
-                <!-- RANK 3 - RIGHT -->
-                <!-- ================================================= -->
+                    <div class="medal">🥉</div>
 
-                <div class="podium-card rank-three">
-
-                    <!-- Medal -->
-                    <div class="medal">
-                        🥉
-                    </div>
-
-
-                    <!-- Student Image -->
                     <div class="student-image">
-
-                        <div class="default-avatar">
-                            👤
-                        </div>
-
+                        <div class="default-avatar">👤</div>
                     </div>
 
+                    <h3 th:text="${thirdPlace.displayName}">Student 3</h3>
 
-                    <!-- Student Name -->
-                    <h3>
-                        Student 3
-                    </h3>
+                    <div class="average-mark"
+                         th:text="${thirdPlace.marks} + ' Marks'">
+                        0 Marks
+                    </div>
 
-
-                    <!-- Average Marks -->
-                    <div class="average-mark">
-                        80.00%
+                    <div class="percent-hint"
+                         th:text="${thirdPlace.percentFormatted}">
+                        0.00%
                     </div>
 
                 </div>
 
             </div>
 
-
-            <!-- ================================================= -->
-            <!-- CURRENT RANKING MESSAGE -->
-            <!-- ================================================= -->
-
-            <div class="current-ranking-card">
+            <!-- CURRENT RANKING -->
+            <div class="current-ranking-card"
+                 th:if="${currentStudent != null}">
 
                 <div class="current-ranking-text">
 
-                    Your Ranking at:
+                    Your Ranking in
+                    <strong th:text="${latestTest != null ? latestTest.testName : 'this test'}">
+                        Test
+                    </strong>
+                    at:
 
-                    <strong>4/10</strong>
+                    <strong>
+                        <span th:text="${currentRank}">4</span>/<span th:text="${totalRanked}">10</span>
+                    </strong>
 
                 </div>
 
-
-                <div class="ranking-message">
-
-                    "Just a little more effort to shine on the
-                    Leadership Board!"
-
+                <div class="ranking-message"
+                     th:text="'&quot;' + ${rankingMessage} + '&quot;'">
+                    "Just a little more effort to shine on the Leadership Board!"
                 </div>
 
             </div>
 
-
-            <!-- ================================================= -->
-            <!-- STUDENT RANKINGS -->
-            <!-- ================================================= -->
-
-            <div class="ranking-table-card">
+            <!-- RANKING TABLE -->
+            <div class="ranking-table-card"
+                 th:if="${rankings != null and !rankings.isEmpty()}">
 
                 <h2>
-                    Student Rankings
+                    Student Rankings —
+                    <span th:text="${latestTest != null ? latestTest.testName : 'Latest Test'}">
+                        Test
+                    </span>
                 </h2>
-
 
                 <div class="table-responsive">
 
                     <table class="table ranking-table">
 
-
-                        <!-- ================================================= -->
-                        <!-- TABLE HEADER -->
-                        <!-- ================================================= -->
-
                         <thead>
-
-                        <tr>
-
-                            <th>
-                                Rank
-                            </th>
-
-                            <th>
-                                Student
-                            </th>
-
-                            <th>
-                                Total Marks
-                            </th>
-
-                            <th>
-                                Average Marks
-                            </th>
-
-                            <th>
-                                Attendance
-                            </th>
-
-                        </tr>
-
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student</th>
+                                <th>Marks</th>
+                                <th>Percentage</th>
+                                <th>Correct</th>
+                                <th>Wrong</th>
+                                <th>Skipped</th>
+                            </tr>
                         </thead>
-
-
-                        <!-- ================================================= -->
-                        <!-- TABLE BODY -->
-                        <!-- ================================================= -->
 
                         <tbody>
 
+                            <tr th:each="r : ${rankings}">
 
-                        <!-- ================================================= -->
-                        <!-- RANK 1 -->
-                        <!-- ================================================= -->
+                                <td>
+                                    <span class="table-rank">
 
-                        <tr>
+                                        <span th:if="${r.rank == 1}">🥇 </span>
+                                        <span th:if="${r.rank == 2}">🥈 </span>
+                                        <span th:if="${r.rank == 3}">🥉 </span>
 
-                            <td>
+                                        <span th:text="${r.rank}">1</span>
 
-                                <span class="table-rank">
-                                    🥇 1
-                                </span>
+                                    </span>
+                                </td>
 
-                            </td>
+                                <td>
+                                    <strong th:text="${r.displayName}">
+                                        Student Name
+                                    </strong>
+                                </td>
 
-                            <td>
+                                <td>
+                                    <strong th:text="${r.marks}">0</strong>
+                                </td>
 
-                                <strong>
-                                    Student 1
-                                </strong>
+                                <td>
+                                    <strong th:text="${r.percentFormatted}">
+                                        0.00%
+                                    </strong>
+                                </td>
 
-                            </td>
+                                <td th:text="${r.correct}">0</td>
+                                <td th:text="${r.wrong}">0</td>
+                                <td th:text="${r.unanswered}">0</td>
 
-                            <td>
-                                950
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    95.00%
-                                </strong>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    96%
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- ================================================= -->
-                        <!-- RANK 2 -->
-                        <!-- ================================================= -->
-
-                        <tr>
-
-                            <td>
-
-                                <span class="table-rank">
-                                    🥈 2
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    Student 2
-                                </strong>
-
-                            </td>
-
-                            <td>
-                                850
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    85.00%
-                                </strong>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    92%
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- ================================================= -->
-                        <!-- RANK 3 -->
-                        <!-- ================================================= -->
-
-                        <tr>
-
-                            <td>
-
-                                <span class="table-rank">
-                                    🥉 3
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    Student 3
-                                </strong>
-
-                            </td>
-
-                            <td>
-                                800
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    80.00%
-                                </strong>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    89%
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- ================================================= -->
-                        <!-- RANK 4 -->
-                        <!-- ================================================= -->
-
-                        <tr>
-
-                            <td>
-                                4
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    Student 4
-                                </strong>
-
-                            </td>
-
-                            <td>
-                                750
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    75.00%
-                                </strong>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    94%
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
-
-                        <!-- ================================================= -->
-                        <!-- RANK 5 -->
-                        <!-- ================================================= -->
-
-                        <tr>
-
-                            <td>
-                                5
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    Student 5
-                                </strong>
-
-                            </td>
-
-                            <td>
-                                700
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    70.00%
-                                </strong>
-
-                            </td>
-
-                            <td>
-
-                                <strong>
-                                    87%
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
+                            </tr>
 
                         </tbody>
 
@@ -482,644 +253,220 @@
 
         </div>
 
-
-        <!-- ================================================= -->
         <!-- FOOTER -->
-        <!-- ================================================= -->
-
-        <div th:replace="~{fragments/layout :: footer}">
-        </div>
+        <div th:replace="~{fragments/layout :: footer}"></div>
 
     </div>
 
 </div>
 
-
-
-<!-- ================================================= -->
 <!-- CUSTOM CSS -->
-<!-- ================================================= -->
-
 <style>
 
-/* ================================================= */
-/* PAGE */
-/* ================================================= */
-
-body {
-
-    background: #f1f3f7;
-
-    font-family: Arial, sans-serif;
-
-}
-
-
-
-/* ================================================= */
-/* TITLE */
-/* ================================================= */
-
-.trophy-icon {
-
-    font-size: 55px;
-
-    margin-right: 18px;
-
-}
-
-
-.leadership-title {
-
-    font-size: 42px;
-
-    font-weight: 800;
-
-    color: #292b45;
-
-    margin: 0;
-
-}
-
-
-
-/* ================================================= */
-/* PODIUM CONTAINER */
-/* ================================================= */
-
-.podium-container {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: flex-end;
-
-    gap: 35px;
-
-    margin-top: 40px;
-
-    margin-bottom: 70px;
-
-}
-
-
-
-/* ================================================= */
-/* COMMON PODIUM CARD */
-/* ================================================= */
-
-.podium-card {
-
-    width: 280px;
-
-    text-align: center;
-
-    position: relative;
-
-    padding: 25px 20px 35px 20px;
-
-    border-radius: 20px;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.10);
-
-    border: none;
-
-    outline: none;
-
-    overflow: hidden;
-
-}
-
-
-
-/* ================================================= */
-/* RANK 1 - GOLD */
-/* ================================================= */
-
-.rank-one {
-
-    height: 390px;
-
-    background: linear-gradient(
-        to bottom,
-        #f2c300 0%,
-        #f7d84a 35%,
-        #fff3b5 70%,
-        #ffffff 100%
-    );
-
-    z-index: 2;
-
-}
-
-
-
-/* ================================================= */
-/* RANK 2 - SILVER */
-/* ================================================= */
-
-.rank-two {
-
-    height: 340px;
-
-    background: linear-gradient(
-        to bottom,
-        #969696 0%,
-        #bcbcbc 35%,
-        #e5e5e5 70%,
-        #ffffff 100%
-    );
-
-}
-
-
-
-/* ================================================= */
-/* RANK 3 - BRONZE */
-/* ================================================= */
-
-.rank-three {
-
-    height: 325px;
-
-    background: linear-gradient(
-        to bottom,
-        #d98535 0%,
-        #e9a263 35%,
-        #f4c79e 70%,
-        #ffffff 100%
-    );
-
-}
-
-
-
-/* ================================================= */
-/* MEDAL */
-/* ================================================= */
-
-.medal {
-
-    font-size: 38px;
-
-    line-height: 1;
-
-    margin-bottom: 20px;
-
-}
-
-
-
-/* ================================================= */
-/* STUDENT IMAGE */
-/* ================================================= */
-
-.student-image {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    margin: 10px 0 25px 0;
-
-}
-
-
-
-/* ================================================= */
-/* DEFAULT AVATAR */
-/* ================================================= */
-
-.default-avatar {
-
-    width: 105px;
-
-    height: 105px;
-
-    border-radius: 50%;
-
-    background: #dce8f5;
-
-    border: 5px solid white;
-
-    box-shadow:
-        0 5px 12px rgba(0, 0, 0, 0.25);
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    font-size: 55px;
-
-}
-
-
-
-/* ================================================= */
-/* STUDENT NAME */
-/* ================================================= */
-
-.podium-card h3 {
-
-    font-size: 25px;
-
-    font-weight: 800;
-
-    color: #202020;
-
-    margin: 0 0 12px 0;
-
-}
-
-
-
-/* ================================================= */
-/* AVERAGE MARKS */
-/* ================================================= */
-
-.average-mark {
-
-    font-size: 25px;
-
-    font-weight: 800;
-
-    color: #292b45;
-
-    margin: 0;
-
-    padding: 0;
-
-    border: none !important;
-
-    border-top: none !important;
-
-    border-bottom: none !important;
-
-    box-shadow: none !important;
-
-}
-
-
-
-/* ================================================= */
-/* CURRENT RANKING CARD */
-/* ================================================= */
-
-.current-ranking-card {
-
-    max-width: 750px;
-
-    margin: 0 auto 60px;
-
-    padding: 25px 40px;
-
-    text-align: center;
-
-    background: linear-gradient(
-        90deg,
-        #d8efff,
-        #f6ffdf
-    );
-
-    border-radius: 45px;
-
-    border: 5px solid white;
-
-    box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.15);
-
-}
-
-
-
-/* ================================================= */
-/* CURRENT RANKING TEXT */
-/* ================================================= */
-
-.current-ranking-text {
-
-    font-size: 25px;
-
-    color: #555;
-
-    margin-bottom: 15px;
-
-}
-
-
-.current-ranking-text strong {
-
-    color: #222;
-
-}
-
-
-
-/* ================================================= */
-/* RANKING MESSAGE */
-/* ================================================= */
-
-.ranking-message {
-
-    font-size: 18px;
-
-    color: #111;
-
-    font-weight: 500;
-
-}
-
-
-
-/* ================================================= */
-/* RANKING TABLE CARD */
-/* ================================================= */
-
-.ranking-table-card {
-
-    background: white;
-
-    border-radius: 18px;
-
-    padding: 30px;
-
-    box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.08);
-
-    margin-bottom: 40px;
-
-}
-
-
-
-/* ================================================= */
-/* TABLE TITLE */
-/* ================================================= */
-
-.ranking-table-card h2 {
-
-    font-size: 26px;
-
-    font-weight: 800;
-
-    color: #292b45;
-
-    margin-bottom: 25px;
-
-}
-
-
-
-/* ================================================= */
-/* TABLE */
-/* ================================================= */
-
-.ranking-table {
-
-    margin-bottom: 0;
-
-}
-
-
-
-/* ================================================= */
-/* TABLE HEADER */
-/* ================================================= */
-
-.ranking-table thead {
-
-    background: #f5f6f8;
-
-}
-
-
-.ranking-table th {
-
-    padding: 18px 15px;
-
-    font-weight: 700;
-
-    color: #50535d;
-
-    border: none;
-
-}
-
-
-
-/* ================================================= */
-/* TABLE DATA */
-/* ================================================= */
-
-.ranking-table td {
-
-    padding: 18px 15px;
-
-    vertical-align: middle;
-
-    border-bottom: 1px solid #eeeeee;
-
-    color: #292b45;
-
-}
-
-
-
-/* ================================================= */
-/* TABLE HOVER */
-/* ================================================= */
-
-.ranking-table tbody tr:hover {
-
-    background: #f8f9fb;
-
-}
-
-
-
-/* ================================================= */
-/* TABLE RANK */
-/* ================================================= */
-
-.table-rank {
-
-    font-weight: 800;
-
-    font-size: 17px;
-
-}
-
-
-
-/* ================================================= */
-/* RESPONSIVE - TABLET */
-/* ================================================= */
-
-@media (max-width: 992px) {
-
-    .podium-container {
-
-        gap: 15px;
-
+    body {
+        background: #f1f3f7;
+        font-family: Arial, sans-serif;
     }
-
-
-    .podium-card {
-
-        width: 30%;
-
-    }
-
-
-    .leadership-title {
-
-        font-size: 34px;
-
-    }
-
-
-    .default-avatar {
-
-        width: 90px;
-
-        height: 90px;
-
-        font-size: 45px;
-
-    }
-
-
-    .podium-card h3 {
-
-        font-size: 21px;
-
-    }
-
-
-    .average-mark {
-
-        font-size: 21px;
-
-    }
-
-}
-
-
-
-/* ================================================= */
-/* RESPONSIVE - MOBILE */
-/* ================================================= */
-
-@media (max-width: 768px) {
-
-    .podium-container {
-
-        flex-direction: column;
-
-        align-items: center;
-
-        gap: 25px;
-
-    }
-
-
-    .podium-card {
-
-        width: 90%;
-
-        max-width: 350px;
-
-    }
-
-
-    /* Rank 1 first on mobile */
-
-    .rank-one {
-
-        order: 1;
-
-    }
-
-
-    /* Rank 2 second */
-
-    .rank-two {
-
-        order: 2;
-
-    }
-
-
-    /* Rank 3 third */
-
-    .rank-three {
-
-        order: 3;
-
-    }
-
-
-    .leadership-title {
-
-        font-size: 30px;
-
-    }
-
 
     .trophy-icon {
-
-        font-size: 45px;
-
+        font-size: 55px;
+        margin-right: 18px;
     }
 
+    .leadership-title {
+        font-size: 42px;
+        font-weight: 800;
+        color: #292b45;
+        margin: 0;
+    }
+
+    .podium-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 35px;
+        margin-top: 40px;
+        margin-bottom: 70px;
+        flex-wrap: wrap;
+    }
+
+    .podium-card {
+        width: 280px;
+        text-align: center;
+        position: relative;
+        padding: 25px 20px 35px 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+        border: none;
+        outline: none;
+        overflow: hidden;
+    }
+
+    .rank-one {
+        height: 390px;
+        background: linear-gradient(to bottom, #f2c300 0%, #f7d84a 35%, #fff3b5 70%, #ffffff 100%);
+        z-index: 2;
+    }
+
+    .rank-two {
+        height: 340px;
+        background: linear-gradient(to bottom, #969696 0%, #bcbcbc 35%, #e5e5e5 70%, #ffffff 100%);
+    }
+
+    .rank-three {
+        height: 325px;
+        background: linear-gradient(to bottom, #d98535 0%, #e9a263 35%, #f4c79e 70%, #ffffff 100%);
+    }
+
+    .medal {
+        font-size: 38px;
+        line-height: 1;
+        margin-bottom: 20px;
+    }
+
+    .student-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 10px 0 25px 0;
+    }
+
+    .default-avatar {
+        width: 105px;
+        height: 105px;
+        border-radius: 50%;
+        background: #dce8f5;
+        border: 5px solid white;
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 55px;
+    }
+
+    .podium-card h3 {
+        font-size: 25px;
+        font-weight: 800;
+        color: #202020;
+        margin: 0 0 12px 0;
+    }
+
+    .average-mark {
+        font-size: 25px;
+        font-weight: 800;
+        color: #292b45;
+        margin: 0 0 6px 0;
+        padding: 0;
+        border: none !important;
+    }
+
+    .percent-hint {
+        font-size: 15px;
+        color: #6b6f7a;
+        font-weight: 600;
+    }
 
     .current-ranking-card {
-
-        padding: 20px;
-
+        max-width: 750px;
+        margin: 0 auto 60px;
+        padding: 25px 40px;
+        text-align: center;
+        background: linear-gradient(90deg, #d8efff, #f6ffdf);
+        border-radius: 45px;
+        border: 5px solid white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
-
 
     .current-ranking-text {
-
-        font-size: 21px;
-
+        font-size: 25px;
+        color: #555;
+        margin-bottom: 15px;
     }
 
+    .current-ranking-text strong {
+        color: #222;
+    }
 
     .ranking-message {
-
-        font-size: 16px;
-
+        font-size: 18px;
+        color: #111;
+        font-weight: 500;
     }
-
 
     .ranking-table-card {
-
-        padding: 20px;
-
+        background: white;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 40px;
     }
 
-}
+    .ranking-table-card h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #292b45;
+        margin-bottom: 25px;
+    }
+
+    .ranking-table { margin-bottom: 0; }
+
+    .ranking-table thead { background: #f5f6f8; }
+
+    .ranking-table th {
+        padding: 18px 15px;
+        font-weight: 700;
+        color: #50535d;
+        border: none;
+    }
+
+    .ranking-table td {
+        padding: 18px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #eeeeee;
+        color: #292b45;
+    }
+
+    .ranking-table tbody tr:hover { background: #f8f9fb; }
+
+    .table-rank {
+        font-weight: 800;
+        font-size: 17px;
+    }
+
+    @media (max-width: 992px) {
+        .podium-container { gap: 15px; }
+        .podium-card { width: 30%; }
+        .leadership-title { font-size: 34px; }
+        .default-avatar { width: 90px; height: 90px; font-size: 45px; }
+        .podium-card h3 { font-size: 21px; }
+        .average-mark { font-size: 21px; }
+    }
+
+    @media (max-width: 768px) {
+
+        .podium-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .podium-card { width: 90%; max-width: 350px; }
+        .rank-one   { order: 1; }
+        .rank-two   { order: 2; }
+        .rank-three { order: 3; }
+
+        .leadership-title { font-size: 30px; }
+        .trophy-icon { font-size: 45px; }
+        .current-ranking-card { padding: 20px; }
+        .current-ranking-text { font-size: 21px; }
+        .ranking-message { font-size: 16px; }
+        .ranking-table-card { padding: 20px; }
+    }
 
 </style>
 
-
-
-<!-- ================================================= -->
 <!-- SCRIPTS -->
-<!-- ================================================= -->
-
-<div th:replace="~{fragments/layout :: scripts}">
-</div>
-
+<div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
-
 </html>

@@ -27,6 +27,21 @@
                 </div>
             </div>
 
+            <!-- NEGATIVE MARKING WARNING -->
+            <div class="alert alert-warning d-flex align-items-center mb-3"
+                 th:if="${test.negativeMarking != null and test.negativeMarking}">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <span>
+                    <strong>Negative Marking Active:</strong>
+                    Each wrong answer deducts
+                    <strong>−<span th:text="${test.negativeMarks != null ? test.negativeMarks : 1}">1</span></strong>
+                    mark(s). Leave questions blank if unsure.
+                </span>
+
+            </div>
+
             <form id="testForm"
                   th:action="@{'/student/tests/attempt/' + ${attempt.id} + '/submit'}"
                   method="post">

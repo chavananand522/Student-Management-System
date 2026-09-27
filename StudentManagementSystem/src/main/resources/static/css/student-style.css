@@ -1,6 +1,11 @@
 /* =========================================================
-   STUDENT PORTAL - COMPLETE STYLESHEET
+   STUDENT PORTAL - COMPONENT STYLESHEET
    File: src/main/resources/static/css/student-style.css
+
+   NOTE:
+   - Layout CSS (#wrapper, .student-sidebar, .student-content,
+     .student-topbar, etc.) is INLINED in student-layout.html.
+   - This file contains ONLY component/page styles.
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -26,234 +31,18 @@
 
 
 /* =========================================================
-   BASE
+   RESET (safe — does NOT touch layout wrappers)
    ========================================================= */
 
 * {
     box-sizing: border-box;
 }
 
-html,
-body {
-    height: auto;
-    overflow-x: hidden;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f0f2f5;
-    color: var(--text-dark);
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-}
-
-a {
-    text-decoration: none;
-}
-
 
 /* =========================================================
-   LAYOUT WRAPPER
-   ⚠️ Only applied to the DIRECT child of <body>.
-   This prevents Bootstrap's nested .d-flex elements
-   (in navbar, alerts, etc.) from getting min-height: 100vh.
+   STAT ICON COLORS
+   (base .stat-icon size is inlined; only colors here)
    ========================================================= */
-
-body > .d-flex,
-.student-layout {
-    display: flex;
-    align-items: stretch;
-    min-height: 100vh;
-    width: 100%;
-}
-
-.student-sidebar {
-    width: var(--sidebar-width);
-    flex-shrink: 0;
-    background-color: var(--sidebar-bg);
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
-    z-index: 1000;
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    height: 100vh;
-    overflow-y: auto;
-}
-
-.student-content {
-    flex: 1;
-    min-width: 0;
-}
-
-
-/* =========================================================
-   SIDEBAR BRAND
-   ========================================================= */
-
-.student-brand {
-    padding: 1.5rem;
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.student-brand i {
-    color: var(--primary-color);
-    font-size: 1.6rem;
-}
-
-
-/* =========================================================
-   SIDEBAR LINKS
-   ========================================================= */
-
-.student-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 15px;
-    transition: all 0.25s ease;
-    border-left: 4px solid transparent;
-    cursor: pointer;
-    background: transparent;
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    width: 100%;
-    text-align: left;
-    font-family: inherit;
-}
-
-.student-link:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.08);
-    border-left-color: var(--primary-color);
-    transform: translateX(4px);
-}
-
-.student-link.active {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.10);
-    border-left-color: var(--primary-color);
-}
-
-.student-link i {
-    font-size: 1.1rem;
-    min-width: 22px;
-    text-align: center;
-    transition: transform 0.2s ease;
-}
-
-.student-link:hover i {
-    transform: scale(1.1);
-}
-
-.student-link:focus,
-.student-link:active {
-    outline: none;
-    box-shadow: none;
-}
-
-.student-sidebar nav {
-    padding: 1rem 0;
-}
-
-
-/* =========================================================
-   NAVBAR
-   ========================================================= */
-
-.student-topbar {
-    background-color: #ffffff !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    padding: 0.8rem 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 1100;
-    width: 100%;
-}
-
-.navbar-brand {
-    font-weight: 700;
-    color: var(--text-dark);
-    font-size: 1.15rem;
-}
-
-.student-topbar a {
-    color: var(--text-dark);
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.student-topbar a:hover {
-    color: var(--primary-color);
-}
-
-
-/* =========================================================
-   CARDS
-   ========================================================= */
-
-.student-card {
-    border: none;
-    border-radius: 1rem;
-    background: #fff;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 1.5rem;
-}
-
-.student-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--card-hover-shadow);
-}
-
-.card {
-    border: none;
-    border-radius: 1rem;
-    background: #fff;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card-header {
-    background-color: #fff;
-    border-bottom: 1px solid #f0f0f0;
-    padding: 1.25rem 1.5rem;
-    font-weight: 600;
-    border-radius: 1rem 1rem 0 0 !important;
-}
-
-.card-body {
-    padding: 1.5rem;
-}
-
-
-/* =========================================================
-   STAT ICON
-   ========================================================= */
-
-.stat-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    background: #eef3ff;
-}
 
 .stat-icon.text-primary {
     color: var(--primary-color) !important;
@@ -273,29 +62,8 @@ body > .d-flex,
 
 
 /* =========================================================
-   BUTTONS
+   BUTTON SIZES (base .btn is inlined)
    ========================================================= */
-
-.btn {
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.2rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    font-family: inherit;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(67, 97, 238, 0.4);
-}
 
 .btn-sm {
     padding: 0.35rem 0.85rem;
@@ -309,36 +77,8 @@ body > .d-flex,
 
 
 /* =========================================================
-   TABLES
+   RESPONSIVE TABLE → CARD VIEW ON MOBILE
    ========================================================= */
-
-.table {
-    vertical-align: middle;
-    margin-bottom: 0;
-}
-
-.table thead th {
-    border-bottom: 2px solid #f0f0f0;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    padding: 1rem 0.75rem;
-}
-
-.table td {
-    padding: 1rem 0.75rem;
-    color: var(--text-dark);
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.table-hover tbody tr:hover {
-    background-color: #f8f9fb;
-}
-
-
-/* Responsive table → card view on mobile */
 
 @media (max-width: 768px) {
 
@@ -388,33 +128,6 @@ body > .d-flex,
 
 
 /* =========================================================
-   FORMS
-   ========================================================= */
-
-.form-control,
-.form-select {
-    border-radius: 0.5rem;
-    padding: 0.6rem 1rem;
-    border: 1px solid #e2e8f0;
-    font-family: inherit;
-    font-size: 0.95rem;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
-    outline: none;
-}
-
-.form-label {
-    font-weight: 500;
-    color: var(--text-dark);
-    margin-bottom: 0.4rem;
-}
-
-
-/* =========================================================
    OPTION CARDS (Test attempt)
    ========================================================= */
 
@@ -446,38 +159,6 @@ body > .d-flex,
 
 
 /* =========================================================
-   ALERTS
-   ========================================================= */
-
-.alert {
-    border-radius: 0.75rem;
-    border: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-}
-
-.alert-success {
-    background-color: #d1f7e4;
-    color: #0b5f3a;
-}
-
-.alert-danger {
-    background-color: #fddce0;
-    color: #842029;
-}
-
-.alert-info {
-    background-color: #d7ecfc;
-    color: #055160;
-}
-
-.alert-warning {
-    background-color: #fff3cd;
-    color: #664d03;
-}
-
-
-/* =========================================================
    BADGES
    ========================================================= */
 
@@ -490,20 +171,7 @@ body > .d-flex,
 
 
 /* =========================================================
-   FOOTER
-   ========================================================= */
-
-footer {
-    padding: 24px 25px;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    background: #ffffff;
-    border-top: 1px solid #e9ecef;
-}
-
-
-/* =========================================================
-   STUDY PAGE
+   STUDY PAGE LAYOUT
    ========================================================= */
 
 .study-content {
@@ -719,13 +387,6 @@ footer {
 .profile-page-img {
     width: 150px;
     height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.navbar-profile-img {
-    width: 28px;
-    height: 28px;
     object-fit: cover;
     border-radius: 50%;
 }
@@ -1461,6 +1122,90 @@ footer {
 
 
 /* =========================================================
+   STUDY MODULE ROWS (mv-*)
+   ========================================================= */
+
+.mv-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px 22px;
+    margin-bottom: 12px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.mv-row:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.mv-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.mv-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mv-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #4361ee;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.mv-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    text-decoration: none;
+}
+
+.mv-name:hover {
+    color: #4361ee;
+}
+
+.mv-desc {
+    color: #6c757d;
+    font-size: 14px;
+    margin-left: 36px;
+}
+
+.mv-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.mv-actions .btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+
+/* =========================================================
    RESPONSIVE — TABLET
    ========================================================= */
 
@@ -1478,35 +1223,10 @@ footer {
 
 
 /* =========================================================
-   RESPONSIVE — MOBILE (Collapse sidebar to icons)
+   RESPONSIVE — MOBILE
    ========================================================= */
 
 @media (max-width: 768px) {
-
-    .student-sidebar {
-        width: 72px;
-    }
-
-    .student-brand span,
-    .student-link span {
-        display: none;
-    }
-
-    .student-brand {
-        justify-content: center;
-        padding: 1.2rem 0.5rem;
-    }
-
-    .student-link {
-        justify-content: center;
-        padding: 14px 0;
-        gap: 0;
-    }
-
-    .student-link i {
-        margin: 0;
-        font-size: 1.3rem;
-    }
 
     .study-content {
         padding: 20px 15px;
@@ -1616,6 +1336,18 @@ footer {
     .message-content {
         max-width: 85%;
     }
+
+    .chapter-row,
+    .mv-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chapter-actions,
+    .mv-actions {
+        margin-left: 0;
+        margin-top: 10px;
+    }
 }
 
 
@@ -1624,11 +1356,6 @@ footer {
    ========================================================= */
 
 @media (max-width: 576px) {
-
-    .navbar-profile-img {
-        width: 22px;
-        height: 22px;
-    }
 
     .profile-page-img {
         width: 100px;
@@ -1708,8 +1435,9 @@ footer {
     }
 }
 
+
 /* =========================================================
-   STUDY PAGE STYLES (same as admin)
+   CHAPTER ROWS (alternate naming)
    ========================================================= */
 
 .chapter-container {
@@ -1731,12 +1459,6 @@ footer {
 .chapter-row:hover {
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     transform: translateY(-1px);
-}
-
-.chapter-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
 }
 
 .chapter-name {
@@ -1782,282 +1504,4 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-
-/* =========================================================
-   STUDY HOME — cards for subjects / modules / chapters
-   ========================================================= */
-
-.study-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #ffffff;
-    border: 1px solid #e5eaf1;
-    border-radius: 14px;
-    padding: 25px 30px;
-    margin-bottom: 25px;
-}
-
-.study-header h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #172b4d;
-}
-
-.study-header p {
-    margin-top: 7px;
-    margin-bottom: 0;
-    color: #7b8794;
-}
-
-.breadcrumb {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    font-size: 13px;
-}
-
-.breadcrumb a {
-    color: #4361ee;
-    text-decoration: none;
-}
-
-.subject-icon {
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
-    background: #eaf3ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4361ee;
-    font-size: 27px;
-}
-
-.section-title {
-    margin-bottom: 15px;
-}
-
-.section-title h2 {
-    margin: 0;
-    font-size: 20px;
-    color: #172b4d;
-}
-
-.section-title p {
-    margin: 5px 0 0;
-    color: #7b8794;
-    font-size: 13px;
-}
-
-.chapter-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.chapter-card {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid #e5eaf1;
-    border-radius: 12px;
-    padding: 18px 20px;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.chapter-card:hover {
-    border-color: #4361ee;
-    box-shadow: 0 5px 18px rgba(40, 120, 240, 0.08);
-    transform: translateX(3px);
-}
-
-.chapter-number {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    border-radius: 10px;
-    background: #4361ee;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    margin-right: 17px;
-}
-
-.chapter-info {
-    flex: 1;
-}
-
-.chapter-info h3 {
-    margin: 0 0 8px;
-    color: #172b4d;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.chapter-meta {
-    display: flex;
-    gap: 20px;
-    color: #7b8794;
-    font-size: 12px;
-}
-
-.chapter-meta span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.chapter-meta i {
-    color: #4361ee;
-}
-
-.chapter-arrow {
-    color: #9aa7b5;
-    font-size: 18px;
-}
-
-
-/* =========================================================
-   MODULE VIEW — chapter rows (mv-*)
-   ========================================================= */
-
-.mv-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    background: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    padding: 16px 22px;
-    margin-bottom: 12px;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.mv-row:hover {
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
-}
-
-.mv-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-    min-width: 0;
-}
-
-.mv-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.mv-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #4361ee;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 600;
-    flex-shrink: 0;
-}
-
-.mv-name {
-    font-size: 18px;
-    font-weight: 600;
-    color: #212529;
-    text-decoration: none;
-}
-
-.mv-name:hover {
-    color: #4361ee;
-}
-
-.mv-desc {
-    color: #6c757d;
-    font-size: 14px;
-    margin-left: 36px;
-}
-
-.mv-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-.mv-actions .btn {
-    width: 38px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-
-/* =========================================================
-   RESPONSIVE — study pages
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .chapter-row,
-    .mv-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .chapter-actions,
-    .mv-actions {
-        margin-left: 0;
-        margin-top: 10px;
-    }
-
-    .study-header {
-        padding: 20px;
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
-
-    .study-header h1 {
-        font-size: 24px;
-    }
-
-    .study-header p {
-        font-size: 13px;
-    }
-
-    .subject-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 23px;
-    }
-
-    .chapter-card {
-        padding: 15px;
-    }
-
-    .chapter-info h3 {
-        font-size: 14px;
-    }
-
-    .chapter-meta {
-        gap: 10px;
-        flex-wrap: wrap;
-    }
 }

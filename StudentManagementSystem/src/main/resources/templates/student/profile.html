@@ -1,108 +1,844 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{student/student-layout::head}"></head>
+<head th:replace="~{student/student-layout::head}">
+    <title>My Profile</title>
+</head>
 
 <body>
 
 <div class="d-flex student-layout">
 
+    <!-- SIDEBAR -->
     <div th:replace="~{student/student-layout::sidebar}"></div>
 
+    <!-- CONTENT -->
     <div class="student-content">
 
+        <!-- NAVBAR -->
         <div th:replace="~{student/student-layout::navbar}"></div>
+
+        <!-- ALERTS -->
         <div th:replace="~{student/student-layout::alerts}"></div>
 
-        <div class="container-fluid px-4 py-4">
+        <!-- MAIN -->
+        <div class="container-fluid p-0">
 
-            <h2 class="fw-bold mb-4">My Profile</h2>
+            <div class="profile-page">
 
-            <div class="row g-4">
+                <!-- =========================================
+                     HERO BANNER
+                ========================================== -->
 
-                <div class="col-lg-6">
-                    <div class="card student-card">
-                        <div class="card-body p-4">
-                            <h5 class="mb-4">Student Information</h5>
+                <div class="profile-hero">
 
-                            <div class="mb-3">
-                                <label class="text-muted">Name</label>
-                                <div class="fw-semibold"
-                                     th:text="${student.firstName + ' ' + student.lastName}"></div>
+                    <div class="hero-bg"></div>
+
+                    <div class="hero-content">
+
+                        <!-- AVATAR -->
+
+                        <div class="profile-avatar-wrap">
+
+                            <img th:src="@{/student/profile/image}"
+                                 alt="Profile"
+                                 class="profile-avatar"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                            <div class="profile-avatar-fallback"
+                                 style="display:none;">
+                                <i class="fas fa-user"></i>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="text-muted">Email</label>
-                                <div class="fw-semibold" th:text="${student.email}"></div>
-                            </div>
+                            <!-- IMAGE UPLOAD -->
 
-                            <div class="mb-3">
-                                <label class="text-muted">Phone</label>
-                                <div class="fw-semibold" th:text="${student.phoneNumber}"></div>
-                            </div>
+                            <label for="imageUpload" class="avatar-upload-btn">
+                                <i class="fas fa-camera"></i>
+                            </label>
 
-                            <div class="mb-3">
-                                <label class="text-muted">Address</label>
-                                <div class="fw-semibold" th:text="${student.address}"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            <form id="imageForm"
+                                  th:action="@{/student/profile/image}"
+                                  method="post"
+                                  enctype="multipart/form-data"
+                                  style="display:none;">
 
-                <div class="col-lg-6">
-                    <div class="card student-card">
-                        <div class="card-body p-4">
-                            <h5 class="mb-4">Change Password</h5>
-
-                            <form th:action="@{/student/profile/password}" method="post">
                                 <input type="hidden"
                                        th:name="${_csrf.parameterName}"
                                        th:value="${_csrf.token}">
 
-                                <div class="mb-3">
-                                    <label class="form-label">Current Password</label>
-                                    <input type="password"
-                                           name="currentPassword"
-                                           class="form-control"
-                                           autocomplete="current-password"
-                                           required>
-                                </div>
+                                <input type="file"
+                                       id="imageUpload"
+                                       name="image"
+                                       accept="image/*"
+                                       onchange="document.getElementById('imageForm').submit();">
 
-                                <div class="mb-3">
-                                    <label class="form-label">New Password</label>
-                                    <input type="password"
-                                           name="newPassword"
-                                           class="form-control"
-                                           autocomplete="new-password"
-                                           minlength="6"
-                                           required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Confirm Password</label>
-                                    <input type="password"
-                                           name="confirmPassword"
-                                           class="form-control"
-                                           autocomplete="new-password"
-                                           minlength="6"
-                                           required>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">
-                                    Change Password
-                                </button>
                             </form>
+
+                        </div>
+
+                        <!-- NAME + ROLE -->
+
+                        <div class="hero-text">
+
+                            <h1 th:text="${student != null ? student.firstName + ' ' + student.lastName : 'Student'}">
+                                Student Name
+                            </h1>
+
+                            <p class="hero-sub">
+
+                                <span class="badge-role">
+                                    <i class="fas fa-user-graduate me-1"></i>
+                                    Student
+                                </span>
+
+                                <span class="hero-email"
+                                      th:if="${student != null and student.email != null}">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    <span th:text="${student.email}">email@example.com</span>
+                                </span>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- =========================================
+                     STATS ROW
+                ========================================== -->
+
+                <div class="stats-row">
+
+                    <div class="stat-box">
+                        <div class="stat-icon stat-icon-blue">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div>
+                            <div class="stat-label">Enrolled Courses</div>
+                            <div class="stat-value"
+                                 th:text="${courseCount != null ? courseCount : 0}">0</div>
                         </div>
                     </div>
+
+                    <div class="stat-box">
+                        <div class="stat-icon stat-icon-green">
+                            <i class="fas fa-id-badge"></i>
+                        </div>
+                        <div>
+                            <div class="stat-label">Student ID</div>
+                            <div class="stat-value"
+                                 th:text="${student != null ? student.id : '—'}">—</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-icon stat-icon-orange">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <div class="stat-label">Phone</div>
+                            <div class="stat-value stat-value-small"
+                                 th:text="${student != null and student.phoneNumber != null ? student.phoneNumber : '—'}">
+                                —
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-icon stat-icon-purple">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div>
+                            <div class="stat-label">Account Status</div>
+                            <div class="stat-value stat-value-small">
+                                <span class="badge-active">Active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- =========================================
+                     TWO-COLUMN GRID
+                ========================================== -->
+
+                <div class="profile-grid">
+
+                    <!-- =====================================
+                         LEFT — PERSONAL INFO EDIT
+                    ====================================== -->
+
+                    <div class="profile-card">
+
+                        <div class="card-head">
+                            <h3>
+                                <i class="fas fa-user-edit me-2"></i>
+                                Personal Information
+                            </h3>
+                            <span class="card-hint">Keep your details up to date</span>
+                        </div>
+
+                        <form th:action="@{/student/profile/update}"
+                              method="post"
+                              class="profile-form">
+
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}">
+
+                            <div class="form-row">
+
+                                <div class="form-field">
+                                    <label>First Name</label>
+                                    <input type="text"
+                                           name="firstName"
+                                           th:value="${student != null ? student.firstName : ''}"
+                                           required>
+                                </div>
+
+                                <div class="form-field">
+                                    <label>Last Name</label>
+                                    <input type="text"
+                                           name="lastName"
+                                           th:value="${student != null ? student.lastName : ''}"
+                                           required>
+                                </div>
+
+                            </div>
+
+                            <div class="form-field">
+                                <label>Email</label>
+                                <input type="email"
+                                       name="email"
+                                       th:value="${student != null ? student.email : ''}"
+                                       required>
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-field">
+                                    <label>Phone Number</label>
+                                    <input type="text"
+                                           name="phoneNumber"
+                                           th:value="${student != null ? student.phoneNumber : ''}">
+                                </div>
+
+                                <div class="form-field">
+                                    <label>Address</label>
+                                    <input type="text"
+                                           name="address"
+                                           th:value="${student != null ? student.address : ''}">
+                                </div>
+
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary-action">
+                                    <i class="fas fa-save me-1"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                    <!-- =====================================
+                         RIGHT — PASSWORD + INFO
+                    ====================================== -->
+
+                    <div class="profile-card">
+
+                        <div class="card-head">
+                            <h3>
+                                <i class="fas fa-lock me-2"></i>
+                                Change Password
+                            </h3>
+                            <span class="card-hint">Use a strong password</span>
+                        </div>
+
+                        <form th:action="@{/student/profile/password}"
+                              method="post"
+                              class="profile-form">
+
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}">
+
+                            <div class="form-field">
+                                <label>Current Password</label>
+                                <input type="password"
+                                       name="currentPassword"
+                                       required>
+                            </div>
+
+                            <div class="form-field">
+                                <label>New Password</label>
+                                <input type="password"
+                                       name="newPassword"
+                                       minlength="6"
+                                       required>
+                            </div>
+
+                            <div class="form-field">
+                                <label>Confirm New Password</label>
+                                <input type="password"
+                                       name="confirmPassword"
+                                       minlength="6"
+                                       required>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary-action">
+                                    <i class="fas fa-key me-1"></i>
+                                    Update Password
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- =========================================
+                     ACCOUNT DETAILS ROW
+                ========================================== -->
+
+                <div class="profile-card details-card">
+
+                    <div class="card-head">
+                        <h3>
+                            <i class="fas fa-info-circle me-2"></i>
+                            Account Details
+                        </h3>
+                    </div>
+
+                    <div class="details-grid">
+
+                        <div class="detail-item">
+                            <span class="detail-label">Username</span>
+                            <span class="detail-value"
+                                  th:text="${user != null ? user.userName : '—'}">—</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Full Name</span>
+                            <span class="detail-value"
+                                  th:text="${user != null ? user.fullName : '—'}">—</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value"
+                                  th:text="${user != null ? user.email : '—'}">—</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value"
+                                  th:text="${user != null and user.phoneNumber != null ? user.phoneNumber : '—'}">
+                                —
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">First Name</span>
+                            <span class="detail-value"
+                                  th:text="${student != null ? student.firstName : '—'}">—</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Last Name</span>
+                            <span class="detail-value"
+                                  th:text="${student != null ? student.lastName : '—'}">—</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Address</span>
+                            <span class="detail-value"
+                                  th:text="${student != null and student.address != null ? student.address : '—'}">
+                                —
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Enrolled Courses</span>
+                            <span class="detail-value"
+                                  th:text="${courseCount != null ? courseCount : 0}">0</span>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
 
+        <!-- FOOTER -->
+        <div th:replace="~{student/student-layout::footer}"></div>
+
     </div>
 
 </div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      rel="stylesheet">
+
+<style>
+    * { box-sizing: border-box; }
+
+    .profile-page {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 25px;
+    }
+
+    /* =========================================================
+       HERO BANNER
+    ========================================================== */
+
+    .profile-hero {
+        position: relative;
+        background: #ffffff;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+    }
+
+    .hero-bg {
+        height: 140px;
+        background: linear-gradient(135deg, #4361ee 0%, #6f8dff 45%, #a0b4ff 100%);
+        position: relative;
+    }
+
+    .hero-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.25) 0%, transparent 45%),
+            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.18) 0%, transparent 45%);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: flex-end;
+        gap: 24px;
+        padding: 0 32px 25px;
+        margin-top: -65px;
+        position: relative;
+    }
+
+    /* AVATAR */
+
+    .profile-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .profile-avatar,
+    .profile-avatar-fallback {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        border: 5px solid #ffffff;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+        object-fit: cover;
+        background: #dce8f5;
+    }
+
+    .profile-avatar-fallback {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4361ee;
+        font-size: 60px;
+    }
+
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 6px;
+        right: 6px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #4361ee;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 3px solid #ffffff;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+    .avatar-upload-btn:hover {
+        background: #3a56d4;
+        transform: scale(1.08);
+    }
+
+    /* HERO TEXT */
+
+    .hero-text {
+        padding-bottom: 8px;
+        min-width: 0;
+    }
+
+    .hero-text h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        font-weight: 800;
+        color: #172b4d;
+        word-break: break-word;
+    }
+
+    .hero-sub {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .badge-role {
+        background: #eef3ff;
+        color: #4361ee;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .hero-email {
+        color: #7b8794;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* =========================================================
+       STATS ROW
+    ========================================================== */
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 14px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #ffffff;
+    }
+
+    .stat-icon-blue   { background: #4361ee; }
+    .stat-icon-green  { background: #20a568; }
+    .stat-icon-orange { background: #f59e0b; }
+    .stat-icon-purple { background: #7c3aed; }
+
+    .stat-label {
+        font-size: 12px;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+        font-weight: 800;
+        color: #172b4d;
+        line-height: 1.1;
+    }
+
+    .stat-value-small {
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .badge-active {
+        background: #d1f7e4;
+        color: #0b5f3a;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 12px;
+        letter-spacing: 0.3px;
+    }
+
+    /* =========================================================
+       PROFILE GRID (2 columns)
+    ========================================================== */
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 25px;
+    }
+
+    .profile-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 16px;
+        padding: 26px 26px 22px;
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease;
+    }
+
+    .profile-card:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #f0f2f5;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .card-head h3 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        color: #172b4d;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-head h3 i {
+        color: #4361ee;
+    }
+
+    .card-hint {
+        font-size: 12px;
+        color: #7b8794;
+    }
+
+    /* =========================================================
+       FORM STYLES
+    ========================================================== */
+
+    .profile-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-field label {
+        font-size: 12px;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .form-field input {
+        border: 1px solid #dfe4ec;
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #172b4d;
+        background: #fbfcfe;
+        transition: all 0.2s ease;
+    }
+
+    .form-field input:focus {
+        border-color: #4361ee;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        outline: none;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 6px;
+    }
+
+    .btn-primary-action {
+        background: #4361ee;
+        color: #ffffff;
+        border: none;
+        padding: 11px 22px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(67, 97, 238, 0.25);
+    }
+
+    .btn-primary-action:hover {
+        background: #3a56d4;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(67, 97, 238, 0.35);
+    }
+
+    /* =========================================================
+       DETAILS CARD
+    ========================================================== */
+
+    .details-card {
+        padding-bottom: 8px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 12px 14px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border: 1px solid #eef2f7;
+    }
+
+    .detail-label {
+        font-size: 11px;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+    }
+
+    .detail-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #172b4d;
+        word-break: break-word;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================== */
+
+    @media (max-width: 1200px) {
+        .stats-row     { grid-template-columns: repeat(2, 1fr); }
+        .details-grid  { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 992px) {
+        .profile-grid { grid-template-columns: 1fr; }
+        .form-row     { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+
+        .profile-page { padding: 15px; }
+
+        .hero-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px 25px;
+            margin-top: -60px;
+            gap: 15px;
+        }
+
+        .hero-text h1 { font-size: 22px; }
+
+        .hero-sub { justify-content: center; }
+
+        .profile-avatar,
+        .profile-avatar-fallback {
+            width: 110px;
+            height: 110px;
+        }
+
+        .stat-box {
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            font-size: 17px;
+        }
+
+        .stat-value { font-size: 18px; }
+
+        .profile-card { padding: 20px; }
+
+        .details-grid { grid-template-columns: 1fr; }
+
+        .card-head { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+
+        .stats-row { grid-template-columns: 1fr; }
+
+        .hero-text h1 { font-size: 20px; }
+
+        .hero-email { font-size: 12px; }
+
+    }
+</style>
 
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 

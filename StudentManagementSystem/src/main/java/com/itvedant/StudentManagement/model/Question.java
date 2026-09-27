@@ -33,6 +33,15 @@ public class Question {
 
     private Integer marks;
 
+    // =====================================================
+    // OPTIONAL PER-QUESTION PENALTY (NEW)
+    // null = use test-level negativeMarks
+    // =====================================================
+
+    private Integer negativeMarks;
+
+    // =====================================================
+
     @Column(columnDefinition = "TEXT")
     private String explanation;
 
@@ -103,6 +112,20 @@ public class Question {
     public void setMarks(Integer marks) {
         this.marks = marks;
     }
+
+    // =====================================================
+    // NEGATIVE MARKS
+    // =====================================================
+
+    public Integer getNegativeMarks() {
+        return negativeMarks;
+    }
+
+    public void setNegativeMarks(Integer negativeMarks) {
+        this.negativeMarks = negativeMarks;
+    }
+
+    // =====================================================
 
     public String getExplanation() {
         return explanation;

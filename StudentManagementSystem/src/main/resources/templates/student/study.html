@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{student/student-layout::head}"></head>
 
@@ -7,35 +8,491 @@
 
 <div class="d-flex student-layout">
 
+    <!-- SIDEBAR -->
+
     <div th:replace="~{student/student-layout::sidebar}"></div>
+
+    <!-- CONTENT -->
 
     <div class="student-content">
 
+        <!-- NAVBAR -->
+
         <div th:replace="~{student/student-layout::navbar}"></div>
+
+        <!-- ALERTS -->
+
         <div th:replace="~{student/student-layout::alerts}"></div>
 
-        <div class="container-fluid px-4 py-4">
+        <!-- INLINE PAGE CSS -->
 
-            <!-- STUDY HOME -->
+        <style>
+
+            /* ========================================================= */
+            /* STUDY PAGE WRAPPER                                        */
+            /* ========================================================= */
+
+            .study-page {
+                padding: 30px;
+                background: #f0f2f5;
+                flex: 1 1 auto;
+                width: 100%;
+            }
+
+            /* ========================================================= */
+            /* HEADER CARD                                               */
+            /* ========================================================= */
+
+            .study-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #ffffff;
+                border: 1px solid #e5eaf1;
+                border-radius: 14px;
+                padding: 25px 30px;
+                margin-bottom: 25px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            }
+
+            .study-header h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                color: #172b4d;
+            }
+
+            .study-header p {
+                margin-top: 7px;
+                margin-bottom: 0;
+                color: #7b8794;
+                font-size: 14px;
+            }
+
+            /* ========================================================= */
+            /* BREADCRUMB                                                */
+            /* ========================================================= */
+
+            .breadcrumb-line {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 10px;
+                font-size: 13px;
+                color: #7b8794;
+            }
+
+            .breadcrumb-line a {
+                color: #4361ee;
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.2s ease;
+            }
+
+            .breadcrumb-line a:hover {
+                color: #3a56d4;
+                text-decoration: underline;
+            }
+
+            /* ========================================================= */
+            /* SUBJECT ICON                                              */
+            /* ========================================================= */
+
+            .subject-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 14px;
+                background: #eaf3ff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4361ee;
+                font-size: 27px;
+                flex-shrink: 0;
+            }
+
+            /* ========================================================= */
+            /* SECTION TITLE                                             */
+            /* ========================================================= */
+
+            .section-title {
+                margin-bottom: 15px;
+            }
+
+            .section-title h2 {
+                margin: 0;
+                font-size: 20px;
+                font-weight: 700;
+                color: #172b4d;
+            }
+
+            .section-title p {
+                margin: 5px 0 0;
+                color: #7b8794;
+                font-size: 13px;
+            }
+
+            /* ========================================================= */
+            /* CHAPTER LIST (SUBJECTS GRID)                              */
+            /* ========================================================= */
+
+            .chapter-list {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .chapter-card {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                background: #ffffff;
+                border: 1px solid #e5eaf1;
+                border-radius: 12px;
+                padding: 18px 20px;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                color: inherit;
+            }
+
+            .chapter-card:hover {
+                border-color: #4361ee;
+                box-shadow: 0 5px 18px rgba(40, 120, 240, 0.08);
+                transform: translateX(3px);
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .chapter-number {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                border-radius: 10px;
+                background: #4361ee;
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                margin-right: 17px;
+                font-size: 15px;
+            }
+
+            .chapter-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .chapter-info h3 {
+                margin: 0 0 8px;
+                color: #172b4d;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .chapter-meta {
+                display: flex;
+                gap: 20px;
+                color: #7b8794;
+                font-size: 12px;
+            }
+
+            .chapter-meta span {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .chapter-meta i {
+                color: #4361ee;
+            }
+
+            .chapter-arrow {
+                color: #9aa7b5;
+                font-size: 18px;
+                margin-left: 12px;
+                transition: transform 0.2s ease;
+            }
+
+            .chapter-card:hover .chapter-arrow {
+                transform: translateX(4px);
+                color: #4361ee;
+            }
+
+            /* ========================================================= */
+            /* SUBJECT HEADER CARD                                       */
+            /* ========================================================= */
+
+            .subject-header-card {
+                background: #ffffff;
+                border: 1px solid #e5eaf1;
+                border-radius: 14px;
+                padding: 25px 30px;
+                margin-bottom: 25px;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            }
+
+            .subject-header-card h1 {
+                font-weight: 700;
+                font-size: 28px;
+                color: #172b4d;
+                margin: 0 0 6px;
+            }
+
+            .subject-header-card p {
+                color: #7b8794;
+                margin: 0;
+                font-size: 14px;
+            }
+
+            /* ========================================================= */
+            /* MODULES SECTION TITLE                                     */
+            /* ========================================================= */
+
+            .modules-heading {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .modules-heading h3 {
+                font-weight: 700;
+                font-size: 20px;
+                color: #172b4d;
+                margin: 0 0 4px;
+            }
+
+            .modules-heading p {
+                color: #7b8794;
+                margin: 0;
+                font-size: 13px;
+            }
+
+            /* ========================================================= */
+            /* CHAPTER / MODULE ROWS                                     */
+            /* ========================================================= */
+
+            .chapter-container {
+                width: 100%;
+            }
+
+            .chapter-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                background: #ffffff;
+                border: 1px solid #e9ecef;
+                border-radius: 12px;
+                padding: 16px 22px;
+                margin-bottom: 12px;
+                transition: box-shadow 0.2s ease, transform 0.2s ease;
+            }
+
+            .chapter-row:hover {
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+                transform: translateY(-1px);
+            }
+
+            .chapter-row .chapter-info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .chapter-row .chapter-name {
+                font-weight: 600;
+                font-size: 16px;
+                color: #212529;
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+            .chapter-row .chapter-name:hover {
+                color: #4361ee;
+                text-decoration: none;
+            }
+
+            .chapter-number-small {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #4361ee;
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+
+            .chapter-description {
+                color: #6c757d;
+                font-size: 14px;
+                margin-left: 36px;
+                margin-top: 4px;
+            }
+
+            .chapter-actions {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-left: 20px;
+                flex-shrink: 0;
+            }
+
+            .chapter-actions .btn {
+                width: 34px;
+                height: 34px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+            }
+
+            .chapter-actions .btn:hover {
+                transform: translateY(-1px);
+            }
+
+            /* ========================================================= */
+            /* EMPTY STATE                                               */
+            /* ========================================================= */
+
+            .empty-state {
+                background: #ffffff;
+                border: 1px solid #e9ecef;
+                border-radius: 14px;
+                text-align: center;
+                padding: 60px 20px;
+            }
+
+            .empty-state i {
+                font-size: 48px;
+                color: #adb5bd;
+            }
+
+            .empty-state h5 {
+                margin-top: 15px;
+                color: #212529;
+                font-weight: 600;
+            }
+
+            .empty-state p {
+                color: #7b8794;
+                margin-bottom: 0;
+                font-size: 14px;
+            }
+
+            /* ========================================================= */
+            /* RESPONSIVE — MOBILE                                       */
+            /* ========================================================= */
+
+            @media (max-width: 768px) {
+
+                .study-page {
+                    padding: 20px 15px;
+                }
+
+                .study-header,
+                .subject-header-card {
+                    padding: 20px;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .study-header h1,
+                .subject-header-card h1 {
+                    font-size: 24px;
+                }
+
+                .study-header p,
+                .subject-header-card p {
+                    font-size: 13px;
+                }
+
+                .subject-icon {
+                    width: 50px;
+                    height: 50px;
+                    font-size: 23px;
+                }
+
+                .chapter-card {
+                    padding: 15px;
+                }
+
+                .chapter-info h3 {
+                    font-size: 14px;
+                }
+
+                .chapter-meta {
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .chapter-row {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .chapter-actions {
+                    margin-left: 0;
+                    margin-top: 10px;
+                }
+
+                .chapter-description {
+                    margin-left: 36px;
+                }
+            }
+
+        </style>
+
+        <div class="study-page">
+
+            <!-- ========================================================= -->
+            <!-- STUDY HOME (no subject selected)                          -->
+            <!-- ========================================================= -->
+
             <div th:if="${study == null}">
 
+                <!-- HEADER -->
+
                 <div class="study-header">
+
                     <div>
-                        <div class="breadcrumb">
+
+                        <div class="breadcrumb-line">
                             <a th:href="@{/student/study}">Study</a>
                         </div>
+
                         <h1>Study</h1>
+
                         <p>Choose a subject to start learning</p>
+
                     </div>
+
                     <div class="subject-icon">
                         <i class="bi bi-book"></i>
                     </div>
+
                 </div>
+
+                <!-- SECTION TITLE -->
 
                 <div class="section-title">
                     <h2>Subjects</h2>
                     <p>Select a subject to view modules</p>
                 </div>
+
+                <!-- SUBJECT LIST -->
 
                 <div class="chapter-list">
 
@@ -44,16 +501,22 @@
                        th:href="@{'/student/study/' + ${subjectLower}}"
                        class="chapter-card">
 
-                        <div class="chapter-number" th:text="${stat.count}">1</div>
+                        <div class="chapter-number"
+                             th:text="${stat.count}">1</div>
 
                         <div class="chapter-info">
+
                             <h3 th:text="${subject.subject}">Physics</h3>
+
                             <div class="chapter-meta">
+
                                 <span>
                                     <i class="bi bi-book"></i>
                                     View Modules
                                 </span>
+
                             </div>
+
                         </div>
 
                         <div class="chapter-arrow">
@@ -66,67 +529,95 @@
 
             </div>
 
-            <!-- SUBJECT PAGE -->
+            <!-- ========================================================= -->
+            <!-- SUBJECT PAGE (subject selected)                           -->
+            <!-- ========================================================= -->
+
             <div th:if="${study != null}"
                  th:with="subjectLower=${#strings.toLowerCase(subjectName)}">
 
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
+                <!-- SUBJECT HEADER -->
 
-                            <div>
-                                <div class="mb-2">
-                                    <a th:href="@{/student/study}"
-                                       class="text-primary text-decoration-none">
-                                        Study
-                                    </a>
-                                    <span class="mx-2">›</span>
-                                    <span th:text="${subjectName}">Physics</span>
-                                </div>
+                <div class="subject-header-card">
 
-                                <h1 class="fw-bold mb-1" th:text="${subjectName}"></h1>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-                                <p class="text-muted mb-0"
-                                   th:if="${study.description != null && !study.description.isEmpty()}"
-                                   th:text="${study.description}">
-                                </p>
+                        <div>
+
+                            <div class="breadcrumb-line">
+
+                                <a th:href="@{/student/study}">Study</a>
+
+                                <span>›</span>
+
+                                <span th:text="${subjectName}">Physics</span>
+
                             </div>
 
-                            <div class="subject-icon">
-                                <i th:if="${subjectName == 'Physics'}" class="bi bi-lightning-charge"></i>
-                                <i th:if="${subjectName == 'Chemistry'}" class="bi bi-droplet"></i>
-                                <i th:if="${subjectName == 'Biology'}" class="bi bi-heart-pulse"></i>
-                            </div>
+                            <h1 th:text="${subjectName}">Physics</h1>
+
+                            <p th:if="${study.description != null && !study.description.isEmpty()}"
+                               th:text="${study.description}">
+                            </p>
 
                         </div>
+
+                        <div class="subject-icon">
+
+                            <i th:if="${subjectName == 'Physics'}"
+                               class="bi bi-lightning-charge"></i>
+
+                            <i th:if="${subjectName == 'Chemistry'}"
+                               class="bi bi-droplet"></i>
+
+                            <i th:if="${subjectName == 'Biology'}"
+                               class="bi bi-heart-pulse"></i>
+
+                        </div>
+
                     </div>
+
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <!-- MODULES HEADING -->
+
+                <div class="modules-heading">
+
                     <div>
-                        <h3 class="fw-bold mb-1" th:text="${subjectName + ' Modules'}"></h3>
-                        <p class="text-muted mb-0">Select a module to view its chapters</p>
+
+                        <h3 th:text="${subjectName + ' Modules'}">Physics Modules</h3>
+
+                        <p>Select a module to view its chapters</p>
+
                     </div>
+
                 </div>
+
+                <!-- EMPTY STATE -->
 
                 <div th:if="${modules == null || modules.isEmpty()}"
-                     class="card border-0 shadow-sm">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-journal-x fs-1 text-muted"></i>
-                        <h5 class="mt-3">No Modules Found</h5>
-                        <p class="text-muted mb-0">
-                            No modules have been added to this subject yet.
-                        </p>
-                    </div>
+                     class="empty-state">
+
+                    <i class="bi bi-journal-x"></i>
+
+                    <h5>No Modules Found</h5>
+
+                    <p>No modules have been added to this subject yet.</p>
+
                 </div>
+
+                <!-- MODULES LIST -->
 
                 <div th:if="${modules != null && !modules.isEmpty()}"
                      class="chapter-container">
 
-                    <div th:each="module : ${modules}" class="chapter-row">
+                    <div th:each="module : ${modules}"
+                         class="chapter-row">
 
                         <div class="chapter-info">
+
                             <div class="d-flex align-items-center gap-2">
+
                                 <span class="chapter-number-small"
                                       th:text="${module.moduleNumber}">1</span>
 
@@ -134,20 +625,26 @@
                                    class="chapter-name"
                                    th:text="${module.name}">
                                 </a>
+
                             </div>
 
                             <div class="chapter-description"
                                  th:if="${module.description != null && !module.description.isEmpty()}"
                                  th:text="${module.description}">
                             </div>
+
                         </div>
 
                         <div class="chapter-actions">
+
                             <a th:href="@{'/student/study/' + ${subjectLower} + '/module/' + ${module.id}}"
                                class="btn btn-sm btn-outline-primary"
                                title="View">
+
                                 <i class="bi bi-eye"></i>
+
                             </a>
+
                         </div>
 
                     </div>
@@ -158,11 +655,15 @@
 
         </div>
 
+        <!-- FOOTER -->
+
         <div th:replace="~{student/student-layout::footer}"></div>
 
     </div>
 
 </div>
+
+<!-- SCRIPTS -->
 
 <th:block th:replace="~{student/student-layout::scripts}"></th:block>
 

@@ -5,236 +5,950 @@
 <head th:fragment="head">
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="_csrf" th:content="${_csrf.token}">
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
 
-    <title>SMS Student Portal</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SMS Student</title>
+
+    <!-- ================================================= -->
+    <!-- CSRF -->
+    <!-- ================================================= -->
+
+    <meta name="_csrf"
+          th:content="${_csrf.token}">
+
+    <meta name="_csrf_header"
+          th:content="${_csrf.headerName}">
+
+    <!-- ================================================= -->
+    <!-- BOOTSTRAP CSS -->
+    <!-- ================================================= -->
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
+    <!-- ================================================= -->
+    <!-- BOOTSTRAP ICONS -->
+    <!-- ================================================= -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
           rel="stylesheet">
 
-    <link th:href="@{/css/student-style.css}" rel="stylesheet">
+    <!-- ================================================= -->
+    <!-- INLINE LAYOUT CSS -->
+    <!-- ================================================= -->
+
+    <style>
+
+        /* ========================================================= */
+        /* BASE                                                      */
+        /* ========================================================= */
+
+        html, body {
+            height: auto;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #2b2d42;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ========================================================= */
+        /* LAYOUT WRAPPER                                            */
+        /* ========================================================= */
+
+        body > .d-flex,
+        .student-layout {
+            display: flex !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            min-height: 100vh !important;
+        }
+
+        /* ========================================================= */
+        /* SIDEBAR                                                   */
+        /* ========================================================= */
+
+        .student-sidebar {
+            width: 260px !important;
+            min-width: 260px !important;
+            flex-shrink: 0 !important;
+            background-color: #1e2129 !important;
+            color: #fff;
+            display: flex !important;
+            flex-direction: column !important;
+            position: sticky !important;
+            top: 0 !important;
+            height: 100vh !important;
+            overflow-y: auto !important;
+            z-index: 1000 !important;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            transition: margin-left 0.25s ease-in-out;
+        }
+
+        .student-brand {
+            padding: 1.5rem;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+
+        .student-brand i {
+            color: #4361ee;
+            font-size: 1.6rem;
+        }
+
+        .student-sidebar nav {
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.25s ease;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            background: transparent;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .student-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-left-color: #4361ee;
+            transform: translateX(4px);
+        }
+
+        .student-link.active {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.10);
+            border-left-color: #4361ee;
+        }
+
+        .student-link i {
+            font-size: 1.1rem;
+            min-width: 22px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .student-link:hover i {
+            transform: scale(1.1);
+        }
+
+        .student-link:focus,
+        .student-link:active {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .study-main-link .study-arrow,
+        .test-main-link .test-arrow {
+            transition: transform 0.25s ease;
+            margin-left: auto;
+        }
+
+        .study-main-link.study-open .study-arrow,
+        .test-main-link.test-open .test-arrow {
+            transform: rotate(180deg);
+        }
+
+        #studentStudyMenu .student-link,
+        #studentTestMenu .student-link {
+            padding-left: 3rem;
+            font-size: 14px;
+        }
+
+        /* ========================================================= */
+        /* CONTENT WRAPPER                                           */
+        /* ========================================================= */
+
+        .student-content {
+            flex: 1 1 auto !important;
+            width: calc(100% - 260px) !important;
+            min-width: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 100vh !important;
+            background-color: #f0f2f5 !important;
+        }
+
+        .student-content > * {
+            width: 100%;
+        }
+
+        .student-content > .container-fluid,
+        .student-content > .study-content,
+        .student-content > .study-page,
+        .student-content > .subject-page,
+        .student-content > .settings-page,
+        .student-content > .ai-page,
+        .student-content > .id-card-page {
+            flex: 1 1 auto;
+            width: 100% !important;
+        }
+
+        /* ========================================================= */
+        /* TOPBAR / NAVBAR                                           */
+        /* ========================================================= */
+
+        .student-topbar {
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.8rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .student-topbar .navbar-brand {
+            font-weight: 700;
+            color: #2b2d42;
+            font-size: 1.15rem;
+        }
+
+        .student-topbar a {
+            color: #2b2d42;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .student-topbar a:hover {
+            color: #4361ee;
+        }
+
+        .navbar-profile-img {
+            width: 28px;
+            height: 28px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #dee2e6;
+        }
+
+        /* ========================================================= */
+        /* PROFILE DROPDOWN — admin-portal style                     */
+        /* ========================================================= */
+
+        .student-topbar .dropdown-menu {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 8px;
+            min-width: 240px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+            margin-top: 10px;
+        }
+
+        .student-topbar .dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2b2d42;
+            transition: all 0.18s ease;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        .student-topbar .dropdown-menu .dropdown-item i {
+            font-size: 1.05rem;
+            color: #50535d;
+            min-width: 20px;
+            text-align: center;
+            transition: color 0.18s ease;
+        }
+
+        .student-topbar .dropdown-menu .dropdown-item:hover {
+            background: #f1f3f5;
+            color: #1a1d21;
+        }
+
+        .student-topbar .dropdown-menu .dropdown-item:hover i {
+            color: #4361ee;
+        }
+
+        .student-topbar .dropdown-menu .dropdown-divider {
+            margin: 6px 4px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .student-topbar .dropdown-menu form button.dropdown-item {
+            cursor: pointer;
+        }
+
+        .student-topbar .dropdown-menu form button.dropdown-item:hover {
+            background: #fff5f5;
+            color: #dc3545;
+        }
+
+        .student-topbar .dropdown-menu form button.dropdown-item:hover i {
+            color: #dc3545;
+        }
+
+        /* ========================================================= */
+        /* CARDS                                                     */
+        /* ========================================================= */
+
+        .student-card,
+        .card {
+            border: none;
+            border-radius: 1rem;
+            background: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .student-card:hover,
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+            border-radius: 1rem 1rem 0 0 !important;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: #eef3ff;
+        }
+
+        /* ========================================================= */
+        /* BUTTONS                                                   */
+        /* ========================================================= */
+
+        .btn {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background-color: #4361ee;
+            border-color: #4361ee;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #3a56d4;
+            border-color: #3a56d4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(67, 97, 238, 0.4);
+        }
+
+        /* ========================================================= */
+        /* TABLES                                                    */
+        /* ========================================================= */
+
+        .table {
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #f0f0f0;
+            color: #8d99ae;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 1rem 0.75rem;
+        }
+
+        .table td {
+            padding: 1rem 0.75rem;
+            color: #2b2d42;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fb;
+        }
+
+        /* ========================================================= */
+        /* FORMS                                                     */
+        /* ========================================================= */
+
+        .form-control,
+        .form-select {
+            border-radius: 0.5rem;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e2e8f0;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #2b2d42;
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========================================================= */
+        /* ALERTS                                                    */
+        /* ========================================================= */
+
+        .alert {
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .alert-success { background-color: #d1f7e4; color: #0b5f3a; }
+        .alert-danger  { background-color: #fddce0; color: #842029; }
+        .alert-info    { background-color: #d7ecfc; color: #055160; }
+        .alert-warning { background-color: #fff3cd; color: #664d03; }
+
+        /* ========================================================= */
+        /* FOOTER                                                    */
+        /* ========================================================= */
+
+        .student-content footer {
+            padding: 24px 25px;
+            color: #8d99ae;
+            font-size: 0.85rem;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+            flex-shrink: 0;
+        }
+
+        /* ========================================================= */
+        /* SIDEBAR COLLAPSED (toggled)                               */
+        /* ========================================================= */
+
+        body.sb-sidenav-toggled .student-sidebar {
+            margin-left: -260px;
+        }
+
+        body.sb-sidenav-toggled .student-content {
+            width: 100% !important;
+        }
+
+        /* ========================================================= */
+        /* RESPONSIVE — MOBILE                                       */
+        /* ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .student-sidebar {
+                width: 72px !important;
+                min-width: 72px !important;
+            }
+
+            .student-content {
+                width: calc(100% - 72px) !important;
+            }
+
+            .student-brand span,
+            .student-link span {
+                display: none;
+            }
+
+            .student-brand {
+                justify-content: center;
+                padding: 1.2rem 0.5rem;
+            }
+
+            .student-link {
+                justify-content: center;
+                padding: 14px 0;
+                gap: 0;
+            }
+
+            .student-link i {
+                margin: 0;
+                font-size: 1.3rem;
+            }
+
+            body.sb-sidenav-toggled .student-sidebar {
+                margin-left: -72px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+<body>
 
-<aside th:fragment="sidebar" class="student-sidebar bg-dark text-white">
+<!-- ========================================================= -->
+<!-- ALERTS FRAGMENT                                           -->
+<!-- ========================================================= -->
 
-    <div class="student-brand border-bottom border-secondary">
-        <i class="bi bi-mortarboard-fill me-2"></i>
+<div th:fragment="alerts">
+
+    <div th:if="${successMessage}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}">Success</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}">Error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${warningMessage}"
+         class="alert alert-warning alert-dismissible fade show"
+         role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>
+        <span th:text="${warningMessage}">Warning</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${infoMessage}"
+         class="alert alert-info alert-dismissible fade show"
+         role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <span th:text="${infoMessage}">Info</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${flashSuccess}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${flashSuccess}">Success</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${flashError}"
+         class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${flashError}">Error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- SIDEBAR                                                   -->
+<!-- ========================================================= -->
+
+<div th:fragment="sidebar"
+     class="student-sidebar">
+
+    <!-- BRAND -->
+
+    <div class="student-brand">
+        <i class="bi bi-mortarboard-fill"></i>
         <span>SMS Student</span>
     </div>
 
-    <nav class="mt-2">
+    <!-- NAV -->
+
+    <nav>
+
+        <!-- DASHBOARD -->
 
         <a th:href="@{/student/dashboard}" class="student-link">
             <i class="bi bi-speedometer2"></i>
             <span>Dashboard</span>
         </a>
 
+        <!-- COURSES -->
+
         <a th:href="@{/student/courses}" class="student-link">
             <i class="bi bi-book"></i>
-            <span>My Courses</span>
+            <span>Courses</span>
         </a>
 
-        <a class="student-link"
+        <!-- STUDY MAIN -->
+
+        <a class="student-link study-main-link"
+           href="javascript:void(0)"
            data-bs-toggle="collapse"
-           href="#studySubmenu"
+           data-bs-target="#studentStudyMenu"
            role="button"
            aria-expanded="false"
-           aria-controls="studySubmenu">
-            <i class="bi bi-journal-bookmark"></i>
+           aria-controls="studentStudyMenu">
+            <i class="bi bi-mortarboard"></i>
             <span>Study</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
+            <i class="bi bi-chevron-down ms-auto study-arrow"></i>
         </a>
 
-        <div class="collapse" id="studySubmenu">
-            <a th:href="@{/student/study/physics}" class="student-link student-sub-link">
+        <!-- STUDY SUB -->
+
+        <div class="collapse" id="studentStudyMenu">
+
+            <a th:href="@{/student/study/physics}" class="student-link">
                 <i class="bi bi-lightning-charge"></i>
                 <span>Physics</span>
             </a>
-            <a th:href="@{/student/study/chemistry}" class="student-link student-sub-link">
+
+            <a th:href="@{/student/study/chemistry}" class="student-link">
                 <i class="bi bi-droplet"></i>
                 <span>Chemistry</span>
             </a>
-            <a th:href="@{/student/study/biology}" class="student-link student-sub-link">
+
+            <a th:href="@{/student/study/biology}" class="student-link">
                 <i class="bi bi-heart-pulse"></i>
                 <span>Biology</span>
             </a>
+
         </div>
 
-        <a class="student-link"
+        <!-- TESTS MAIN -->
+
+        <a class="student-link test-main-link"
+           href="javascript:void(0)"
            data-bs-toggle="collapse"
-           href="#testSubmenu"
+           data-bs-target="#studentTestMenu"
            role="button"
            aria-expanded="false"
-           aria-controls="testSubmenu">
-            <i class="bi bi-pencil-square"></i>
+           aria-controls="studentTestMenu">
+            <i class="bi bi-file-earmark-text"></i>
             <span>Tests</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
+            <i class="bi bi-chevron-down ms-auto test-arrow"></i>
         </a>
 
-        <div class="collapse" id="testSubmenu">
-            <a th:href="@{/student/tests}" class="student-link student-sub-link">
-                <i class="bi bi-file-earmark-text"></i>
-                <span>Available Tests</span>
+        <!-- TESTS SUB -->
+
+        <div class="collapse" id="studentTestMenu">
+
+            <a th:href="@{/student/tests}" class="student-link">
+                <i class="bi bi-pencil-square"></i>
+                <span>Tests</span>
             </a>
-            <a th:href="@{/student/results}" class="student-link student-sub-link">
-                <i class="bi bi-bar-chart"></i>
-                <span>My Results</span>
-            </a>
-            <a th:href="@{/student/analysis}" class="student-link student-sub-link">
-                <i class="bi bi-activity"></i>
+
+            <a th:href="@{/student/tests/analysis}" class="student-link">
+                <i class="bi bi-graph-up-arrow"></i>
                 <span>Analysis</span>
             </a>
+
+            <a th:href="@{/student/results}" class="student-link">
+                <i class="bi bi-bar-chart"></i>
+                <span>Results</span>
+            </a>
+
         </div>
+
+        <!-- FEES -->
 
         <a th:href="@{/student/fees}" class="student-link">
             <i class="bi bi-wallet2"></i>
-            <span>My Fees</span>
+            <span>Fees</span>
         </a>
+
+        <!-- ID CARD ← NEW -->
+
+        <a th:href="@{/student/id-card}" class="student-link">
+            <i class="bi bi-person-vcard"></i>
+            <span>ID Card</span>
+        </a>
+
+        <!-- AI ASSISTANT -->
+
+        <a th:href="@{/student/ai-assistant}" class="student-link">
+            <i class="bi bi-robot"></i>
+            <span>AI Assistant</span>
+        </a>
+
+        <!-- PROFILE -->
 
         <a th:href="@{/student/profile}" class="student-link">
             <i class="bi bi-person-circle"></i>
-            <span>My Profile</span>
+            <span>Profile</span>
         </a>
-
-        <form method="post" th:action="@{/logout}" class="m-0">
-            <input type="hidden"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}">
-            <button type="submit"
-                    class="student-link w-100 border-0 bg-transparent text-start">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
-            </button>
-        </form>
 
     </nav>
 
-</aside>
+</div>
 
+<!-- ========================================================= -->
+<!-- NAVBAR                                                    -->
+<!-- ========================================================= -->
 
-<div th:fragment="navbar" class="student-navbar-wrapper">
+<nav th:fragment="navbar"
+     class="student-topbar navbar navbar-expand-lg navbar-light">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom student-topbar">
+    <div class="container-fluid">
 
-        <div class="container-fluid">
+        <!-- SIDEBAR TOGGLE -->
 
-            <span class="navbar-brand fw-bold">Student Portal</span>
+        <button class="btn btn-outline-secondary"
+                id="sidebarToggle"
+                type="button">
+            <i class="bi bi-list"></i>
+        </button>
 
-            <div class="ms-auto d-flex align-items-center gap-2">
-                <a th:href="@{/student/profile}" class="text-decoration-none text-dark">
-                    <i class="bi bi-person-circle me-1"></i>
-                    <span th:text="${#authentication.name}">Student</span>
-                </a>
-            </div>
+        <!-- MOBILE NAVBAR TOGGLE -->
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- NAVBAR CONTENT -->
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle d-flex align-items-center"
+                       href="#"
+                       id="navbarDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <img th:src="@{/student/profile/image}"
+                             alt="Profile"
+                             class="rounded-circle me-2 navbar-profile-img"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+
+                        <i class="bi bi-person-circle me-2" style="display:none;"></i>
+
+                        <span th:text="${student != null ? student.firstName + ' ' + student.lastName : 'Student'}">
+                            Student
+                        </span>
+
+                    </a>
+
+                    <!-- ========================================= -->
+                    <!-- DROPDOWN — admin-portal style              -->
+                    <!-- ========================================= -->
+
+                    <div class="dropdown-menu dropdown-menu-end shadow"
+                         aria-labelledby="navbarDropdown">
+
+                        <!-- PROFILE -->
+
+                        <a class="dropdown-item" th:href="@{/student/profile}">
+                            <i class="bi bi-person"></i>
+                            Profile
+                        </a>
+
+                        <!-- LEADERSHIP BOARD -->
+
+                        <a class="dropdown-item" th:href="@{/leadership}">
+                            <i class="bi bi-trophy"></i>
+                            Leadership Board
+                        </a>
+
+                        <!-- ID CARD ← NEW -->
+
+                        <a class="dropdown-item" th:href="@{/student/id-card}">
+                            <i class="bi bi-person-vcard"></i>
+                            ID Card
+                        </a>
+
+                        <!-- FEES DETAILS -->
+
+                        <a class="dropdown-item" th:href="@{/student/fees}">
+                            <i class="bi bi-wallet2"></i>
+                            Fees Details
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <!-- LOGOUT -->
+
+                        <form method="post"
+                              th:action="@{/logout}"
+                              style="margin:0;">
+
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}">
+
+                            <button type="submit" class="dropdown-item">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </li>
+
+            </ul>
 
         </div>
 
-    </nav>
-
-</div>
-
-
-<div th:fragment="alerts" class="container-fluid px-4 pt-3">
-
-    <div th:if="${message}"
-         class="alert alert-success alert-dismissible fade show"
-         role="alert">
-        <i class="bi bi-check-circle me-2"></i>
-        <span th:text="${message}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <div th:if="${error}"
-         class="alert alert-danger alert-dismissible fade show"
-         role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        <span th:text="${error}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</nav>
+
+<!-- ========================================================= -->
+<!-- FOOTER                                                    -->
+<!-- ========================================================= -->
+
+<footer th:fragment="footer">
+
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Student Management System</div>
+            <div class="text-muted">© 2026 SMS Student</div>
+        </div>
     </div>
 
-</div>
-
-
-<footer th:fragment="footer" class="py-4 mt-5 border-top text-muted">
-    <div class="container-fluid px-4 small">
-        Student Management System © 2026
-    </div>
 </footer>
 
+<!-- ========================================================= -->
+<!-- SCRIPTS                                                   -->
+<!-- ========================================================= -->
 
 <th:block th:fragment="scripts">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+
         document.addEventListener("DOMContentLoaded", function () {
 
-            const path = window.location.pathname;
+            /* SIDEBAR TOGGLE */
+            const sidebarToggle = document.getElementById("sidebarToggle");
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener("click", function () {
+                    document.body.classList.toggle("sb-sidenav-toggled");
+                });
+            }
 
-            if (path.startsWith("/student/study")) {
-                const submenu = document.getElementById("studySubmenu");
-                if (submenu) {
-                    submenu.classList.add("show");
-                    const toggle = document.querySelector('[href="#studySubmenu"]');
-                    if (toggle) toggle.setAttribute("aria-expanded", "true");
+            /* STUDY MENU ARROW */
+            const studyMenu = document.getElementById("studentStudyMenu");
+            const studyLink = document.querySelector(".study-main-link");
+            if (studyMenu && studyLink) {
+                studyMenu.addEventListener("show.bs.collapse", function () {
+                    studyLink.classList.add("study-open");
+                });
+                studyMenu.addEventListener("hide.bs.collapse", function () {
+                    studyLink.classList.remove("study-open");
+                });
+            }
+
+            /* TEST MENU ARROW */
+            const testMenu = document.getElementById("studentTestMenu");
+            const testLink = document.querySelector(".test-main-link");
+            if (testMenu && testLink) {
+                testMenu.addEventListener("show.bs.collapse", function () {
+                    testLink.classList.add("test-open");
+                });
+                testMenu.addEventListener("hide.bs.collapse", function () {
+                    testLink.classList.remove("test-open");
+                });
+            }
+
+            /* AUTO-OPEN MENU FOR CURRENT PAGE */
+            const currentPath = window.location.pathname;
+
+            function openMenu(menuId) {
+                const el = document.getElementById(menuId);
+                if (el) {
+                    new bootstrap.Collapse(el, { toggle: false }).show();
                 }
             }
 
-            if (path.startsWith("/student/tests")
-                || path.startsWith("/student/results")
-                || path.startsWith("/student/analysis")) {
-                const submenu = document.getElementById("testSubmenu");
-                if (submenu) {
-                    submenu.classList.add("show");
-                    const toggle = document.querySelector('[href="#testSubmenu"]');
-                    if (toggle) toggle.setAttribute("aria-expanded", "true");
-                }
+            if (currentPath.startsWith("/student/study")) {
+                openMenu("studentStudyMenu");
             }
+            else if (
+                currentPath.startsWith("/student/tests") ||
+                currentPath.startsWith("/student/results")
+            ) {
+                openMenu("studentTestMenu");
+            }
+
+            /* HIGHLIGHT ACTIVE SIDEBAR LINK */
+            document.querySelectorAll(".student-link").forEach(function (link) {
+                const href = link.getAttribute("href");
+                if (!href || href === "javascript:void(0)") return;
+
+                if (href === currentPath) {
+                    link.classList.add("active");
+                }
+                else if (
+                    href !== "/student/dashboard" &&
+                    href !== "/student/tests" &&
+                    href !== "/student/results" &&
+                    currentPath.startsWith(href)
+                ) {
+                    link.classList.add("active");
+                }
+            });
 
         });
+
     </script>
 
 </th:block>
 
-
-<style>
-
-    .student-sub-link {
-        padding-left: 50px !important;
-        font-size: 14px;
-        opacity: 0.85;
-    }
-
-    .student-sub-link i {
-        font-size: 14px;
-        min-width: 18px;
-    }
-
-    .student-sub-link:hover {
-        opacity: 1;
-    }
-
-    .student-link .bi-chevron-down {
-        transition: transform 0.25s ease;
-        font-size: 12px;
-        opacity: 0.6;
-    }
-
-    .student-link[aria-expanded="true"] .bi-chevron-down {
-        transform: rotate(180deg);
-    }
-
-    .student-link:hover .bi-chevron-down {
-        opacity: 1;
-    }
-
-</style>
+</body>
 
 </html>
