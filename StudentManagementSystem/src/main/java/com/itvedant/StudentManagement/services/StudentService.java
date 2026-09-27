@@ -1,4 +1,3 @@
-
 package com.itvedant.StudentManagement.services;
 
 import java.util.List;
@@ -28,4 +27,7 @@ public interface StudentService {
             StudentDTO studentDTO);
 
     List<StudentDTO> getAllStudents();
+
+    // ADD THIS METHOD
+    void deleteStudent(Long id);
 }

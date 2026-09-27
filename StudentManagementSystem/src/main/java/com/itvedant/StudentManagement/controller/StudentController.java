@@ -1,8 +1,3 @@
-// ============================================================
-// FILE:
-// src/main/java/com/itvedant/StudentManagement/controller/StudentController.java
-// ============================================================
-
 package com.itvedant.StudentManagement.controller;
 
 import org.slf4j.Logger;
@@ -28,155 +23,96 @@ import jakarta.validation.Valid;
 @RequestMapping("/students")
 public class StudentController {
 
-    private static final Logger log =
-            LoggerFactory.getLogger(
-                    StudentController.class);
+	private static final Logger log = LoggerFactory.getLogger(StudentController.class);
 
-    private final StudentService studentService;
+	private final StudentService studentService;
 
-    public StudentController(
-            StudentService studentService) {
+	public StudentController(StudentService studentService) {
+		this.studentService = studentService;
+	}
 
-        this.studentService =
-                studentService;
-    }
+	@GetMapping("")
+	public String redirectToList() {
+		return "redirect:/students/list";
+	}
 
-    @GetMapping("")
-    public String redirectToList() {
+	@GetMapping("/new")
+	public String showCreateStudent(Model model) {
+		model.addAttribute("studentDto", new StudentDTO());
+		return "add-student";
+	}
 
-        return "redirect:/students/list";
-    }
+	@GetMapping("/list")
+	public String listStudent(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7") int size,
+			Model model) {
 
-    @GetMapping("/new")
-    public String showCreateStudent(
-            Model model) {
+		Page<StudentDTO> students = studentService.getStudents(page, size);
+		model.addAttribute("students", students);
+		return "students";
+	}
 
-        model.addAttribute(
-                "studentDto",
-                new StudentDTO());
+	@PostMapping("/save")
+	public String createStudent(@Valid @ModelAttribute("studentDto") StudentDTO studentDTO, BindingResult bindingResult,
+			Model model, RedirectAttributes redirectAttribute) {
 
-        return "add-student";
-    }
+		if (bindingResult.hasErrors()) {
+			return "add-student";
+		}
 
-    @GetMapping("/list")
-    public String listStudent(
-            @RequestParam(
-                defaultValue = "0") int page,
-            @RequestParam(
-                defaultValue = "7") int size,
-            Model model) {
+		if (studentService.existsByEmailIgnoreCase(studentDTO.getEmail())) {
+			bindingResult.rejectValue("email", "duplicate", "Email must be unique");
+			return "add-student";
+		}
 
-        Page<StudentDTO> students =
-                studentService.getStudents(
-                    page,
-                    size);
+		studentService.createStudent(studentDTO);
+		redirectAttribute.addFlashAttribute("message", "Student is added successfully");
+		return "redirect:/students/list";
+	}
 
-        model.addAttribute(
-                "students",
-                students);
+	@GetMapping("/{id}")
+	public String getStudentById(@PathVariable Long id, Model model) {
+		StudentDTO student = studentService.getStudentById(id);
+		model.addAttribute("student", student);
+		return "view-student";
+	}
 
-        return "students";
-    }
+	@GetMapping("/{id}/edit")
+	public String showEditStudent(@PathVariable Long id, Model model) {
+		StudentDTO student = studentService.getStudentById(id);
+		model.addAttribute("studentDto", student);
+		return "edit-student";
+	}
 
-    @PostMapping("/save")
-    public String createStudent(
-            @Valid
-            @ModelAttribute("studentDto")
-            StudentDTO studentDTO,
-            BindingResult bindingResult,
-            Model model,
-            RedirectAttributes redirectAttribute) {
+	@PostMapping("/{id}/update")
+	public String updateStudent(@PathVariable Long id, @Valid @ModelAttribute("studentDto") StudentDTO studentDTO,
+			BindingResult bindingResult, RedirectAttributes redirectAttribute) {
 
-        if (bindingResult.hasErrors()) {
-            return "add-student";
-        }
+		if (bindingResult.hasErrors()) {
+			return "edit-student";
+		}
 
-        if (studentService
-                .existsByEmailIgnoreCase(
-                    studentDTO.getEmail())) {
+		if (studentService.existsByEmailIgnoreCaseAndIdNot(studentDTO.getEmail(), id)) {
+			bindingResult.rejectValue("email", "duplicate", "Email must be unique");
+			return "edit-student";
+		}
 
-            bindingResult.rejectValue(
-                    "email",
-                    "duplicate",
-                    "Email must be unique");
+		studentService.updateStudent(id, studentDTO);
+		redirectAttribute.addFlashAttribute("message", "Student is Updated successfully");
+		return "redirect:/students/list";
+	}
 
-            return "add-student";
-        }
-
-        studentService.createStudent(
-                studentDTO);
-
-        redirectAttribute.addFlashAttribute(
-                "message",
-                "Student is added successfully");
-
-        return "redirect:/students/list";
-    }
-
-    @GetMapping("/{id}")
-    public String getStudentById(
-            @PathVariable Long id,
-            Model model) {
-
-        StudentDTO student =
-                studentService.getStudentById(id);
-
-        model.addAttribute(
-                "student",
-                student);
-
-        return "view-student";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String showEditStudent(
-            @PathVariable Long id,
-            Model model) {
-
-        StudentDTO student =
-                studentService.getStudentById(id);
-
-        model.addAttribute(
-                "studentDto",
-                student);
-
-        return "edit-student";
-    }
-
-    @PostMapping("/{id}/update")
-    public String updateStudent(
-            @PathVariable Long id,
-            @Valid
-            @ModelAttribute("studentDto")
-            StudentDTO studentDTO,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttribute) {
-
-        if (bindingResult.hasErrors()) {
-            return "edit-student";
-        }
-
-        if (studentService
-                .existsByEmailIgnoreCaseAndIdNot(
-                    studentDTO.getEmail(),
-                    id)) {
-
-            bindingResult.rejectValue(
-                    "email",
-                    "duplicate",
-                    "Email must be unique");
-
-            return "edit-student";
-        }
-
-        studentService.updateStudent(
-                id,
-                studentDTO);
-
-        redirectAttribute.addFlashAttribute(
-                "message",
-                "Student is Updated successfully");
-
-        return "redirect:/students/list";
-    }
+	// ============================================================
+	// NEW DELETE ENDPOINT
+	// ============================================================
+	@PostMapping("/delete/{id}")
+	public String deleteStudent(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+		try {
+			studentService.deleteStudent(id);
+			redirectAttributes.addFlashAttribute("message", "Student deleted successfully!");
+		} catch (Exception e) {
+			log.error("Error deleting student with id: {}", id, e);
+			redirectAttributes.addFlashAttribute("errorMessage", "Error deleting student: " + e.getMessage());
+		}
+		return "redirect:/students/list";
+	}
 }

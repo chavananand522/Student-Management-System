@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/layout::head}"></head>
@@ -9,11 +8,9 @@
     <div class="d-flex" id="wrapper">
 
         <!-- Sidebar -->
-
         <div th:replace="~{fragments/layout::sidebar}"></div>
 
         <!-- Page Content -->
-
         <div id="page-content-wrapper">
 
             <div th:replace="~{fragments/layout::navbar}"></div>
@@ -21,13 +18,10 @@
             <div class="container-fluid px-4 py-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-
                     <h2>Students</h2>
-
                     <a th:href="@{/students/new}" class="btn btn-primary">
                         <i class="bi bi-plus-lg me-1"></i> Add New Student
                     </a>
-
                 </div>
 
                 <div th:if="${message}"
@@ -39,9 +33,7 @@
                 <div class="card mb-4">
 
                     <div class="card-header bg-white">
-
                         <i class="bi bi-table me-1"></i> Student List
-
                     </div>
 
                     <div class="card-body">
@@ -54,24 +46,16 @@
                         <div class="table-responsive"
                              th:if="${!students.content.isEmpty()}">
 
-                            <table class="table table-hover table-striped">
+                            <table class="table table-hover table-striped align-middle">
 
                                 <thead>
-
                                     <tr>
-
                                         <th>ID</th>
-
                                         <th>Name</th>
-
                                         <th>Email</th>
-
                                         <th>Phone</th>
-
                                         <th>Actions</th>
-
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
@@ -95,19 +79,37 @@
                                         </td>
 
                                         <td data-label="Actions">
+                                            <!-- UPDATED ACTION BUTTONS (View, Edit, Delete) -->
+                                            <div class="d-flex gap-2">
+                                                
+                                                <!-- View Button (Blue Outline Eye) -->
+                                                <a th:href="@{/students/{id}(id=${student.id})}"
+                                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                                   style="width: 36px; height: 36px; border-radius: 8px;"
+                                                   title="View">
+                                                    <i class="bi bi-eye fs-6"></i>
+                                                </a>
 
-                                            <a th:href="@{/students/{id}(id=${student.id})}"
-                                               class="btn btn-sm btn-info text-white me-1"
-                                               title="View">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
+                                                <!-- Edit Button (Yellow Outline Pencil) -->
+                                                <a th:href="@{/students/{id}/edit(id=${student.id})}"
+                                                   class="btn btn-sm btn-outline-warning text-warning d-flex align-items-center justify-content-center"
+                                                   style="width: 36px; height: 36px; border-radius: 8px;"
+                                                   title="Edit">
+                                                    <i class="bi bi-pencil fs-6"></i>
+                                                </a>
 
-                                            <a th:href="@{/students/{id}/edit(id=${student.id})}"
-                                               class="btn btn-sm btn-warning text-white me-1"
-                                               title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
+                                                <!-- Delete Button (Red Outline Trash) -->
+                                                <form th:action="@{'/students/delete/' + ${student.id}}" method="post" class="d-inline">
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                                            style="width: 36px; height: 36px; border-radius: 8px;"
+                                                            title="Delete"
+                                                            onclick="return confirm('Are you sure you want to delete this student?');">
+                                                        <i class="bi bi-trash fs-6"></i>
+                                                    </button>
+                                                </form>
 
+                                            </div>
                                         </td>
 
                                     </tr>
@@ -124,40 +126,31 @@
                             <ul class="pagination justify-content-end">
 
                                 <!-- Previous -->
-
                                 <li class="page-item"
                                     th:classappend="${students.first} ? 'disabled'">
-
                                     <a class="page-link"
                                        th:href="@{/students/list(page=${students.first ? 0 : students.number - 1}, size=${students.size})}">
                                         Previous
                                     </a>
-
                                 </li>
 
                                 <!-- Page numbers -->
-
                                 <li class="page-item"
                                     th:each="pageNum : ${#numbers.sequence(0, students.totalPages - 1)}"
                                     th:classappend="${pageNum == students.number} ? 'active'">
-
                                     <a class="page-link"
                                        th:href="@{/students/list(page=${pageNum}, size=${students.size})}"
                                        th:text="${pageNum + 1}">
                                     </a>
-
                                 </li>
 
                                 <!-- Next -->
-
                                 <li class="page-item"
                                     th:classappend="${students.last} ? 'disabled'">
-
                                     <a class="page-link"
                                        th:href="@{/students/list(page=${students.number + 1}, size=${students.size})}">
                                         Next
                                     </a>
-
                                 </li>
 
                             </ul>

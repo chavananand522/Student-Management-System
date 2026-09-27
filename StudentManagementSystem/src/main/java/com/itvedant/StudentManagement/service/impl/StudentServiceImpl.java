@@ -1,8 +1,3 @@
-// ============================================================
-// FILE:
-// src/main/java/com/itvedant/StudentManagement/service/impl/StudentServiceImpl.java
-// ============================================================
-
 package com.itvedant.StudentManagement.service.impl;
 
 import java.util.List;
@@ -28,12 +23,9 @@ import com.itvedant.StudentManagement.services.StudentService;
 
 @Service
 @Transactional
-public class StudentServiceImpl
-        implements StudentService {
+public class StudentServiceImpl implements StudentService {
 
-    private static final Logger log =
-            LoggerFactory.getLogger(
-                    StudentServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     private final StudentRepositiry studentRepository;
     private final UserRepository userRepository;
@@ -45,7 +37,6 @@ public class StudentServiceImpl
             UserRepository userRepository,
             ModelMapper mapper,
             PasswordEncoder passwordEncoder) {
-
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
@@ -53,209 +44,126 @@ public class StudentServiceImpl
     }
 
     @Override
-    public boolean existsByEmailIgnoreCase(
-            String email) {
-
-        return studentRepository
-                .existsByEmailIgnoreCase(email);
+    public boolean existsByEmailIgnoreCase(String email) {
+        return studentRepository.existsByEmailIgnoreCase(email);
     }
 
     @Override
-    public StudentDTO createStudent(
-            StudentDTO studentDTO) {
+    public StudentDTO createStudent(StudentDTO studentDTO) {
+        log.info("Creating student: {}", studentDTO.getEmail());
 
-        log.info(
-                "Creating student: {}",
-                studentDTO.getEmail());
-
-        Students student =
-                mapper.map(
-                        studentDTO,
-                        Students.class);
-
+        Students student = mapper.map(studentDTO, Students.class);
         student.setId(0);
 
-        Students saved =
-                studentRepository.save(student);
+        Students saved = studentRepository.save(student);
 
-        /*
-         * Automatically create the student's
-         * login account.
-         *
-         * Username = email
-         * Password = student@123
-         * Role     = STUDENT
-         */
         String email = saved.getEmail();
 
-        if (email != null &&
-            !email.isBlank()) {
-
-            Users user =
-                    userRepository
-                        .findByUserName(email)
-                        .orElse(null);
+        if (email != null && !email.isBlank()) {
+            Users user = userRepository.findByUserName(email).orElse(null);
 
             if (user == null) {
-
                 user = new Users();
-
                 user.setUserName(email);
-
-                user.setPassword(
-                        passwordEncoder.encode(
-                                "student@123"));
+                user.setPassword(passwordEncoder.encode("student@123"));
             }
 
             user.setActive(saved.isActive());
-
             user.setRole("STUDENT");
-
-            user.setFullName(
-                    saved.getFirstName()
-                    + " "
-                    + saved.getLastName());
-
+            user.setFullName(saved.getFirstName() + " " + saved.getLastName());
             user.setEmail(saved.getEmail());
-
-            user.setPhoneNumber(
-                    saved.getPhoneNumber());
+            user.setPhoneNumber(saved.getPhoneNumber());
 
             userRepository.save(user);
         }
 
-        return mapper.map(
-                saved,
-                StudentDTO.class);
+        return mapper.map(saved, StudentDTO.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<StudentDTO> getAllStudents() {
-
-        return studentRepository
-                .findByActiveTrue()
+        return studentRepository.findByActiveTrue()
                 .stream()
-                .map(student ->
-                        mapper.map(
-                                student,
-                                StudentDTO.class))
+                .map(student -> mapper.map(student, StudentDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<StudentDTO> getStudents(
-            int page,
-            int size) {
-
-        PageRequest pageRequest =
-                PageRequest.of(
-                        page,
-                        size,
-                        Sort.by(
-                                Direction.DESC,
-                                "id"));
-
-        return studentRepository
-                .findByActiveTrue(pageRequest)
-                .map(student ->
-                        mapper.map(
-                                student,
-                                StudentDTO.class));
+    public Page<StudentDTO> getStudents(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "id"));
+        return studentRepository.findByActiveTrue(pageRequest)
+                .map(student -> mapper.map(student, StudentDTO.class));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public StudentDTO getStudentById(
-            Long id) {
-
-        Students student =
-                studentRepository
-                    .findById(id)
-                    .orElseThrow(() ->
-                        new RuntimeException(
-                            "No Student Found"));
-
-        return mapper.map(
-                student,
-                StudentDTO.class);
+    public StudentDTO getStudentById(Long id) {
+        Students student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No Student Found"));
+        return mapper.map(student, StudentDTO.class);
     }
 
     @Override
-    public boolean existsByEmailIgnoreCaseAndIdNot(
-            String email,
-            Long id) {
-
-        return studentRepository
-                .existsByEmailIgnoreCaseAndIdNot(
-                        email,
-                        id);
+    public boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id) {
+        return studentRepository.existsByEmailIgnoreCaseAndIdNot(email, id);
     }
 
     @Override
-    public StudentDTO updateStudent(
-            Long id,
-            StudentDTO studentDTO) {
+    public StudentDTO updateStudent(Long id, StudentDTO studentDTO) {
+        Students student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No Student Found"));
 
-        Students student =
-                studentRepository
-                    .findById(id)
-                    .orElseThrow(() ->
-                        new RuntimeException(
-                            "No Student Found"));
+        mapper.map(studentDTO, student);
+        Students updated = studentRepository.save(student);
 
-        mapper.map(
-                studentDTO,
-                student);
-
-        Students updated =
-                studentRepository.save(student);
-
-        /*
-         * Keep student login account synchronized.
-         */
-        if (updated.getEmail() != null &&
-            !updated.getEmail().isBlank()) {
-
-            Users user =
-                    userRepository
-                        .findByUserName(
-                            updated.getEmail())
-                        .orElse(null);
+        if (updated.getEmail() != null && !updated.getEmail().isBlank()) {
+            Users user = userRepository.findByUserName(updated.getEmail()).orElse(null);
 
             if (user == null) {
-
                 user = new Users();
-
-                user.setUserName(
-                        updated.getEmail());
-
-                user.setPassword(
-                        passwordEncoder.encode(
-                                "student@123"));
+                user.setUserName(updated.getEmail());
+                user.setPassword(passwordEncoder.encode("student@123"));
             }
 
             user.setRole("STUDENT");
-            user.setActive(
-                    updated.isActive());
-
-            user.setFullName(
-                    updated.getFirstName()
-                    + " "
-                    + updated.getLastName());
-
-            user.setEmail(
-                    updated.getEmail());
-
-            user.setPhoneNumber(
-                    updated.getPhoneNumber());
+            user.setActive(updated.isActive());
+            user.setFullName(updated.getFirstName() + " " + updated.getLastName());
+            user.setEmail(updated.getEmail());
+            user.setPhoneNumber(updated.getPhoneNumber());
 
             userRepository.save(user);
         }
 
-        return mapper.map(
-                updated,
-                StudentDTO.class);
+        return mapper.map(updated, StudentDTO.class);
+    }
+
+    // ============================================================
+    // NEW DELETE LOGIC
+    // ============================================================
+    @Override
+    public void deleteStudent(Long id) {
+        log.info("Request to delete student with id: {}", id);
+
+        Students student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+
+        // 1. Soft delete the Student (set active = false)
+        // This preserves historical data (attendance, enrollments, etc.)
+        student.setActive(false);
+        studentRepository.save(student);
+
+        // 2. Soft delete the associated User account so they cannot log in
+        if (student.getEmail() != null && !student.getEmail().isBlank()) {
+            Users user = userRepository.findByUserName(student.getEmail()).orElse(null);
+            if (user != null) {
+                user.setActive(false);
+                userRepository.save(user);
+                log.info("Associated user account deactivated for email: {}", student.getEmail());
+            }
+        }
+
+        log.info("Student with id: {} has been soft deleted successfully.", id);
     }
 }
