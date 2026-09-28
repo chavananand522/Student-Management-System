@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head}"></head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+    ============================================================= -->
+
+    <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+
+    <!-- ============================================================
+         PAGE CONTENT
+    ============================================================= -->
+
+    <div id="page-content-wrapper">
+
+
+        <!-- ========================================================
+             NAVBAR
+        ========================================================= -->
+
+        <div th:replace="~{fragments/layout :: navbar}"></div>
+
+
+        <!-- ========================================================
+             INLINE CSS
+        ========================================================= -->
+
+        <style>
+
+            /* ========================================================
+               GENERAL
+            ========================================================= */
+
+            body {
+                background: #f5f8fc;
+                color: #172b4d;
+            }
+
+            #page-content-wrapper {
+                min-height: 100vh;
+                background: #f5f8fc;
+            }
+
+            .dashboard-container {
+                padding: 28px 30px 20px;
+            }
+
+
+            /* ========================================================
+               HEADER
+            ========================================================= */
+
+            .dashboard-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 28px;
+            }
+
+            .dashboard-title {
+                font-size: 29px;
+                font-weight: 800;
+                color: #14284a;
+                margin: 0 0 5px;
+            }
+
+            .dashboard-subtitle {
+                color: #7a899d;
+                font-size: 14px;
+                margin: 0;
+            }
+
+            .dashboard-date {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #63738a;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            .dashboard-date i {
+                color: #287bea;
+                font-size: 17px;
+            }
+
+
+            /* ========================================================
+               STAT CARDS
+            ========================================================= */
+
+            .stats-row {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+                margin-bottom: 24px;
+            }
+
+            .stat-card {
+                position: relative;
+                overflow: hidden;
+                min-height: 155px;
+                border: 1px solid #e5ebf3;
+                border-radius: 12px;
+                background: white;
+                padding: 21px;
+                transition: all 0.25s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+                box-shadow:
+                    0 10px 25px rgba(25, 55, 95, 0.08);
+            }
+
+            .stat-card::after {
+                content: "";
+                position: absolute;
+                width: 100px;
+                height: 100px;
+                right: -35px;
+                bottom: -40px;
+                border-radius: 50%;
+                opacity: 0.08;
+            }
+
+            .stat-blue {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #ffffff 0%,
+                        #f2f7ff 100%
+                    );
+            }
+
+            .stat-blue::after {
+                background: #287bea;
+            }
+
+            .stat-green {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #ffffff 0%,
+                        #f1fff8 100%
+                    );
+            }
+
+            .stat-green::after {
+                background: #1fb477;
+            }
+
+            .stat-purple {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #ffffff 0%,
+                        #faf4ff 100%
+                    );
+            }
+
+            .stat-purple::after {
+                background: #8748dc;
+            }
+
+            .stat-orange {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #ffffff 0%,
+                        #fff8ee 100%
+                    );
+            }
+
+            .stat-orange::after {
+                background: #ff961f;
+            }
+
+            .stat-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            .stat-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 22px;
+                flex-shrink: 0;
+            }
+
+            .stat-icon-blue {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #4a9cff,
+                        #176fe8
+                    );
+            }
+
+            .stat-icon-green {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #3bd18e,
+                        #12a66d
+                    );
+            }
+
+            .stat-icon-purple {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #b26cff,
+                        #793bd0
+                    );
+            }
+
+            .stat-icon-orange {
+                background:
+                    linear-gradient(
+                        135deg,
+                        #ffb64d,
+                        #f18817
+                    );
+            }
+
+            .stat-label {
+                font-size: 12px;
+                color: #6d7d93;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .stat-value {
+                color: #172b4d;
+                font-size: 27px;
+                font-weight: 800;
+                line-height: 1.1;
+            }
+
+            .stat-bottom {
+                position: relative;
+                z-index: 2;
+                margin-top: 17px;
+                font-size: 11px;
+                color: #8390a3;
+            }
+
+            .stat-growth {
+                color: #13a66a;
+                font-weight: 700;
+                margin-right: 4px;
+            }
+
+
+            /* ========================================================
+               MAIN DASHBOARD GRID
+
+               IMPORTANT:
+               Both cards are in the SAME GRID ROW.
+
+               The tallest card determines the row height.
+               The other card stretches automatically.
+
+               Therefore:
+               - More courses = taller Students by Course
+               - Trend card automatically becomes same height
+               - Fewer courses = both cards become shorter
+            ========================================================= */
+
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: 2fr 1.25fr;
+                gap: 20px;
+                align-items: stretch;
+                margin-bottom: 20px;
+            }
+
+
+            /* ========================================================
+               DASHBOARD CARD
+
+               Height is NOT fixed.
+               Grid controls the height.
+            ========================================================= */
+
+            .dashboard-card {
+                background: white;
+                border: 1px solid #e5ebf3;
+                border-radius: 10px;
+                padding: 19px;
+                box-shadow:
+                    0 2px 7px rgba(20, 50, 90, 0.025);
+
+                height: 100%;
+
+                display: flex;
+                flex-direction: column;
+
+                box-sizing: border-box;
+            }
+
+            .dashboard-card-title {
+                color: #172b4d;
+                font-size: 15px;
+                font-weight: 700;
+                margin-bottom: 18px;
+                flex-shrink: 0;
+            }
+
+
+            /* ========================================================
+               ENROLLMENT TREND
+            ========================================================= */
+
+            .trend-card {
+                min-height: 215px;
+            }
+
+            .trend-chart-wrapper {
+                position: relative;
+
+                width: 100%;
+
+                /*
+                 * Important:
+                 * The chart takes all remaining height
+                 * inside the card.
+                 */
+                flex: 1;
+
+                min-height: 170px;
+            }
+
+            .chart-grid {
+                position: absolute;
+
+                top: 5px;
+                left: 42px;
+                right: 10px;
+                bottom: 30px;
+
+                border-left: 1px solid #e7edf4;
+                border-bottom: 1px solid #e7edf4;
+
+                background-image:
+                    linear-gradient(
+                        to bottom,
+                        #edf1f6 1px,
+                        transparent 1px
+                    );
+
+                background-size: 100% 25%;
+            }
+
+            .chart-svg {
+                position: absolute;
+
+                top: 5px;
+                left: 42px;
+                right: 10px;
+                bottom: 30px;
+
+                width: calc(100% - 52px);
+                height: calc(100% - 35px);
+
+                overflow: visible;
+
+                /*
+                 * No click required.
+                 */
+                pointer-events: none;
+            }
+
+            .chart-y-labels {
+                position: absolute;
+
+                top: 0;
+                left: 0;
+                bottom: 30px;
+
+                width: 34px;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                font-size: 9px;
+                color: #8b98aa;
+            }
+
+            .chart-x-labels {
+                position: absolute;
+
+                left: 43px;
+                right: 10px;
+                bottom: 0;
+
+                display: flex;
+                justify-content: space-between;
+
+                font-size: 9px;
+                color: #8b98aa;
+            }
+
+
+            /* ========================================================
+               TREND POINTS
+            ========================================================= */
+
+            .trend-hit-area {
+                pointer-events: all;
+                cursor: default;
+            }
+
+            .trend-visible-point {
+                transition: r 0.15s ease;
+            }
+
+            .trend-hit-area:hover
+            + .trend-visible-point {
+                r: 6;
+            }
+
+
+            /* ========================================================
+               TREND TOOLTIP
+            ========================================================= */
+
+            .trend-tooltip {
+                position: fixed;
+
+                display: none;
+
+                z-index: 99999;
+
+                min-width: 125px;
+
+                background: #172b4d;
+                color: white;
+
+                padding: 9px 12px;
+
+                border-radius: 7px;
+
+                box-shadow:
+                    0 7px 20px
+                    rgba(20, 43, 77, 0.25);
+
+                pointer-events: none;
+
+                transform:
+                    translate(-50%, -120%);
+            }
+
+            .trend-tooltip-month {
+                font-size: 11px;
+                font-weight: 700;
+                margin-bottom: 2px;
+            }
+
+            .trend-tooltip-count {
+                font-size: 10px;
+                color: #dce6f5;
+            }
+
+            .trend-tooltip::after {
+                content: "";
+
+                position: absolute;
+
+                left: 50%;
+                bottom: -5px;
+
+                width: 10px;
+                height: 10px;
+
+                background: #172b4d;
+
+                transform:
+                    translateX(-50%)
+                    rotate(45deg);
+            }
+
+
+            /* ========================================================
+               COURSE DONUT
+            ========================================================= */
+
+            .course-chart-container {
+                flex: 1;
+
+                min-height: 170px;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                gap: 20px;
+            }
+
+            .donut-chart {
+                width: 145px;
+                height: 145px;
+
+                border-radius: 50%;
+
+                background: #edf1f5;
+
+                position: relative;
+
+                flex-shrink: 0;
+
+                cursor: pointer;
+            }
+
+            .donut-chart::after {
+                content: "";
+
+                position: absolute;
+
+                width: 76px;
+                height: 76px;
+
+                top: 50%;
+                left: 50%;
+
+                transform:
+                    translate(-50%, -50%);
+
+                background: white;
+
+                border-radius: 50%;
+
+                pointer-events: none;
+            }
+
+            .donut-center {
+                position: absolute;
+
+                z-index: 2;
+
+                inset: 0;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                flex-direction: column;
+
+                color: #8290a2;
+
+                font-size: 10px;
+
+                pointer-events: none;
+            }
+
+            .donut-center strong {
+                color: #172b4d;
+                font-size: 18px;
+                margin-top: 2px;
+            }
+
+
+            /* ========================================================
+               COURSE LEGEND
+
+               This determines the flexible card height.
+            ========================================================= */
+
+            .course-legend {
+                display: flex;
+
+                flex-direction: column;
+
+                gap: 11px;
+
+                min-width: 130px;
+
+                max-width: 180px;
+
+                /*
+                 * IMPORTANT:
+                 * No fixed height.
+                 *
+                 * If more courses are added,
+                 * this gets taller automatically.
+                 */
+                height: auto;
+            }
+
+            .course-legend-item {
+                display: flex;
+
+                align-items: center;
+
+                gap: 7px;
+
+                font-size: 10px;
+
+                color: #65758c;
+
+                white-space: nowrap;
+
+                transition:
+                    all 0.2s ease;
+
+                cursor: default;
+            }
+
+            .course-legend-item:hover {
+                color: #172b4d;
+
+                transform:
+                    translateX(2px);
+            }
+
+            .legend-dot {
+                width: 10px;
+                height: 10px;
+
+                border-radius: 50%;
+
+                flex-shrink: 0;
+            }
+
+            .legend-number {
+                margin-left: auto;
+
+                font-weight: 700;
+
+                color: #51627a;
+            }
+
+            .empty-course-chart {
+                color: #8996a8;
+
+                font-size: 11px;
+
+                text-align: center;
+
+                padding: 30px 10px;
+            }
+
+
+            /* ========================================================
+               DONUT TOOLTIP
+            ========================================================= */
+
+            .donut-tooltip {
+                position: fixed;
+
+                display: none;
+
+                z-index: 99999;
+
+                min-width: 150px;
+
+                max-width: 230px;
+
+                background: #172b4d;
+
+                color: #ffffff;
+
+                padding: 9px 12px;
+
+                border-radius: 7px;
+
+                font-size: 11px;
+
+                line-height: 1.45;
+
+                box-shadow:
+                    0 7px 20px
+                    rgba(20, 43, 77, 0.25);
+
+                pointer-events: none;
+
+                transform:
+                    translate(-50%, -125%);
+            }
+
+            .donut-tooltip-title {
+                font-size: 12px;
+                font-weight: 700;
+
+                margin-bottom: 2px;
+
+                color: #ffffff;
+            }
+
+            .donut-tooltip-info {
+                font-size: 10px;
+                font-weight: 500;
+
+                color: #dce6f5;
+            }
+
+            .donut-tooltip::after {
+                content: "";
+
+                position: absolute;
+
+                left: 50%;
+                bottom: -5px;
+
+                width: 10px;
+                height: 10px;
+
+                background: #172b4d;
+
+                transform:
+                    translateX(-50%)
+                    rotate(45deg);
+            }
+
+
+            /* ========================================================
+               RESPONSIVE
+            ========================================================= */
+
+            @media (max-width: 1200px) {
+
+                .stats-row {
+                    grid-template-columns:
+                        repeat(2, 1fr);
+                }
+
+                .dashboard-grid {
+                    grid-template-columns:
+                        1fr 1fr;
+                }
+            }
+
+
+            @media (max-width: 768px) {
+
+                .dashboard-container {
+                    padding: 20px 15px;
+                }
+
+                .dashboard-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+
+                .stats-row {
+                    grid-template-columns: 1fr;
+                }
+
+                .dashboard-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .course-chart-container {
+                    justify-content: flex-start;
+                }
+
+                .trend-chart-wrapper {
+                    min-height: 190px;
+                }
+
+                .donut-tooltip {
+                    font-size: 10px;
+                }
+            }
+
+
+            @media (max-width: 500px) {
+
+                .dashboard-title {
+                    font-size: 24px;
+                }
+
+                .course-chart-container {
+                    flex-direction: column;
+
+                    padding:
+                        10px 0 20px;
+                }
+
+                .course-legend {
+                    width: 100%;
+                    max-width: 100%;
+                }
+            }
+
+        </style>
+
+
+        <!-- ========================================================
+             MAIN CONTENT
+        ========================================================= -->
+
+        <div class="container-fluid dashboard-container">
+
+
+            <!-- ====================================================
+                 DASHBOARD HEADER
+            ==================================================== -->
+
+            <div class="dashboard-header">
+
+                <div>
+
+                    <h1 class="dashboard-title">
+                        Admin Dashboard
+                    </h1>
+
+                    <p class="dashboard-subtitle">
+                        Welcome back, Admin! Here's what's happening in your institute.
+                    </p>
+
+                </div>
+
+                <div class="dashboard-date">
+
+                    <i class="bi bi-calendar3"></i>
+
+                    <span id="dashboardDate">
+                        Monday, 29 September 2025
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ====================================================
+                 STATISTICS
+            ==================================================== -->
+
+            <div class="stats-row">
+
+
+                <!-- TOTAL STUDENTS -->
+
+                <div class="stat-card stat-blue">
+
+                    <div class="stat-content">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="stat-icon stat-icon-blue">
+
+                                <i class="bi bi-people-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="stat-label">
+                                    Total Students
+                                </div>
+
+                                <div class="stat-value"
+                                     th:text="${dashboardStats.totalStudents}">
+                                    0
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stat-bottom">
+
+                            <span class="stat-growth">
+
+                                <i class="bi bi-people-fill"></i>
+
+                                Active
+
+                            </span>
+
+                            registered students
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOTAL COURSES -->
+
+                <div class="stat-card stat-green">
+
+                    <div class="stat-content">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="stat-icon stat-icon-green">
+
+                                <i class="bi bi-book-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="stat-label">
+                                    Total Courses
+                                </div>
+
+                                <div class="stat-value"
+                                     th:text="${dashboardStats.totalCourses}">
+                                    0
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stat-bottom">
+
+                            <span class="stat-growth">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Available
+
+                            </span>
+
+                            courses
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOP PERFORMING COURSE -->
+
+                <div class="stat-card stat-purple">
+
+                    <div class="stat-content">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="stat-icon stat-icon-purple">
+
+                                <i class="bi bi-trophy-fill"></i>
+
+                            </div>
+
+                            <div style="min-width:0;">
+
+                                <div class="stat-label">
+                                    Top Performing Course
+                                </div>
+
+                                <div class="stat-value"
+                                     style="font-size:20px;"
+                                     th:text="${dashboardStats.topPerformingCourse}">
+                                    -
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stat-bottom">
+
+                            <span class="stat-growth">
+
+                                <i class="bi bi-star-fill"></i>
+
+                                Best
+
+                            </span>
+
+                            performing course
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STUDENTS THIS MONTH -->
+
+                <div class="stat-card stat-orange">
+
+                    <div class="stat-content">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="stat-icon stat-icon-orange">
+
+                                <i class="bi bi-person-check-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="stat-label">
+                                    Students This Month
+                                </div>
+
+                                <div class="stat-value"
+                                     th:text="${dashboardStats.studentEntolledThisMonth}">
+                                    0
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="stat-bottom">
+
+                            <span class="stat-growth">
+
+                                <i class="bi bi-arrow-up"></i>
+
+                                New
+
+                            </span>
+
+                            enrollments this month
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ====================================================
+                 CHARTS
+            ==================================================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- ==================================================
+                     STUDENT ENROLLMENT TREND
+                ================================================== -->
+
+                <div class="dashboard-card trend-card">
+
+
+                    <div class="dashboard-card-title">
+
+                        <i class="bi bi-graph-up-arrow me-2"
+                           style="color:#287bea;">
+                        </i>
+
+                        Student Enrollment Trend
+
+                    </div>
+
+
+                    <div class="trend-chart-wrapper"
+                         id="enrollmentTrendChart">
+
+
+                        <!-- Y AXIS -->
+
+                        <div class="chart-y-labels"
+                             id="trendYAxis">
+                        </div>
+
+
+                        <!-- GRID -->
+
+                        <div class="chart-grid"></div>
+
+
+                        <!-- SVG -->
+
+                        <svg class="chart-svg"
+                             id="enrollmentTrendSvg"
+                             viewBox="0 0 600 180"
+                             preserveAspectRatio="none">
+
+
+                            <!-- AREA -->
+
+                            <polygon
+                                id="trendArea"
+                                points=""
+                                fill="#287bea"
+                                opacity="0.08">
+                            </polygon>
+
+
+                            <!-- LINE -->
+
+                            <polyline
+                                id="trendLine"
+                                points=""
+                                fill="none"
+                                stroke="#287bea"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+                            </polyline>
+
+
+                            <!-- POINTS -->
+
+                            <g id="trendPoints"></g>
+
+                        </svg>
+
+
+                        <!-- X AXIS -->
+
+                        <div class="chart-x-labels"
+                             id="trendXAxis">
+                        </div>
+
+
+                        <!-- TOOLTIP -->
+
+                        <div id="trendTooltip"
+                             class="trend-tooltip">
+
+                            <div id="trendTooltipMonth"
+                                 class="trend-tooltip-month">
+                            </div>
+
+                            <div id="trendTooltipCount"
+                                 class="trend-tooltip-count">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     STUDENTS BY COURSE
+                ================================================== -->
+
+                <div class="dashboard-card">
+
+
+                    <div class="dashboard-card-title">
+
+                        <i class="bi bi-pie-chart-fill me-2"
+                           style="color:#8748dc;">
+                        </i>
+
+                        Students by Course
+
+                    </div>
+
+
+                    <!-- EMPTY STATE -->
+
+                    <div class="empty-course-chart"
+                         id="courseEmptyState"
+                         style="display:none;">
+
+                        <i class="bi bi-pie-chart"></i>
+
+                        <div>
+                            No course enrollment data available
+                        </div>
+
+                    </div>
+
+
+                    <!-- COURSE CHART -->
+
+                    <div class="course-chart-container"
+                         id="courseChartContainer">
+
+
+                        <!-- DONUT -->
+
+                        <div class="donut-chart"
+                             id="courseDonutChart">
+
+
+                            <div class="donut-center">
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong id="donutTotal">
+                                    0
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LEGEND -->
+
+                        <div class="course-legend"
+                             id="courseLegend">
+
+                            <!-- Dynamic content -->
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DONUT TOOLTIP -->
+
+                    <div id="donutTooltip"
+                         class="donut-tooltip">
+
+                        <div id="donutTooltipTitle"
+                             class="donut-tooltip-title">
+                        </div>
+
+                        <div id="donutTooltipInfo"
+                             class="donut-tooltip-info">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================
+             FOOTER
+        ========================================================= -->
+
+        <footer class="py-3 bg-transparent mt-1">
+
+            <div class="container-fluid px-0">
+
+                <div class="d-flex
+                            align-items-center
+                            justify-content-between
+                            small">
+
+                    <span class="text-muted">
+                        © 2026 Student Management System
+                    </span>
+
+                    <span class="text-muted">
+                        Admin Portal
+                    </span>
+
+                </div>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================================
+     SCRIPTS
+================================================================= -->
+
+<div th:replace="~{fragments/layout::scripts}"></div>
+
+
+<!-- ================================================================
+     JAVASCRIPT
+================================================================= -->
+
+<script th:inline="javascript">
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+    /* ================================================================
+       CURRENT DATE
+    ================================================================= */
+
+    const dateElement =
+        document.getElementById(
+            "dashboardDate"
+        );
+
+    if (dateElement) {
+
+        const today =
+            new Date();
+
+        const options = {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        };
+
+        dateElement.textContent =
+            today.toLocaleDateString(
+                "en-IN",
+                options
+            );
+    }
+
+
+    /* ================================================================
+       STUDENT ENROLLMENT TREND
+    ================================================================= */
+
+    const monthlyEnrollment =
+        /*[[${dashboardStats.monthlyEnrollment}]]*/ [];
+
+
+    const trendSvg =
+        document.getElementById(
+            "enrollmentTrendSvg"
+        );
+
+    const trendLine =
+        document.getElementById(
+            "trendLine"
+        );
+
+    const trendArea =
+        document.getElementById(
+            "trendArea"
+        );
+
+    const trendPoints =
+        document.getElementById(
+            "trendPoints"
+        );
+
+    const trendXAxis =
+        document.getElementById(
+            "trendXAxis"
+        );
+
+    const trendYAxis =
+        document.getElementById(
+            "trendYAxis"
+        );
+
+    const trendTooltip =
+        document.getElementById(
+            "trendTooltip"
+        );
+
+    const trendTooltipMonth =
+        document.getElementById(
+            "trendTooltipMonth"
+        );
+
+    const trendTooltipCount =
+        document.getElementById(
+            "trendTooltipCount"
+        );
+
+
+    if (
+        trendSvg &&
+        monthlyEnrollment &&
+        monthlyEnrollment.length > 0
+    ) {
+
+
+        /* ============================================================
+           CHART SIZE
+        ============================================================ */
+
+        const chartWidth = 600;
+
+        const chartHeight = 180;
+
+        const paddingTop = 10;
+
+        const paddingBottom = 5;
+
+
+        /* ============================================================
+           VALUES
+        ============================================================ */
+
+        const values =
+            monthlyEnrollment.map(
+                function (item) {
+
+                    return Number(
+                        item.studentCount || 0
+                    );
+
+                }
+            );
+
+
+        /* ============================================================
+           MAX VALUE
+        ============================================================ */
+
+        const maxValue =
+            Math.max(
+                ...values,
+                1
+            );
+
+
+        /*
+         * Give the chart some breathing room above
+         * the highest point.
+         */
+
+        let chartMax;
+
+        if (maxValue <= 5) {
+
+            chartMax = 5;
+
+        } else if (maxValue <= 10) {
+
+            chartMax = 10;
+
+        } else {
+
+            chartMax =
+                Math.ceil(
+                    maxValue * 1.2
+                );
+        }
+
+
+        /* ============================================================
+           Y AXIS
+        ============================================================ */
+
+        if (trendYAxis) {
+
+            trendYAxis.innerHTML = "";
+
+            const ySteps = 5;
+
+
+            for (
+                let i = ySteps;
+                i >= 0;
+                i--
+            ) {
+
+                const label =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                const value =
+                    Math.round(
+                        (
+                            chartMax /
+                            ySteps
+                        ) * i
+                    );
+
+
+                label.textContent =
+                    value;
+
+
+                trendYAxis.appendChild(
+                    label
+                );
+            }
+        }
+
+
+        /* ============================================================
+           X AXIS
+        ============================================================ */
+
+        if (trendXAxis) {
+
+            trendXAxis.innerHTML = "";
+
+
+            monthlyEnrollment.forEach(
+                function (item) {
+
+                    const label =
+                        document.createElement(
+                            "span"
+                        );
+
+                    label.textContent =
+                        item.month;
+
+                    trendXAxis.appendChild(
+                        label
+                    );
+
+                }
+            );
+        }
+
+
+        /* ============================================================
+           CREATE POINTS
+        ============================================================ */
+
+        const points = [];
+
+
+        monthlyEnrollment.forEach(
+            function (item, index) {
+
+                const value =
+                    Number(
+                        item.studentCount || 0
+                    );
+
+
+                const x =
+                    (
+                        index /
+                        (
+                            monthlyEnrollment.length - 1
+                        )
+                    ) * chartWidth;
+
+
+                const usableHeight =
+                    chartHeight -
+                    paddingTop -
+                    paddingBottom;
+
+
+                const y =
+                    paddingTop +
+                    (
+                        1 -
+                        (
+                            value /
+                            chartMax
+                        )
+                    ) *
+                    usableHeight;
+
+
+                points.push({
+
+                    x: x,
+
+                    y: y,
+
+                    month:
+                        item.month,
+
+                    count:
+                        value
+
+                });
+
+            }
+        );
+
+
+        /* ============================================================
+           LINE POINTS
+        ============================================================ */
+
+        const linePoints =
+            points.map(
+                function (point) {
+
+                    return (
+                        point.x +
+                        "," +
+                        point.y
+                    );
+
+                }
+            ).join(" ");
+
+
+        if (trendLine) {
+
+            trendLine.setAttribute(
+                "points",
+                linePoints
+            );
+        }
+
+
+        /* ============================================================
+           AREA
+        ============================================================ */
+
+        const areaPoints =
+            linePoints +
+            " " +
+            chartWidth +
+            "," +
+            chartHeight +
+            " 0," +
+            chartHeight;
+
+
+        if (trendArea) {
+
+            trendArea.setAttribute(
+                "points",
+                areaPoints
+            );
+        }
+
+
+        /* ============================================================
+           POINTS
+        ============================================================ */
+
+        if (trendPoints) {
+
+            trendPoints.innerHTML = "";
+
+
+            points.forEach(
+                function (point) {
+
+
+                    /*
+                     * Transparent large hit area.
+                     *
+                     * This makes hovering easy without
+                     * requiring the user to click.
+                     */
+
+                    const hitCircle =
+                        document.createElementNS(
+                            "http://www.w3.org/2000/svg",
+                            "circle"
+                        );
+
+
+                    hitCircle.setAttribute(
+                        "cx",
+                        point.x
+                    );
+
+                    hitCircle.setAttribute(
+                        "cy",
+                        point.y
+                    );
+
+                    hitCircle.setAttribute(
+                        "r",
+                        "12"
+                    );
+
+                    hitCircle.setAttribute(
+                        "fill",
+                        "transparent"
+                    );
+
+                    hitCircle.setAttribute(
+                        "class",
+                        "trend-hit-area"
+                    );
+
+
+                    /*
+                     * Visible point.
+                     */
+
+                    const visibleCircle =
+                        document.createElementNS(
+                            "http://www.w3.org/2000/svg",
+                            "circle"
+                        );
+
+
+                    visibleCircle.setAttribute(
+                        "cx",
+                        point.x
+                    );
+
+                    visibleCircle.setAttribute(
+                        "cy",
+                        point.y
+                    );
+
+                    visibleCircle.setAttribute(
+                        "r",
+                        "4"
+                    );
+
+                    visibleCircle.setAttribute(
+                        "fill",
+                        "#287bea"
+                    );
+
+                    visibleCircle.setAttribute(
+                        "class",
+                        "trend-visible-point"
+                    );
+
+
+                    /* ==================================================
+                       HOVER
+                    ================================================== */
+
+                    hitCircle.addEventListener(
+                        "mouseenter",
+                        function () {
+
+                            visibleCircle.setAttribute(
+                                "r",
+                                "6"
+                            );
+
+
+                            if (trendTooltipMonth) {
+
+                                trendTooltipMonth.textContent =
+                                    point.month;
+                            }
+
+
+                            if (trendTooltipCount) {
+
+                                trendTooltipCount.textContent =
+                                    point.count +
+                                    " student" +
+                                    (
+                                        point.count === 1
+                                            ? ""
+                                            : "s"
+                                    ) +
+                                    " enrolled";
+                            }
+
+
+                            const svgRect =
+                                trendSvg
+                                    .getBoundingClientRect();
+
+
+                            const scaleX =
+                                svgRect.width /
+                                chartWidth;
+
+
+                            const scaleY =
+                                svgRect.height /
+                                chartHeight;
+
+
+                            const screenX =
+                                svgRect.left +
+                                (
+                                    point.x *
+                                    scaleX
+                                );
+
+
+                            const screenY =
+                                svgRect.top +
+                                (
+                                    point.y *
+                                    scaleY
+                                );
+
+
+                            if (trendTooltip) {
+
+                                trendTooltip.style.left =
+                                    screenX +
+                                    "px";
+
+                                trendTooltip.style.top =
+                                    screenY +
+                                    "px";
+
+                                trendTooltip.style.display =
+                                    "block";
+                            }
+
+                        }
+                    );
+
+
+                    /* ==================================================
+                       MOUSE LEAVE
+                    ================================================== */
+
+                    hitCircle.addEventListener(
+                        "mouseleave",
+                        function () {
+
+                            visibleCircle.setAttribute(
+                                "r",
+                                "4"
+                            );
+
+                            if (trendTooltip) {
+
+                                trendTooltip.style.display =
+                                    "none";
+                            }
+
+                        }
+                    );
+
+
+                    /*
+                     * Add visible circle first.
+                     */
+
+                    trendPoints.appendChild(
+                        visibleCircle
+                    );
+
+
+                    /*
+                     * Add transparent hit circle last.
+                     */
+
+                    trendPoints.appendChild(
+                        hitCircle
+                    );
+
+                }
+            );
+        }
+    }
+
+
+    /* ================================================================
+       STUDENTS BY COURSE
+    ================================================================= */
+
+    const courseData =
+        /*[[${dashboardStats.studentsByCourse}]]*/ [];
+
+
+    const donutChart =
+        document.getElementById(
+            "courseDonutChart"
+        );
+
+
+    const courseLegend =
+        document.getElementById(
+            "courseLegend"
+        );
+
+
+    const chartContainer =
+        document.getElementById(
+            "courseChartContainer"
+        );
+
+
+    const emptyState =
+        document.getElementById(
+            "courseEmptyState"
+        );
+
+
+    const donutTotal =
+        document.getElementById(
+            "donutTotal"
+        );
+
+
+    const donutTooltip =
+        document.getElementById(
+            "donutTooltip"
+        );
+
+
+    const donutTooltipTitle =
+        document.getElementById(
+            "donutTooltipTitle"
+        );
+
+
+    const donutTooltipInfo =
+        document.getElementById(
+            "donutTooltipInfo"
+        );
+
+
+    /* ================================================================
+       COLORS
+    ================================================================= */
+
+    const colors = [
+
+        "#287bea",
+        "#27b679",
+        "#8748dc",
+        "#ff9b32",
+        "#ef5261",
+        "#27b5c2",
+        "#e05bb7",
+        "#6c7ae0",
+        "#19a974",
+        "#f05d23"
+
+    ];
+
+
+    /* ================================================================
+       EMPTY COURSE DATA
+    ================================================================= */
+
+    if (
+        !courseData ||
+        courseData.length === 0
+    ) {
+
+        if (chartContainer) {
+
+            chartContainer.style.display =
+                "none";
+        }
+
+
+        if (emptyState) {
+
+            emptyState.style.display =
+                "block";
+        }
+
+    } else {
+
+
+        /* ============================================================
+           TOTAL
+        ============================================================ */
+
+        let totalStudents = 0;
+
+
+        courseData.forEach(
+            function (course) {
+
+                totalStudents +=
+                    Number(
+                        course.studentCount || 0
+                    );
+
+            }
+        );
+
+
+        if (donutTotal) {
+
+            donutTotal.textContent =
+                totalStudents;
+        }
+
+
+        /* ============================================================
+           SEGMENTS
+        ============================================================ */
+
+        const segments = [];
+
+        let currentDegree = 0;
+
+
+        const gradientParts = [];
+
+
+        courseData.forEach(
+            function (course, index) {
+
+
+                const count =
+                    Number(
+                        course.studentCount || 0
+                    );
+
+
+                if (count <= 0) {
+                    return;
+                }
+
+
+                const percentage =
+                    totalStudents > 0
+                        ? (
+                            count /
+                            totalStudents
+                          ) * 100
+                        : 0;
+
+
+                const degree =
+                    totalStudents > 0
+                        ? (
+                            count /
+                            totalStudents
+                          ) * 360
+                        : 0;
+
+
+                const startDegree =
+                    currentDegree;
+
+
+                const endDegree =
+                    currentDegree +
+                    degree;
+
+
+                const color =
+                    colors[
+                        index %
+                        colors.length
+                    ];
+
+
+                segments.push({
+
+                    courseName:
+                        course.courseName ||
+                        "Unknown Course",
+
+                    studentCount:
+                        count,
+
+                    percentage:
+                        percentage,
+
+                    startDegree:
+                        startDegree,
+
+                    endDegree:
+                        endDegree,
+
+                    color:
+                        color
+
+                });
+
+
+                gradientParts.push(
+
+                    color +
+                    " " +
+                    startDegree +
+                    "deg " +
+                    endDegree +
+                    "deg"
+
+                );
+
+
+                currentDegree =
+                    endDegree;
+
+            }
+        );
+
+
+        /* ============================================================
+           DONUT GRADIENT
+        ============================================================ */
+
+        if (
+            donutChart &&
+            gradientParts.length > 0
+        ) {
+
+            donutChart.style.background =
+                "conic-gradient(" +
+                gradientParts.join(", ") +
+                ")";
+        }
+
+
+        /* ============================================================
+           LEGEND
+        ============================================================ */
+
+        if (courseLegend) {
+
+            courseLegend.innerHTML = "";
+
+
+            courseData.forEach(
+                function (course, index) {
+
+
+                    const count =
+                        Number(
+                            course.studentCount || 0
+                        );
+
+
+                    const courseName =
+                        course.courseName ||
+                        "Unknown Course";
+
+
+                    const color =
+                        colors[
+                            index %
+                            colors.length
+                        ];
+
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+                    item.className =
+                        "course-legend-item";
+
+
+                    const dot =
+                        document.createElement(
+                            "span"
+                        );
+
+                    dot.className =
+                        "legend-dot";
+
+                    dot.style.background =
+                        color;
+
+
+                    const name =
+                        document.createElement(
+                            "span"
+                        );
+
+                    name.textContent =
+                        courseName;
+
+
+                    const number =
+                        document.createElement(
+                            "span"
+                        );
+
+                    number.className =
+                        "legend-number";
+
+                    number.textContent =
+                        count;
+
+
+                    item.appendChild(dot);
+
+                    item.appendChild(name);
+
+                    item.appendChild(number);
+
+                    courseLegend.appendChild(
+                        item
+                    );
+
+                }
+            );
+        }
+
+
+        /* ============================================================
+           FIND DONUT SEGMENT
+        ============================================================ */
+
+        function getSegmentFromMouse(event) {
+
+            if (
+                !donutChart ||
+                segments.length === 0
+            ) {
+
+                return null;
+            }
+
+
+            const rect =
+                donutChart
+                    .getBoundingClientRect();
+
+
+            const centerX =
+                rect.left +
+                rect.width / 2;
+
+
+            const centerY =
+                rect.top +
+                rect.height / 2;
+
+
+            const x =
+                event.clientX -
+                centerX;
+
+
+            const y =
+                event.clientY -
+                centerY;
+
+
+            const distance =
+                Math.sqrt(
+                    (x * x) +
+                    (y * y)
+                );
+
+
+            const outerRadius =
+                rect.width / 2;
+
+
+            const innerRadius = 38;
+
+
+            if (
+                distance >
+                outerRadius
+            ) {
+
+                return null;
+            }
+
+
+            if (
+                distance <
+                innerRadius
+            ) {
+
+                return null;
+            }
+
+
+            let angle =
+                Math.atan2(
+                    y,
+                    x
+                ) *
+                (180 / Math.PI);
+
+
+            angle =
+                angle + 90;
+
+
+            if (angle < 0) {
+
+                angle += 360;
+            }
+
+
+            for (
+                let i = 0;
+                i < segments.length;
+                i++
+            ) {
+
+                const segment =
+                    segments[i];
+
+
+                if (
+                    angle >=
+                        segment.startDegree &&
+
+                    angle <
+                        segment.endDegree
+                ) {
+
+                    return segment;
+                }
+            }
+
+
+            return null;
+        }
+
+
+        /* ============================================================
+           SHOW DONUT TOOLTIP
+        ============================================================ */
+
+        function showDonutTooltip(
+            segment,
+            mouseX,
+            mouseY
+        ) {
+
+            if (
+                !donutTooltip ||
+                !segment
+            ) {
+
+                return;
+            }
+
+
+            if (donutTooltipTitle) {
+
+                donutTooltipTitle.textContent =
+                    segment.courseName;
+            }
+
+
+            if (donutTooltipInfo) {
+
+                donutTooltipInfo.textContent =
+                    segment.studentCount +
+                    " student" +
+                    (
+                        segment.studentCount === 1
+                            ? ""
+                            : "s"
+                    ) +
+                    " • " +
+                    segment.percentage.toFixed(1) +
+                    "%";
+            }
+
+
+            donutTooltip.style.left =
+                mouseX + "px";
+
+
+            donutTooltip.style.top =
+                mouseY + "px";
+
+
+            donutTooltip.style.display =
+                "block";
+        }
+
+
+        /* ============================================================
+           HIDE DONUT TOOLTIP
+        ============================================================ */
+
+        function hideDonutTooltip() {
+
+            if (donutTooltip) {
+
+                donutTooltip.style.display =
+                    "none";
+            }
+        }
+
+
+        /* ============================================================
+           DONUT HOVER
+        ============================================================ */
+
+        if (donutChart) {
+
+            donutChart.addEventListener(
+                "mousemove",
+                function (event) {
+
+                    const segment =
+                        getSegmentFromMouse(
+                            event
+                        );
+
+
+                    if (!segment) {
+
+                        hideDonutTooltip();
+
+                        donutChart.style.cursor =
+                            "default";
+
+                        return;
+                    }
+
+
+                    donutChart.style.cursor =
+                        "pointer";
+
+
+                    showDonutTooltip(
+                        segment,
+                        event.clientX,
+                        event.clientY
+                    );
+
+                }
+            );
+
+
+            donutChart.addEventListener(
+                "mouseleave",
+                function () {
+
+                    hideDonutTooltip();
+
+                    donutChart.style.cursor =
+                        "default";
+
+                }
+            );
+        }
+
+
+        /* ============================================================
+           LEGEND HOVER
+        ============================================================ */
+
+        if (courseLegend) {
+
+            const legendItems =
+                courseLegend.querySelectorAll(
+                    ".course-legend-item"
+                );
+
+
+            legendItems.forEach(
+                function (
+                    item,
+                    index
+                ) {
+
+
+                    item.addEventListener(
+                        "mouseenter",
+                        function () {
+
+
+                            const course =
+                                courseData[index];
+
+
+                            if (!course) {
+                                return;
+                            }
+
+
+                            const count =
+                                Number(
+                                    course.studentCount || 0
+                                );
+
+
+                            const percentage =
+                                totalStudents > 0
+                                    ? (
+                                        count /
+                                        totalStudents
+                                      ) * 100
+                                    : 0;
+
+
+                            if (donutTooltipTitle) {
+
+                                donutTooltipTitle.textContent =
+                                    course.courseName ||
+                                    "Unknown Course";
+                            }
+
+
+                            if (donutTooltipInfo) {
+
+                                donutTooltipInfo.textContent =
+                                    count +
+                                    " student" +
+                                    (
+                                        count === 1
+                                            ? ""
+                                            : "s"
+                                    ) +
+                                    " • " +
+                                    percentage.toFixed(1) +
+                                    "%";
+                            }
+
+
+                            const rect =
+                                item.getBoundingClientRect();
+
+
+                            donutTooltip.style.left =
+                                (
+                                    rect.left +
+                                    rect.width / 2
+                                ) +
+                                "px";
+
+
+                            donutTooltip.style.top =
+                                (
+                                    rect.top - 8
+                                ) +
+                                "px";
+
+
+                            donutTooltip.style.display =
+                                "block";
+
+                        }
+                    );
+
+
+                    item.addEventListener(
+                        "mouseleave",
+                        function () {
+
+                            hideDonutTooltip();
+
+                        }
+                    );
+
+                }
+            );
+        }
+
+    }
+
+});
+
+</script>
+
+
+</body>
+
+</html>

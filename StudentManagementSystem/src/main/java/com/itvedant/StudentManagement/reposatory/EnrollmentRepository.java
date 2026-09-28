@@ -9,42 +9,71 @@ import org.springframework.data.repository.query.Param;
 
 import com.itvedant.StudentManagement.model.Enrollment;
 
-public interface EnrollmentRepository
-        extends JpaRepository<Enrollment, Long> {
+public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    // =========================================================
-    // EXISTING
-    // =========================================================
+	// =========================================================
+	// EXISTING
+	// =========================================================
 
-    boolean existsByStudentIdAndCourseId(
-            Long studentId,
-            Long courseId);
+	boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
 
-    @Query("""
-            select count(distinct e.student.id)
-            from Enrollment e
-            where e.enrolledDate between :startDate and :endDate
-            """)
-    long countDistinctStudentByEnrolledDateBetween(
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
+	// =========================================================
+	// STUDENTS ENROLLED THIS MONTH
+	// =========================================================
 
-    // =========================================================
-    // NEW — used by StudentAiController and StudentPortalController
-    // =========================================================
+	@Query("""
+			SELECT COUNT(DISTINCT e.student.id)
+			FROM Enrollment e
+			WHERE e.enrolledDate BETWEEN :startDate AND :endDate
+			""")
+	long countDistinctStudentByEnrolledDateBetween(@Param("startDate") LocalDateTime startDate,
+			@Param("endDate") LocalDateTime endDate);
 
-    /**
-     * Fetch all enrollments for a given student id.
-     */
-    List<Enrollment> findByStudentId(Long studentId);
+	// =========================================================
+	// RECENT STUDENT ENROLLMENTS
+	// =========================================================
 
-    /**
-     * Fallback lookup by email through the Students relation.
-     * Only works if Enrollment has a @ManyToOne Students student field.
-     */
-    @Query("""
-           SELECT e FROM Enrollment e
-           WHERE LOWER(e.student.email) = LOWER(:email)
-           """)
-    List<Enrollment> findByStudentEmailIgnoreCase(@Param("email") String email);
+	/**
+	 * Fetch all enrollments for a given student id.
+	 */
+	List<Enrollment> findByStudentId(Long studentId);
+
+	/**
+	 * Fallback lookup by email through the Students relation.
+	 */
+	@Query("""
+			SELECT e
+			FROM Enrollment e
+			WHERE LOWER(e.student.email) = LOWER(:email)
+			""")
+	List<Enrollment> findByStudentEmailIgnoreCase(@Param("email") String email);
+
+	// =========================================================
+	// STUDENTS BY COURSE
+	// =========================================================
+
+	@Query("""
+			SELECT
+			    e.course.courseName,
+			    COUNT(DISTINCT e.student.id)
+			FROM Enrollment e
+			GROUP BY e.course.courseName
+			ORDER BY COUNT(DISTINCT e.student.id) DESC
+			""")
+	List<Object[]> getStudentsByCourse();
+
+	// =========================================================
+	// MONTHLY STUDENT ENROLLMENT
+	// =========================================================
+
+	@Query("""
+			SELECT
+			    MONTH(e.enrolledDate),
+			    COUNT(DISTINCT e.student.id)
+			FROM Enrollment e
+			WHERE YEAR(e.enrolledDate) = :year
+			GROUP BY MONTH(e.enrolledDate)
+			ORDER BY MONTH(e.enrolledDate)
+			""")
+	List<Object[]> getMonthlyStudentEnrollment(@Param("year") int year);
 }
