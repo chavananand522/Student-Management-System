@@ -121,20 +121,26 @@ public class AttendanceController {
         // CUMULATIVE STATS (for the gauge)
         // If no date filter applied → first record ... today
         // If date filter applied    → first record ... selectedDate
+        //
+        // NEW WEIGHTAGE:
+        //   PRESENT → 100% of a unit
+        //   LATE    →  50% of a unit
+        //   ABSENT  →   0% of a unit
         // --------------------------------------------------
 
         LocalDate firstDate = attendanceService.getEarliestAttendanceDate();
 
-        // If there are no records at all, avoid running null bounds
         LocalDate rangeStart = (firstDate != null) ? firstDate : date;
         LocalDate rangeEnd   = date;
 
-        long cumulativePresent = 0;
-        long cumulativeTotal   = 0;
+        long cumulativePresentRaw = 0;
+        long cumulativeLateRaw    = 0;
+        long cumulativeAbsentRaw  = 0;
+        long cumulativeTotal      = 0;
 
         if (firstDate != null) {
 
-            // Cumulative PRESENT count
+            // PRESENT count
             StringBuilder presentJpql = new StringBuilder(
                     "SELECT COUNT(a) FROM Attendance a " +
                     "WHERE a.attendanceDate BETWEEN :start AND :end " +
@@ -157,9 +163,34 @@ public class AttendanceController {
             if (courseId != null) pq.setParameter("courseId", courseId);
             if (search != null)   pq.setParameter("kw", "%" + search.toLowerCase() + "%");
 
-            cumulativePresent = pq.getSingleResult();
+            cumulativePresentRaw = pq.getSingleResult();
 
-            // Cumulative TOTAL count
+            // LATE count
+            StringBuilder lateJpql = new StringBuilder(
+                    "SELECT COUNT(a) FROM Attendance a " +
+                    "WHERE a.attendanceDate BETWEEN :start AND :end " +
+                    "AND UPPER(a.status) = 'LATE' "
+            );
+            if (courseId != null) lateJpql.append("AND a.course.id = :courseId ");
+            if (search != null) {
+                lateJpql.append(
+                        "AND ( LOWER(a.student.firstName) LIKE :kw " +
+                        "   OR LOWER(a.student.lastName)  LIKE :kw " +
+                        "   OR LOWER(CONCAT(a.student.firstName, ' ', a.student.lastName)) LIKE :kw ) "
+                );
+            }
+
+            TypedQuery<Long> lq = entityManager
+                    .createQuery(lateJpql.toString(), Long.class)
+                    .setParameter("start", rangeStart)
+                    .setParameter("end", rangeEnd);
+
+            if (courseId != null) lq.setParameter("courseId", courseId);
+            if (search != null)   lq.setParameter("kw", "%" + search.toLowerCase() + "%");
+
+            cumulativeLateRaw = lq.getSingleResult();
+
+            // TOTAL count
             StringBuilder totalJpql = new StringBuilder(
                     "SELECT COUNT(a) FROM Attendance a " +
                     "WHERE a.attendanceDate BETWEEN :start AND :end "
@@ -182,15 +213,29 @@ public class AttendanceController {
             if (search != null)   tq.setParameter("kw", "%" + search.toLowerCase() + "%");
 
             cumulativeTotal = tq.getSingleResult();
+
+            cumulativeAbsentRaw = cumulativeTotal - cumulativePresentRaw - cumulativeLateRaw;
+            if (cumulativeAbsentRaw < 0) cumulativeAbsentRaw = 0;
         }
 
-        long cumulativeAbsent = cumulativeTotal - cumulativePresent;
+        // --------------------------------------------------
+        // WEIGHTED PERCENTAGE
+        //   PRESENT = 1.0
+        //   LATE    = 0.5
+        //   ABSENT  = 0.0
+        // --------------------------------------------------
+        double weightedPresent = cumulativePresentRaw + (cumulativeLateRaw * 0.5);
 
         double attendancePercentage = 0.0;
         if (cumulativeTotal > 0) {
             attendancePercentage =
-                    Math.round(((double) cumulativePresent / cumulativeTotal) * 10000) / 100.0;
+                    Math.round((weightedPresent / cumulativeTotal) * 10000.0) / 100.0;
         }
+
+        // For display in the bottom strip we keep the raw presence
+        // figure as the "attendance" numerator (rounded down to 2dp).
+        double cumulativePresentDisplay =
+                Math.round(weightedPresent * 100.0) / 100.0;
 
         // --------------------------------------------------
         // Courses
@@ -251,9 +296,11 @@ public class AttendanceController {
         model.addAttribute("totalAttendance", totalToday);
 
         // Cumulative stats (gauge + bottom strip)
-        model.addAttribute("cumulativePresent", cumulativePresent);
-        model.addAttribute("cumulativeAbsent",  cumulativeAbsent);
-        model.addAttribute("cumulativeTotal",   cumulativeTotal);
+        model.addAttribute("cumulativePresent", cumulativePresentDisplay);
+        model.addAttribute("cumulativePresentRaw", cumulativePresentRaw);
+        model.addAttribute("cumulativeLate",   cumulativeLateRaw);
+        model.addAttribute("cumulativeAbsent", cumulativeAbsentRaw);
+        model.addAttribute("cumulativeTotal",  cumulativeTotal);
         model.addAttribute("attendancePercentage", attendancePercentage);
 
         // Extra info for UI (optional)

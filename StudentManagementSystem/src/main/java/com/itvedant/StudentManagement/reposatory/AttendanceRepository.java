@@ -2,7 +2,6 @@ package com.itvedant.StudentManagement.reposatory;
 
 import com.itvedant.StudentManagement.dto.StudentAttendanceDTO;
 import com.itvedant.StudentManagement.model.Attendance;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,9 +14,9 @@ import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-	// ============================================================
-	// EXISTING METHODS (used by admin side)
-	// ============================================================
+	// ---------------------------------------------------------
+	// Single-row lookups
+	// ---------------------------------------------------------
 
 	Optional<Attendance> findByStudentIdAndCourseIdAndAttendanceDate(Long studentId, Long courseId,
 			LocalDate attendanceDate);
@@ -28,24 +27,26 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
 	List<Attendance> findByStudentIdOrderByAttendanceDateDesc(Long studentId);
 
+	// ---------------------------------------------------------
+	// Counts
+	// ---------------------------------------------------------
+
 	long countByAttendanceDateAndStatus(LocalDate attendanceDate, String status);
 
 	long countByStudentIdAndStatus(Long studentId, String status);
 
 	long countByStudentId(Long studentId);
 
-	// ============================================================
-	// NEW METHODS FOR STUDENT PORTAL
-	// ============================================================
+	long countByStudentIdAndCourseId(Long studentId, Long courseId);
 
-	/**
-	 * Paginated attendance for a student, newest first.
-	 */
+	long countByStudentIdAndCourseIdAndStatus(Long studentId, Long courseId, String status);
+
+	// ---------------------------------------------------------
+	// Pagination
+	// ---------------------------------------------------------
+
 	Page<Attendance> findByStudentIdOrderByAttendanceDateDesc(Long studentId, Pageable pageable);
 
-	/**
-	 * Filtered attendance for a student (optional course + date range).
-	 */
 	@Query("""
 			SELECT a FROM Attendance a
 			WHERE a.student.id = :studentId
@@ -57,20 +58,10 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 	Page<Attendance> findStudentAttendanceFiltered(@Param("studentId") Long studentId, @Param("courseId") Long courseId,
 			@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, Pageable pageable);
 
-	/**
-	 * Count attendance records for a student in a specific course.
-	 */
-	long countByStudentIdAndCourseId(Long studentId, Long courseId);
+	// ---------------------------------------------------------
+	// Per-subject summary
+	// ---------------------------------------------------------
 
-	/**
-	 * Count by student + course + status (used for subject-wise breakdown).
-	 */
-	long countByStudentIdAndCourseIdAndStatus(Long studentId, Long courseId, String status);
-
-	/**
-	 * Subject-wise summary — one row per course the student has records in. PRESENT
-	 * + LATE are counted as attended.
-	 */
 	@Query("""
 			SELECT new com.itvedant.StudentManagement.dto.StudentAttendanceDTO(
 			    c.id,
@@ -88,4 +79,15 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 			ORDER BY c.courseName
 			""")
 	List<StudentAttendanceDTO> findSubjectWiseSummary(@Param("studentId") Long studentId);
+
+	@Query("""
+			SELECT
+			    COUNT(a),
+			    COALESCE(SUM(CASE WHEN a.status = 'PRESENT' THEN 1 ELSE 0 END), 0),
+			    COALESCE(SUM(CASE WHEN a.status = 'ABSENT'  THEN 1 ELSE 0 END), 0),
+			    COALESCE(SUM(CASE WHEN a.status = 'LATE'    THEN 1 ELSE 0 END), 0)
+			FROM Attendance a
+			WHERE a.student.id = :studentId
+			""")
+	Object[] findAttendanceSummaryForStudent(@Param("studentId") Long studentId);
 }

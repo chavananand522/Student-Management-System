@@ -1,47 +1,611 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="~{'student/student-layout' :: head}"></head>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{student/student-layout::head}">
+</head>
 <body>
+<div class="d-flex">
+    <div th:replace="~{student/student-layout::sidebar}"></div>
 
-    <div class="d-flex student-layout">
+    <div class="student-content">
+        <div th:replace="~{student/student-layout::navbar}"></div>
+        <div th:replace="~{student/student-layout::alerts}"></div>
 
-        <!-- SIDEBAR -->
+        <div class="container-fluid px-4 py-4 dashboard-page">
 
-        <div th:replace="~{'student/student-layout' :: sidebar}"></div>
-
-        <!-- CONTENT -->
-
-        <div class="student-content">
-
-            <!-- NAVBAR -->
-
-            <div th:replace="~{'student/student-layout' :: navbar}"></div>
-
-            <!-- MAIN CONTENT -->
-
-            <div class="container-fluid px-4 py-3">
-
-                <div th:replace="~{'student/student-layout' :: alerts}"></div>
-
-                <h1 class="mt-4">Dashboard</h1>
-
-                <p>Welcome to the Student Portal.</p>
-
+            <!-- ============ WELCOME ============ -->
+            <div class="welcome-card mb-4">
+                <div class="welcome-left">
+                    <div class="welcome-icon">👋</div>
+                    <div>
+                        <h2 class="welcome-title">
+                            Welcome back,
+                            <span th:text="${student.firstName != null ? student.firstName : 'Student'}">Student</span>!
+                        </h2>
+                        <p class="welcome-text">
+                            Keep studying, keep practising, and move closer to your NEET dream.
+                        </p>
+                    </div>
+                </div>
+                <div class="welcome-right">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    <span>NEET Preparation</span>
+                </div>
             </div>
 
-            <!-- FOOTER -->
+            <!-- ============ TOP STAT CARDS ============ -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="dashboard-stat blue-stat">
+                        <div class="stat-content">
+                            <div>
+                                <p class="stat-label">My Courses</p>
+                                <h2 class="stat-number" th:text="${courseCount}">0</h2>
+                                <span class="stat-small">Enrolled courses</span>
+                            </div>
+                            <div class="stat-icon blue-icon">
+                                <i class="bi bi-book-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div th:replace="~{'student/student-layout' :: footer}"></div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="dashboard-stat green-stat">
+                        <div class="stat-content">
+                            <div>
+                                <p class="stat-label">Available Tests</p>
+                                <h2 class="stat-number" th:text="${testCount}">0</h2>
+                                <span class="stat-small">Tests to practise</span>
+                            </div>
+                            <div class="stat-icon green-icon">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="dashboard-stat purple-stat">
+                        <div class="stat-content">
+                            <div>
+                                <p class="stat-label">Completed Tests</p>
+                                <h2 class="stat-number" th:text="${completedTests}">0</h2>
+                                <span class="stat-small">Tests completed</span>
+                            </div>
+                            <div class="stat-icon purple-icon">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="dashboard-stat orange-stat">
+                        <div class="stat-content">
+                            <div>
+                                <p class="stat-label">Attendance Till Now</p>
+                                <h2 class="stat-number"
+                                    th:text="${#numbers.formatDecimal(attendancePercentage, 1, 1, 'POINT')} + '%'">0%</h2>
+                                <span class="stat-small">Overall attendance</span>
+                            </div>
+                            <div class="stat-icon orange-icon">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ SUBJECT PROGRESS + UPCOMING TESTS + ATTENDANCE ============ -->
+            <div class="row g-4 mb-4">
+
+                <!-- Subject Progress (DYNAMIC) -->
+                <div class="col-xl-4 col-lg-6">
+                    <div class="dashboard-card h-100">
+                        <div class="dashboard-card-header">
+                            <div>
+                                <h5>Subject Progress</h5>
+                                <p>Your NEET preparation progress</p>
+                            </div>
+                        </div>
+
+                        <!-- Loop through dynamic subjects -->
+                        <div class="subject-item" th:each="subject : ${subjectProgress}">
+                            <div class="subject-top">
+                                <div class="subject-name">
+                                    <div class="subject-icon"
+                                         th:classappend="${subject.name == 'Physics'} ? 'physics' :
+                                                         (${subject.name == 'Chemistry'} ? 'chemistry' : 'biology')">
+                                        <i class="bi"
+                                           th:classappend="${subject.name == 'Physics'} ? 'bi-lightning-charge-fill' :
+                                                           (${subject.name == 'Chemistry'} ? 'bi-beaker-fill' : 'bi-leaf-fill')"></i>
+                                    </div>
+                                    <span th:text="${subject.name}">Subject</span>
+                                </div>
+                                <strong th:text="${subject.percentage} + '%'">0%</strong>
+                            </div>
+                            <div class="progress subject-progress">
+                                <div class="progress-bar"
+                                     th:classappend="${subject.name == 'Physics'} ? 'physics-bar' :
+                                                     (${subject.name == 'Chemistry'} ? 'chemistry-bar' : 'biology-bar')"
+                                     th:style="'width:' + ${subject.percentage} + '%'"></div>
+                            </div>
+                            <small th:text="${subject.completedTopics} + ' of ' + ${subject.totalTopics} + ' topics completed'">
+                                0 of 0 topics completed
+                            </small>
+                        </div>
+
+                        <!-- Fallback if no data -->
+                        <div th:if="${subjectProgress == null or subjectProgress.isEmpty()}"
+                             class="text-muted text-center py-4" style="font-size:14px">
+                            <i class="bi bi-bar-chart d-block fs-3 mb-2"></i>
+                            No subject progress available yet.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available / Upcoming Tests (dynamic) -->
+                <div class="col-xl-4 col-lg-6">
+                    <div class="dashboard-card h-100">
+                        <div class="dashboard-card-header">
+                            <div>
+                                <h5>Available Tests</h5>
+                                <p>Keep practising regularly</p>
+                            </div>
+                            <a th:href="@{/student/tests}" class="view-link">View All</a>
+                        </div>
+
+                        <div class="text-muted text-center py-4"
+                             style="font-size:14px"
+                             th:if="${upcomingTests == null or upcomingTests.isEmpty()}">
+                            <i class="bi bi-pencil-square d-block fs-3 mb-2"></i>
+                            No tests available right now.
+                        </div>
+
+                        <a class="test-item text-decoration-none"
+                           th:each="t, stat : ${upcomingTests}"
+                           th:href="@{'/student/tests/' + ${t.id}}">
+                            <div class="test-date"
+                                 th:classappend="${stat.index % 3 == 0} ? 'blue-date' : (${stat.index % 3 == 1} ? 'green-date' : 'purple-date')">
+                                <strong th:text="${t.duration}">60</strong>
+                                <span>MIN</span>
+                            </div>
+                            <div class="test-details">
+                                <h6 th:text="${t.testName}">Test name</h6>
+                                <p th:text="${t.questionCount} + ' Questions • ' + ${t.totalMarks} + ' Marks'">180 Questions • 720 Marks</p>
+                            </div>
+                            <span class="test-status"
+                                  th:classappend="${t.attempted} ? 'done-status' : ''"
+                                  th:text="${t.attempted} ? 'Attempted' : 'Available'">Available</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ============ ATTENDANCE CARD (GAUGE) ============ -->
+                <div class="col-xl-4 col-lg-12">
+                    <div class="dashboard-card attendance-card h-100">
+                        <div class="dashboard-card-header">
+                            <div>
+                                <h5>Attendance Till Now</h5>
+                                <p>Present = 100%, Late = 50%, Absent = 0%.</p>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic gauge: needle angle is driven by --attendance (0-100) -->
+                        <div class="gauge-wrapper"
+                             th:style="'--attendance:' + ${attendancePercentage}">
+                            <svg class="gauge-svg" viewBox="0 0 200 150"
+                                 xmlns="http://www.w3.org/2000/svg" role="img"
+                                 th:attr="aria-label='Attendance ' + ${attendancePercentage} + ' percent'">
+                                <!-- Zones: red 0-75, yellow 75-90, green 90-100 -->
+                                <path d="M20 100 A80 80 0 0 1 156.57 43.43"
+                                      class="gauge-zone gauge-red"/>
+                                <path d="M156.57 43.43 A80 80 0 0 1 176.08 75.28"
+                                      class="gauge-zone gauge-yellow"/>
+                                <path d="M176.08 75.28 A80 80 0 0 1 180 100"
+                                      class="gauge-zone gauge-green"/>
+
+                                <!-- End labels -->
+                                <text x="20" y="116" class="gauge-tick" text-anchor="middle">0%</text>
+                                <text x="180" y="116" class="gauge-tick" text-anchor="middle">100%</text>
+
+                                <!-- Needle -->
+                                <g class="gauge-needle">
+                                    <line x1="100" y1="100" x2="100" y2="34"/>
+                                </g>
+                                <circle cx="100" cy="100" r="6" class="gauge-pivot"/>
+
+                                <!-- Value -->
+                                <text x="100" y="131" class="gauge-value" text-anchor="middle"
+                                      th:text="${#numbers.formatDecimal(attendancePercentage, 1, 1, 'POINT')} + '%'">0%</text>
+                                <text x="100" y="145" class="gauge-caption" text-anchor="middle">Attendance</text>
+                            </svg>
+
+                            <!-- Status chip (colour changes automatically with zone) -->
+                            <div class="gauge-status-wrap">
+                                <span class="gauge-status"
+                                      th:classappend="${attendancePercentage >= 90} ? 'status-good' : (${attendancePercentage >= 75} ? 'status-fair' : 'status-low')"
+                                      th:text="${attendancePercentage >= 90} ? 'Excellent' : (${attendancePercentage >= 75} ? 'Needs Improvement' : 'Low Attendance')">
+                                    Low Attendance
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="attendance-summary">
+                            <div class="attendance-row">
+                                <div>
+                                    <span class="attendance-dot present-dot"></span>
+                                    Present
+                                </div>
+                                <strong th:text="${presentDays}">0</strong>
+                            </div>
+
+                            <div class="attendance-row">
+                                <div>
+                                    <span class="attendance-dot absent-dot"></span>
+                                    Absent
+                                </div>
+                                <strong th:text="${absentDays}">0</strong>
+                            </div>
+
+                            <div class="attendance-row">
+                                <div>
+                                    <span class="attendance-dot late-dot"></span>
+                                    Late
+                                </div>
+                                <strong th:text="${lateDays}">0</strong>
+                            </div>
+
+                            <div class="attendance-row total-row">
+                                <div>
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    Total Classes
+                                </div>
+                                <strong th:text="${totalClasses}">0</strong>
+                            </div>
+                        </div>
+
+                        <a th:href="@{/student/attendance}"
+                           class="btn btn-outline-primary btn-sm w-100 mt-3">
+                            <i class="bi bi-eye me-1"></i>
+                            View Attendance
+                        </a>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
+        <div th:replace="~{student/student-layout::footer}"></div>
     </div>
+</div>
 
-    <th:block th:replace="~{'student/student-layout' :: scripts}"></th:block>
+<style>
+/* Font family: use Poppins for all student content */
+.student-content,
+.student-content * {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.student-content .bi::before {
+    font-family: 'bootstrap-icons' !important;
+}
+/* Dashboard page background */
+.dashboard-page {
+    background: #f5f7fb;
+    min-height: calc(100vh - 60px);
+}
+/* Welcome card */
+.welcome-card {
+    background: linear-gradient(110deg, #eaf3ff, #dcecff);
+    border-radius: 16px;
+    padding: 25px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 125px;
+    overflow: hidden;
+    position: relative;
+}
+.welcome-card:after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .35);
+    right: -80px;
+    top: -100px;
+}
+.welcome-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+}
+.welcome-icon { font-size: 40px; }
+.welcome-title {
+    margin: 0;
+    color: #18385f;
+    font-weight: 800;
+    font-size: 24px;
+}
+.welcome-text {
+    margin: 6px 0 0;
+    color: #52739c;
+    font-size: 14px;
+}
+.welcome-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #286fc5;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+.welcome-right i { font-size: 20px; }
 
+/* Stat cards */
+.dashboard-stat {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    min-height: 140px;
+    border: 1px solid #e9edf3;
+    transition: .2s;
+}
+.dashboard-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .07);
+}
+.stat-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.stat-label {
+    color: #718198;
+    font-size: 14px;
+    margin: 0 0 7px;
+    font-weight: 600;
+}
+.stat-number {
+    color: #1d3554;
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0;
+}
+.stat-small {
+    color: #8a98aa;
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+}
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+.blue-stat { background: linear-gradient(135deg, #fff, #eff7ff); }
+.blue-icon { background: #dcecff; color: #2879df; }
+.green-stat { background: linear-gradient(135deg, #fff, #effbf6); }
+.green-icon { background: #dcf7e9; color: #189866; }
+.purple-stat { background: linear-gradient(135deg, #fff, #f7f1ff); }
+.purple-icon { background: #e9ddff; color: #7c46cb; }
+.orange-stat { background: linear-gradient(135deg, #fff, #fff7ed); }
+.orange-icon { background: #ffe9cb; color: #d97812; }
+
+/* Dashboard cards */
+.dashboard-card {
+    background: #fff;
+    border: 1px solid #e7ebf1;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.dashboard-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+.dashboard-card-header h5 {
+    margin: 0;
+    color: #203956;
+    font-size: 18px;
+    font-weight: 700;
+}
+.dashboard-card-header p {
+    margin: 4px 0 0;
+    color: #8794a5;
+    font-size: 13px;
+}
+.view-link {
+    color: #2878df;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Subject progress */
+.subject-item { margin-bottom: 22px; }
+.subject-item:last-child { margin-bottom: 0; }
+.subject-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.subject-name {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #2d435f;
+    font-size: 15px;
+    font-weight: 600;
+}
+.subject-top > strong {
+    color: #52667f;
+    font-size: 15px;
+}
+.subject-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+.physics { background: #e5f1ff; color: #2879df; }
+.chemistry { background: #def8eb; color: #179762; }
+.biology { background: #eee3ff; color: #7b44cb; }
+.subject-progress {
+    height: 7px;
+    background: #edf0f4;
+    border-radius: 10px;
+}
+.physics-bar { background: #3986e9; border-radius: 10px; }
+.chemistry-bar { background: #28b97c; border-radius: 10px; }
+.biology-bar { background: #8a4ed5; border-radius: 10px; }
+.subject-item small {
+    display: block;
+    margin-top: 6px;
+    color: #8b98a9;
+    font-size: 12px;
+}
+
+/* Test list items */
+.test-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #edf0f4;
+}
+.test-item:last-child { border-bottom: 0; }
+.test-date {
+    width: 46px;
+    height: 48px;
+    border-radius: 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.test-date strong { font-size: 16px; line-height: 16px; }
+.test-date span { font-size: 9px; font-weight: 700; margin-top: 3px; }
+.blue-date { background: #eaf3ff; color: #2878df; }
+.green-date { background: #e6f8ef; color: #179764; }
+.purple-date { background: #f0e7ff; color: #7a45ca; }
+.test-details { flex: 1; min-width: 0; }
+.test-details h6 { margin: 0 0 4px; color: #2d425d; font-size: 14px; font-weight: 700; }
+.test-details p { margin: 0; color: #8a98aa; font-size: 12px; }
+.test-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #edf5ff;
+    color: #2878df;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.done-status { background: #e4f5e3; color: #3a8737; }
+
+/* Attendance gauge */
+.attendance-card { text-align: left; }
+.gauge-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 14px;
+}
+.gauge-svg {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    overflow: visible;
+}
+.gauge-zone { fill: none; stroke-width: 20; }
+.gauge-red { stroke: #d65645; }
+.gauge-yellow { stroke: #f4c242; }
+.gauge-green { stroke: #53a650; }
+.gauge-tick { font-size: 10px; fill: #8794a5; font-weight: 500; }
+.gauge-needle {
+    transform-origin: 100px 100px;
+    transform: rotate(calc(clamp(0, var(--attendance, 0), 100) * 1.8deg - 90deg));
+    transition: transform 1s cubic-bezier(.22, 1, .36, 1);
+}
+.gauge-needle line { stroke: #1f2b4d; stroke-width: 4; stroke-linecap: round; }
+.gauge-pivot { fill: #fff; stroke: #1f2b4d; stroke-width: 4; }
+.gauge-value { font-size: 24px; font-weight: 800; fill: #1f2b4d; }
+.gauge-caption { font-size: 11px; fill: #8794a5; font-weight: 600; }
+.gauge-status-wrap { margin-top: 2px; }
+.gauge-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.status-low { background: #fdeceb; color: #c8402f; }
+.status-fair { background: #fff5d6; color: #a67c00; }
+.status-good { background: #e4f5e3; color: #3a8737; }
+
+.attendance-summary {
+    border-top: 1px solid #edf0f4;
+    padding-top: 10px;
+}
+.attendance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    color: #65768c;
+    font-size: 14px;
+}
+.attendance-row strong { color: #263e5b; font-size: 14px; }
+.attendance-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+.present-dot { background: #22a970; }
+.absent-dot { background: #e15c67; }
+.late-dot { background: #f2a93a; }
+.total-row {
+    border-top: 1px dashed #e5e9ee;
+    margin-top: 3px;
+    padding-top: 9px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .attendance-card { margin-top: 0; }
+}
+@media (max-width: 768px) {
+    .welcome-right { display: none; }
+    .welcome-card { padding: 20px; }
+    .welcome-title { font-size: 20px; }
+}
+@media (max-width: 576px) {
+    .dashboard-page { padding-left: 12px !important; padding-right: 12px !important; }
+    .welcome-icon { font-size: 30px; }
+    .welcome-title { font-size: 18px; }
+    .welcome-text { font-size: 13px; }
+}
+</style>
+
+<th:block th:replace="~{student/student-layout::scripts}"></th:block>
 </body>
-
 </html>

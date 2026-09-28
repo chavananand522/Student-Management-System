@@ -39,7 +39,23 @@ public class SpringConfig {
                     "/js/**",
                     "/images/**",
                     "/error",
-                    "/favicon.ico"
+
+                    // =========================================
+                    // FAVICON — allow all icon formats
+                    // =========================================
+                    "/favicon.ico",
+                    "/favicon-*.png",
+                    "/favicon.png",
+                    "/apple-touch-icon.png",
+                    "/site.webmanifest",
+                    "/manifest.json",
+
+                    // Root-level static assets
+                    "/*.png",
+                    "/*.ico",
+                    "/*.webmanifest",
+                    "/*.json",
+                    "/*.svg"
                 )
                 .permitAll()
 

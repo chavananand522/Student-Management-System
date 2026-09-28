@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface TestAttemptRepository extends JpaRepository<TestAttempt, Long> {
@@ -45,4 +46,19 @@ public interface TestAttemptRepository extends JpaRepository<TestAttempt, Long> 
 
     @Query("SELECT t.studentUsername FROM TestAttempt t WHERE t.test.id = :testId AND UPPER(t.status) = 'SUBMITTED' ORDER BY t.obtainedMarks DESC")
     List<String> findTopperNameByTestId(@Param("testId") Long testId, Pageable pageable);
+
+    // ---------------------------------------------------------
+    // Attempt counts per test for a single student
+    // Used by StudentPortalController.tests() to avoid N+1
+    // Returns rows of [testId (Long), count (Long)]
+    // ---------------------------------------------------------
+
+    @Query("""
+        SELECT t.test.id, COUNT(t)
+        FROM TestAttempt t
+        WHERE t.studentUsername = :username
+        GROUP BY t.test.id
+        """)
+    List<Object[]> countAttemptsByStudentGroupedByTest(
+            @Param("username") String username);
 }

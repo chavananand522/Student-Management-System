@@ -28,7 +28,7 @@ public interface StudentAttendanceService {
 
     /**
      * Overall attendance percentage across all courses.
-     * PRESENT + LATE are counted as attended.
+     * WEIGHTED: PRESENT = 1.0, LATE = 0.5, ABSENT = 0.0
      */
     double getOverallPercentage(Long studentId);
 

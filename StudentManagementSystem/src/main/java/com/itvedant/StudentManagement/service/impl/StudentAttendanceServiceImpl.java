@@ -19,66 +19,73 @@ import com.itvedant.StudentManagement.services.StudentAttendanceService;
 @Transactional(readOnly = true)
 public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 
-	private static final Logger log = LoggerFactory.getLogger(StudentAttendanceServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(StudentAttendanceServiceImpl.class);
 
-	private final AttendanceRepository attendanceRepository;
+    private final AttendanceRepository attendanceRepository;
 
-	public StudentAttendanceServiceImpl(AttendanceRepository attendanceRepository) {
-		this.attendanceRepository = attendanceRepository;
-	}
+    public StudentAttendanceServiceImpl(AttendanceRepository attendanceRepository) {
+        this.attendanceRepository = attendanceRepository;
+    }
 
-	@Override
-	public Page<Attendance> getStudentAttendance(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate,
-			int page, int size) {
+    @Override
+    public Page<Attendance> getStudentAttendance(Long studentId, Long courseId,
+                                                 LocalDate startDate, LocalDate endDate,
+                                                 int page, int size) {
 
-		log.info("Fetching attendance for student {} (course={}, from={}, to={})", studentId, courseId, startDate,
-				endDate);
+        log.info("Fetching attendance for student {} (course={}, from={}, to={})",
+                studentId, courseId, startDate, endDate);
 
-		PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size);
 
-		// If no filters, use the simple query
-		if (courseId == null && startDate == null && endDate == null) {
-			return attendanceRepository.findByStudentIdOrderByAttendanceDateDesc(studentId, pageRequest);
-		}
+        if (courseId == null && startDate == null && endDate == null) {
+            return attendanceRepository
+                    .findByStudentIdOrderByAttendanceDateDesc(studentId, pageRequest);
+        }
 
-		return attendanceRepository.findStudentAttendanceFiltered(studentId, courseId, startDate, endDate, pageRequest);
-	}
+        return attendanceRepository.findStudentAttendanceFiltered(
+                studentId, courseId, startDate, endDate, pageRequest);
+    }
 
-	@Override
-	public List<StudentAttendanceDTO> getSubjectWiseSummary(Long studentId) {
-		return attendanceRepository.findSubjectWiseSummary(studentId);
-	}
+    @Override
+    public List<StudentAttendanceDTO> getSubjectWiseSummary(Long studentId) {
+        // Per-subject percentages are computed inside StudentAttendanceDTO.
+        return attendanceRepository.findSubjectWiseSummary(studentId);
+    }
 
-	@Override
-	public double getOverallPercentage(Long studentId) {
-		long total = attendanceRepository.countByStudentId(studentId);
-		if (total == 0)
-			return 0.0;
+    @Override
+    public double getOverallPercentage(Long studentId) {
 
-		long present = attendanceRepository.countByStudentIdAndStatus(studentId, "PRESENT");
-		long late = attendanceRepository.countByStudentIdAndStatus(studentId, "LATE");
+        long total = attendanceRepository.countByStudentId(studentId);
+        if (total == 0) {
+            return 0.0;
+        }
 
-		// Count LATE as present for the percentage
-		return ((double) (present + late) / total) * 100.0;
-	}
+        long present = attendanceRepository.countByStudentIdAndStatus(studentId, "PRESENT");
+        long late    = attendanceRepository.countByStudentIdAndStatus(studentId, "LATE");
 
-	@Override
-	public long getTotalCount(Long studentId) {
-		return attendanceRepository.countByStudentId(studentId);
-	}
+        // WEIGHTED: PRESENT = 1.0, LATE = 0.5, ABSENT = 0.0
+        double weightedPresent = present + (late * 0.5);
 
-	@Override
-	public long getPresentCount(Long studentId) {
-		return attendanceRepository.countByStudentIdAndStatus(studentId, "PRESENT");
-	}
+        return (weightedPresent / total) * 100.0;
+    }
 
-	@Override
-	public long getAbsentCount(Long studentId) {
-		return attendanceRepository.countByStudentIdAndStatus(studentId, "ABSENT");
-	}
+    @Override
+    public long getTotalCount(Long studentId) {
+        return attendanceRepository.countByStudentId(studentId);
+    }
 
-	@Override
-	public long getLateCount(Long studentId) {
-		return attendanceRepository.countByStudentIdAndStatus(studentId, "LATE");
-	}
+    @Override
+    public long getPresentCount(Long studentId) {
+        return attendanceRepository.countByStudentIdAndStatus(studentId, "PRESENT");
+    }
+
+    @Override
+    public long getAbsentCount(Long studentId) {
+        return attendanceRepository.countByStudentIdAndStatus(studentId, "ABSENT");
+    }
+
+    @Override
+    public long getLateCount(Long studentId) {
+        return attendanceRepository.countByStudentIdAndStatus(studentId, "LATE");
+    }
 }

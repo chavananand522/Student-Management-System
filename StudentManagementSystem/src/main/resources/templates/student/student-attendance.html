@@ -22,9 +22,7 @@
             <!-- ALERTS -->
             <div th:replace="~{'student/student-layout' :: alerts}"></div>
 
-            <!-- ========================================================= -->
-            <!-- HEADER                                                    -->
-            <!-- ========================================================= -->
+            <!-- HEADER -->
             <div class="bg-primary text-white rounded-3 p-4 mb-4">
                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                     <div>
@@ -47,9 +45,7 @@
                 </div>
             </div>
 
-            <!-- ========================================================= -->
-            <!-- EMPTY STATE                                               -->
-            <!-- ========================================================= -->
+            <!-- EMPTY STATE -->
             <div class="card mb-4" th:if="${totalCount == 0}">
                 <div class="card-body text-center py-5">
                     <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
@@ -60,12 +56,10 @@
                 </div>
             </div>
 
-            <!-- ========================================================= -->
-            <!-- MAIN DASHBOARD                                            -->
-            <!-- ========================================================= -->
+            <!-- MAIN DASHBOARD -->
             <div th:if="${totalCount > 0}">
 
-                <!-- ========== FILTER CARD ========== -->
+                <!-- FILTER CARD -->
                 <div class="card mb-4">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-funnel me-1"></i> Filter Attendance</span>
@@ -118,7 +112,7 @@
                     </div>
                 </div>
 
-                <!-- ========== STAT CARDS ========== -->
+                <!-- STAT CARDS -->
                 <div class="row g-3 mb-4">
 
                     <div class="col-6 col-md-3">
@@ -189,7 +183,7 @@
 
                 </div>
 
-                <!-- ========== GAUGE ========== -->
+                <!-- GAUGE -->
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
@@ -199,7 +193,7 @@
                             </div>
                             <div>
                                 <h4 class="mb-0 fw-bold text-dark">Overall Attendance Percentage</h4>
-                                <p class="mb-0 text-muted small">Late is counted as present for percentage.</p>
+                                <p class="mb-0 text-muted small">Present = 100%, Late = 50%, Absent = 0%.</p>
                             </div>
                         </div>
 
@@ -257,7 +251,7 @@
                     </div>
                 </div>
 
-                <!-- ========== SUBJECT-WISE BREAKDOWN ========== -->
+                <!-- SUBJECT-WISE BREAKDOWN -->
                 <div class="card mb-4" th:if="${subjectSummary != null and !subjectSummary.isEmpty()}">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-book me-1"></i> Subject-wise Breakdown</span>
@@ -321,7 +315,7 @@
                     </div>
                 </div>
 
-                <!-- ========== DETAILED RECORDS ========== -->
+                <!-- DETAILED RECORDS -->
                 <div class="card mb-4">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <span><i class="bi bi-table me-1"></i> Detailed Attendance Records</span>
@@ -374,7 +368,6 @@
                             </table>
                         </div>
 
-                        <!-- Pagination -->
                         <nav th:if="${attendancePage.totalPages > 1}" aria-label="Attendance pagination">
                             <ul class="pagination justify-content-end mb-0">
 

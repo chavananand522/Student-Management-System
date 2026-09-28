@@ -19,33 +19,33 @@
 
         <div class="container-fluid px-4 py-4">
 
-			<!-- ========================================================= -->
-			<!-- SUCCESS TOAST (Centered within content area)              -->
-			<!-- ========================================================= -->
-			<div class="toast-container position-absolute top-0 start-50 translate-middle-x p-3"
-			     style="z-index: 1100;">
+            <!-- ========================================================= -->
+            <!-- SUCCESS TOAST (Centered within content area)              -->
+            <!-- ========================================================= -->
+            <div class="toast-container position-absolute top-0 start-50 translate-middle-x p-3"
+                 style="z-index: 1100;">
 
-			    <div id="successToast"
-			         class="toast align-items-center text-bg-success border-0 shadow"
-			         role="alert"
-			         aria-live="assertive"
-			         aria-atomic="true"
-			         th:if="${successMessage != null}"
-			         data-autoshow="true">
+                <div id="successToast"
+                     class="toast align-items-center text-bg-success border-0 shadow"
+                     role="alert"
+                     aria-live="assertive"
+                     aria-atomic="true"
+                     th:if="${successMessage != null}"
+                     data-autoshow="true">
 
-			        <div class="d-flex">
-			            <div class="toast-body d-flex align-items-center justify-content-center flex-grow-1">
-			                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-			                <span th:text="${successMessage}">Attendance marked successfully!</span>
-			            </div>
-			            <button type="button"
-			                    class="btn-close btn-close-white me-2 m-auto"
-			                    data-bs-dismiss="toast"
-			                    aria-label="Close"></button>
-			        </div>
-			    </div>
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-center justify-content-center flex-grow-1">
+                            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                            <span th:text="${successMessage}">Attendance marked successfully!</span>
+                        </div>
+                        <button type="button"
+                                class="btn-close btn-close-white me-2 m-auto"
+                                data-bs-dismiss="toast"
+                                aria-label="Close"></button>
+                    </div>
+                </div>
 
-			</div>
+            </div>
             <!-- HEADER -->
             <div class="bg-primary text-white rounded-3 p-4 mb-4">
                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
@@ -175,14 +175,15 @@
                         <div>
                             <h4 class="mb-0 fw-bold text-dark">Attendance Percentage</h4>
                             <p class="mb-0 text-muted small">
+                                Present = 100%, Late = 50%, Absent = 0% ·
                                 <span th:if="${dateFilterApplied}">
-                                    Cumulative attendance from
+                                    from
                                     <strong th:text="${rangeStart}">start</strong>
                                     to
                                     <strong th:text="${rangeEnd}">end</strong>
                                 </span>
                                 <span th:unless="${dateFilterApplied}">
-                                    Cumulative attendance from
+                                    from
                                     <strong th:text="${rangeStart}">start</strong>
                                     to today
                                 </span>
@@ -233,26 +234,46 @@
 
                     </div>
 
-                    <!-- Bottom stats strip (cumulative) -->
+                    <!-- Bottom stats strip (cumulative, weighted) -->
                     <div class="row g-0 mt-4 pt-4 border-top">
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="d-flex align-items-center px-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                                      style="width:44px;height:44px;background:#e8f0fe;">
                                     <i class="bi bi-people-fill" style="color:#1a73e8;"></i>
                                 </div>
                                 <div>
-                                    <div class="text-muted small">Present (cumulative)</div>
+                                    <div class="text-muted small">Present (weighted)</div>
                                     <div class="fs-4 fw-bold text-dark">
-                                        <span th:text="${cumulativePresent}">87</span>
-                                        <span class="fs-6 text-muted fw-normal">/ <span th:text="${cumulativeTotal}">100</span></span>
+                                        <span th:text="${#numbers.formatDecimal(cumulativePresent, 1, 2)}">0.00</span>
+                                        <span class="fs-6 text-muted fw-normal">/ <span th:text="${cumulativeTotal}">0</span></span>
+                                    </div>
+                                    <div class="text-muted" style="font-size:11px;">
+                                        (<span th:text="${cumulativePresentRaw}">0</span> present +
+                                        0.5 × <span th:text="${cumulativeLate}">0</span> late)
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4 border-start border-end">
+                        <div class="col-md-3 border-start">
+                            <div class="d-flex align-items-center px-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                     style="width:44px;height:44px;background:#fff8e1;">
+                                    <i class="bi bi-clock-fill" style="color:#f59e0b;"></i>
+                                </div>
+                                <div>
+                                    <div class="text-muted small">Late (cumulative)</div>
+                                    <div class="fs-4 fw-bold text-dark">
+                                        <span th:text="${cumulativeLate}">0</span>
+                                        <span class="fs-6 text-muted fw-normal">/ <span th:text="${cumulativeTotal}">0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 border-start border-end">
                             <div class="d-flex align-items-center px-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                                      style="width:44px;height:44px;background:#fdecea;">
@@ -261,14 +282,14 @@
                                 <div>
                                     <div class="text-muted small">Absent (cumulative)</div>
                                     <div class="fs-4 fw-bold text-dark">
-                                        <span th:text="${cumulativeAbsent}">13</span>
-                                        <span class="fs-6 text-muted fw-normal">/ <span th:text="${cumulativeTotal}">100</span></span>
+                                        <span th:text="${cumulativeAbsent}">0</span>
+                                        <span class="fs-6 text-muted fw-normal">/ <span th:text="${cumulativeTotal}">0</span></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="d-flex align-items-center px-3">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
                                      style="width:44px;height:44px;background:#ede7f6;">
@@ -277,7 +298,7 @@
                                 <div>
                                     <div class="text-muted small">Total Records</div>
                                     <div class="fs-4 fw-bold text-dark">
-                                        <span th:text="${cumulativeTotal}">100</span>
+                                        <span th:text="${cumulativeTotal}">0</span>
                                     </div>
                                 </div>
                             </div>
@@ -390,10 +411,8 @@
                                           th:text="${attendance.status}">PRESENT</span>
                                 </td>
                                 <td>
-                                    <!-- ONLY EDIT AND DELETE ICONS (NO VIEW) -->
                                     <div class="d-flex gap-2">
-                                        
-                                        <!-- Edit Button (Yellow Outline Pencil) -->
+
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-warning text-warning d-flex align-items-center justify-content-center edit-attendance-btn"
                                                 style="width: 36px; height: 36px; border-radius: 8px;"
@@ -404,7 +423,6 @@
                                             <i class="bi bi-pencil fs-6"></i>
                                         </button>
 
-                                        <!-- Delete Button (Red Outline Trash) -->
                                         <form th:action="@{'/attendance/delete/' + ${attendance.id}}" method="post" class="d-inline">
                                             <button type="submit"
                                                     class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
@@ -607,7 +625,7 @@
 
                 ctx.font = "700 56px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
                 ctx.fillStyle = "#1a2b50";
-                ctx.fillText(percentage.toFixed(0) + "%", cx, cy - 20);
+                ctx.fillText(percentage.toFixed(1) + "%", cx, cy - 20);
 
                 ctx.font = "500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
                 ctx.fillStyle = "#6c7a92";
