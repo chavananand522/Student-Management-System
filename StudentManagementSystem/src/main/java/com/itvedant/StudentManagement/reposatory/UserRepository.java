@@ -26,6 +26,11 @@ public interface UserRepository extends JpaRepository<Users, Long> {
      */
     Optional<Users> findFirstByEmail(String email);
 
+    /**
+     * Case-insensitive email lookup — used by the password reset flow.
+     */
+    Optional<Users> findFirstByEmailIgnoreCase(String email);
+
     boolean existsByUserNameIgnoreCase(String userName);
 
     boolean existsByEmail(String email);

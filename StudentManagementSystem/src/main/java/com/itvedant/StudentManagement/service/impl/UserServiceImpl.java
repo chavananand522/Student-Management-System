@@ -23,17 +23,21 @@ public class UserServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
 
+        // 🔑 Try username first, then fall back to email.
+        // This lets users log in with either their username OR their email.
         Users user = userRepository.findByUserName(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 "Invalid username or password"
                         ));
 
-        // `active` is a primitive boolean on Users, so no null-check needed.
+        // Check if account is active
         if (!user.isActive()) {
             throw new DisabledException("User account is disabled");
         }
 
+        // Check role
         if (user.getRole() == null || user.getRole().isBlank()) {
             throw new UsernameNotFoundException(
                     "User role is not configured"
@@ -44,6 +48,7 @@ public class UserServiceImpl implements UserDetailsService {
                 .withUsername(user.getUserName())
                 .password(user.getPassword())
                 .roles(user.getRole().trim().toUpperCase())
+                .disabled(false)
                 .build();
     }
 }
