@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/layout :: head}">
     <title>Test Results</title>
@@ -8,45 +7,17 @@
 
 <body>
 
-<!-- =========================================================
-     WRAPPER — sidebar + content side by side
-========================================================= -->
-
-<div class="d-flex"
-     id="wrapper">
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+<div class="d-flex" id="wrapper">
 
     <div th:replace="~{fragments/layout :: sidebar}"></div>
 
-
-    <!-- =====================================================
-         PAGE CONTENT WRAPPER
-    ====================================================== -->
-
-    <div id="page-content-wrapper"
-         class="w-100">
-
-        <!-- =================================================
-             NAVBAR
-        ================================================== -->
+    <div id="page-content-wrapper" class="w-100">
 
         <div th:replace="~{fragments/layout :: navbar}"></div>
 
-
-        <!-- =================================================
-             MAIN CONTENT
-        ================================================== -->
-
-        <div class="container-fluid p-0">
+        <main class="container-fluid p-0">
 
             <div class="result-container">
-
-                <!-- =========================================
-                     PAGE TITLE
-                ========================================== -->
 
                 <div class="page-title">
 
@@ -56,22 +27,15 @@
 
                     <div>
                         <h2>Test Results</h2>
-                        <p>Review all test questions and correct answers</p>
+                        <p>Review test questions and student responses</p>
                     </div>
 
                 </div>
 
-
-                <!-- =========================================
-                     TEST INFORMATION
-                ========================================== -->
-
                 <div class="info-grid">
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-file-lines"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-file-lines"></i></div>
                         <div>
                             <div class="info-label">Test</div>
                             <div class="info-value" th:text="${test.testName}">Test Name</div>
@@ -79,9 +43,7 @@
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-book"></i></div>
                         <div>
                             <div class="info-label">Course</div>
                             <div class="info-value" th:text="${test.course}">Course</div>
@@ -89,29 +51,74 @@
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-book-open"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-book-open"></i></div>
                         <div>
                             <div class="info-label">Subject</div>
-                            <div class="info-value" th:text="${test.subject}">Subject</div>
+                            <div class="info-value" th:text="${#strings.replace(test.subject, ' | ', ', ')}">Subject</div>
                         </div>
                     </div>
 
-                    <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <div>
+                    <!-- ============ CHAPTER (subject once, chapters after it) ============ -->
+                    <div class="info-card chapter-card">
+                        <div class="info-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="chapter-wrap">
                             <div class="info-label">Chapter</div>
-                            <div class="info-value" th:text="${test.chapter}">Chapter</div>
+
+                            <div class="info-value chapter-groups">
+
+                                <!--
+                                    Source items look like "Biology: The Living World".
+                                    Uses chapterGroups keys if available, otherwise test.chapter
+                                    split on '|'.
+                                    Builds:  Biology   -> [The Living World, Plant Kingdom, ...]
+                                             Chemistry -> [Some Basic Concepts..., Thermodynamics]
+                                             Physics   -> [Electrostatic Potential...]
+                                -->
+                                <th:block th:with="rawItems=${(chapterGroups != null and !chapterGroups.isEmpty())
+                                                              ? chapterGroups.keySet()
+                                                              : #strings.arraySplit(test.chapter, '|')},
+                                                   subjectMap=${new java.util.LinkedHashMap()}">
+
+                                    <th:block th:each="raw : ${rawItems}">
+                                        <th:block th:with="subj=${#strings.trim(#strings.substringBefore(raw, ':'))},
+                                                           chap=${#strings.trim(#strings.substringAfter(raw, ':'))}">
+
+                                            <th:block th:if="${!#strings.isEmpty(subj) and !#strings.isEmpty(chap)}">
+
+                                                <!-- create the subject entry only the first time -->
+                                                <th:block th:if="${!subjectMap.containsKey(subj)}">
+                                                    <th:block th:with="ignored=${subjectMap.put(subj, new java.util.ArrayList())}"></th:block>
+                                                </th:block>
+
+                                                <!-- add the chapter under that subject (skip duplicates) -->
+                                                <th:block th:if="${!subjectMap.get(subj).contains(chap)}">
+                                                    <th:block th:with="ignored2=${subjectMap.get(subj).add(chap)}"></th:block>
+                                                </th:block>
+
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
+
+                                    <div class="chapter-group" th:each="entry : ${subjectMap}">
+                                        <span class="chapter-subject" th:text="${entry.key} + ':'">Biology:</span>
+                                        <span class="chapter-name"
+                                              th:each="chap : ${entry.value}"
+                                              th:text="${chap}">Chapter</span>
+                                    </div>
+
+                                    <!-- fallback if nothing could be parsed -->
+                                    <span th:if="${subjectMap.isEmpty()}"
+                                          th:text="${test.chapter}">Chapter</span>
+
+                                </th:block>
+
+                            </div>
                         </div>
                     </div>
+                    <!-- ================================================================= -->
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-circle-check"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-circle-check"></i></div>
                         <div>
                             <div class="info-label">Status</div>
                             <div class="info-value">
@@ -121,9 +128,7 @@
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-clock"></i></div>
                         <div>
                             <div class="info-label">Duration</div>
                             <div class="info-value">
@@ -133,9 +138,7 @@
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-star"></i></div>
                         <div>
                             <div class="info-label">Total Marks</div>
                             <div class="info-value" th:text="${test.totalMarks}">100</div>
@@ -143,85 +146,81 @@
                     </div>
 
                     <div class="info-card">
-                        <div class="info-icon">
-                            <i class="fas fa-list-ol"></i>
-                        </div>
+                        <div class="info-icon"><i class="fas fa-list-ol"></i></div>
                         <div>
                             <div class="info-label">Questions</div>
-                            <div class="info-value"
-                                 th:text="${test.questions != null ? test.questions.size() : 0}">0</div>
+                            <div class="info-value" th:text="${questionCount}">0</div>
                         </div>
                     </div>
 
                 </div>
 
-
-                <!-- =========================================
-                     QUESTION NAVIGATION PANEL
-                ========================================== -->
-
                 <div class="status-panel"
                      th:if="${test.questions != null and !test.questions.isEmpty()}">
 
-                    <div class="status-summary">
+                    <div class="status-summary"
+                         th:with="selectedStats=${selectedQuestion != null and questionStats != null ? questionStats[selectedQuestion.id] : null}">
 
                         <div class="status-left">
 
                             <div class="status-item">
-                                <div class="status-icon wrong-icon">
-                                    <i class="fas fa-xmark"></i>
-                                </div>
+                                <div class="status-icon correct-icon"><i class="fas fa-check"></i></div>
+                                <span>Correct</span>
+                                <strong id="topCorrectCount"
+                                        th:text="${selectedStats != null ? selectedStats.correctCount : 0}">0</strong>
+                            </div>
+
+                            <div class="status-item">
+                                <div class="status-icon wrong-icon"><i class="fas fa-xmark"></i></div>
                                 <span>Wrong</span>
-                                <strong id="wrongCount">0</strong>
+                                <strong id="topWrongCount"
+                                        th:text="${selectedStats != null ? selectedStats.wrongCount : 0}">0</strong>
                             </div>
 
                             <div class="status-item">
                                 <div class="status-icon never-icon"></div>
-                                <span>Never opened</span>
-                                <strong id="neverOpenedCount"
-                                        th:text="${test.questions.size()}">0</strong>
+                                <span>Unanswered</span>
+                                <strong id="topNeverOpenedCount"
+                                        th:text="${selectedStats != null ? selectedStats.neverOpenedCount : 0}">0</strong>
                             </div>
 
-                        </div>
-
-                        <div class="status-right">
-                            <div class="status-icon correct-icon">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <span>Correct</span>
-                            <strong id="correctCount">0</strong>
                         </div>
 
                     </div>
 
                     <div class="question-grid">
 
-                        <a th:each="question, stat : ${test.questions}"
-                           th:id="'nav-question-' + ${question.id}"
-                           th:href="'#question-' + ${question.id}"
-                           class="question-number never-opened"
-                           th:data-question-id="${question.id}"
-                           th:title="'Question ' + ${stat.index + 1}">
+                        <button th:each="question, stat : ${test.questions}"
+                                type="button"
+                                th:id="'nav-question-' + ${question.id}"
+                                class="question-number"
+                                th:classappend="${stat.index == selectedQuestionNumber - 1 ? ' active' : ''}"
+                                th:attr="data-question-index=${stat.index},
+                                         data-question-id=${question.id}"
+                                th:title="'Question ' + ${stat.index + 1}">
 
                             <span th:text="${stat.index + 1}">1</span>
                             <span class="question-circle"></span>
 
-                        </a>
+                        </button>
 
                     </div>
 
                 </div>
 
+                <div class="question-view-container"
+                     th:if="${test.questions != null and !test.questions.isEmpty()}">
 
-                <!-- =========================================
-                     QUESTIONS
-                ========================================== -->
-
-                <div th:if="${test.questions != null and !test.questions.isEmpty()}">
-
-                    <div class="question-card"
-                         th:each="question, stat : ${test.questions}"
-                         th:id="'question-' + ${question.id}">
+                    <div th:each="question, stat : ${test.questions}"
+                         th:with="stats=${questionStats != null ? questionStats[question.id] : null}"
+                         class="question-card js-question-card"
+                         th:id="'question-view-' + ${question.id}"
+                         th:attr="data-question-index=${stat.index},
+                                  data-question-id=${question.id},
+                                  data-correct=${stats != null ? stats.correctCount : 0},
+                                  data-wrong=${stats != null ? stats.wrongCount : 0},
+                                  data-unanswered=${stats != null ? stats.neverOpenedCount : 0}"
+                         th:style="${stat.index == selectedQuestionNumber - 1 ? 'display:block;' : 'display:none;'}">
 
                         <div class="question-header">
 
@@ -231,86 +230,81 @@
                                 <span th:text="${stat.index + 1}">1</span>
                             </div>
 
+                            <!-- ============ DYNAMIC MARKS BADGE ============ -->
                             <div class="marks-badge">
                                 <i class="fas fa-star"></i>
-                                <span th:text="${question.marks}">1</span>
-                                Mark
+                                <span th:text="${question.marks != null ? question.marks : 0}">0</span>
+                                <span th:text="${question.marks != null and question.marks == 1 ? 'Mark' : 'Marks'}">Marks</span>
                             </div>
+                            <!-- ============================================= -->
 
                         </div>
 
                         <div class="question-body">
 
-                            <div class="question-text"
-                                 th:text="${question.questionText}">Question text</div>
+                            <div class="question-text" th:text="${question.questionText}">
+                                Question text
+                            </div>
 
                             <div class="options-container">
 
                                 <div class="option"
                                      th:classappend="${question.correctAnswer != null and
-                                         (question.correctAnswer.equalsIgnoreCase('A')
-                                         or question.correctAnswer.equals(question.optionA))}
-                                         ? ' correct-answer' : ''">
+                                     (question.correctAnswer.equalsIgnoreCase('A')
+                                     or question.correctAnswer.equals(question.optionA))}
+                                     ? ' correct-answer' : ''">
                                     <strong class="option-letter">A.</strong>
-                                    <div class="option-text"
-                                         th:text="${question.optionA}">Option A</div>
+                                    <div class="option-text" th:text="${question.optionA}">Option A</div>
                                     <span class="answer-badge correct-badge"
                                           th:if="${question.correctAnswer != null and
-                                              (question.correctAnswer.equalsIgnoreCase('A')
-                                              or question.correctAnswer.equals(question.optionA))}">
-                                        <i class="fas fa-check"></i>
-                                        Correct Answer
+                                          (question.correctAnswer.equalsIgnoreCase('A')
+                                          or question.correctAnswer.equals(question.optionA))}">
+                                        <i class="fas fa-check"></i> Correct Answer
                                     </span>
                                 </div>
 
                                 <div class="option"
                                      th:classappend="${question.correctAnswer != null and
-                                         (question.correctAnswer.equalsIgnoreCase('B')
-                                         or question.correctAnswer.equals(question.optionB))}
-                                         ? ' correct-answer' : ''">
+                                     (question.correctAnswer.equalsIgnoreCase('B')
+                                     or question.correctAnswer.equals(question.optionB))}
+                                     ? ' correct-answer' : ''">
                                     <strong class="option-letter">B.</strong>
-                                    <div class="option-text"
-                                         th:text="${question.optionB}">Option B</div>
+                                    <div class="option-text" th:text="${question.optionB}">Option B</div>
                                     <span class="answer-badge correct-badge"
                                           th:if="${question.correctAnswer != null and
-                                              (question.correctAnswer.equalsIgnoreCase('B')
-                                              or question.correctAnswer.equals(question.optionB))}">
-                                        <i class="fas fa-check"></i>
-                                        Correct Answer
+                                          (question.correctAnswer.equalsIgnoreCase('B')
+                                          or question.correctAnswer.equals(question.optionB))}">
+                                        <i class="fas fa-check"></i> Correct Answer
                                     </span>
                                 </div>
 
                                 <div class="option"
                                      th:classappend="${question.correctAnswer != null and
-                                         (question.correctAnswer.equalsIgnoreCase('C')
-                                         or question.correctAnswer.equals(question.optionC))}
-                                         ? ' correct-answer' : ''">
+                                     (question.correctAnswer.equalsIgnoreCase('C')
+                                     or question.correctAnswer.equals(question.optionC))}
+                                     ? ' correct-answer' : ''">
                                     <strong class="option-letter">C.</strong>
-                                    <div class="option-text"
-                                         th:text="${question.optionC}">Option C</div>
+                                    <div class="option-text" th:text="${question.optionC}">Option C</div>
                                     <span class="answer-badge correct-badge"
                                           th:if="${question.correctAnswer != null and
-                                              (question.correctAnswer.equalsIgnoreCase('C')
-                                              or question.correctAnswer.equals(question.optionC))}">
-                                        <i class="fas fa-check"></i>
-                                        Correct Answer
+                                          (question.correctAnswer.equalsIgnoreCase('C')
+                                          or question.correctAnswer.equals(question.optionC))}">
+                                        <i class="fas fa-check"></i> Correct Answer
                                     </span>
                                 </div>
 
                                 <div class="option"
                                      th:classappend="${question.correctAnswer != null and
-                                         (question.correctAnswer.equalsIgnoreCase('D')
-                                         or question.correctAnswer.equals(question.optionD))}
-                                         ? ' correct-answer' : ''">
+                                     (question.correctAnswer.equalsIgnoreCase('D')
+                                     or question.correctAnswer.equals(question.optionD))}
+                                     ? ' correct-answer' : ''">
                                     <strong class="option-letter">D.</strong>
-                                    <div class="option-text"
-                                         th:text="${question.optionD}">Option D</div>
+                                    <div class="option-text" th:text="${question.optionD}">Option D</div>
                                     <span class="answer-badge correct-badge"
                                           th:if="${question.correctAnswer != null and
-                                              (question.correctAnswer.equalsIgnoreCase('D')
-                                              or question.correctAnswer.equals(question.optionD))}">
-                                        <i class="fas fa-check"></i>
-                                        Correct Answer
+                                          (question.correctAnswer.equalsIgnoreCase('D')
+                                          or question.correctAnswer.equals(question.optionD))}">
+                                        <i class="fas fa-check"></i> Correct Answer
                                     </span>
                                 </div>
 
@@ -318,15 +312,16 @@
 
                             <div class="explanation"
                                  th:if="${question.explanation != null
-                                         and !question.explanation.isEmpty()}">
+                                 and !question.explanation.isEmpty()}">
 
                                 <div class="explanation-title">
                                     <i class="fas fa-lightbulb"></i>
                                     Explanation
                                 </div>
 
-                                <div class="explanation-text"
-                                     th:text="${question.explanation}">Explanation</div>
+                                <div class="explanation-text" th:text="${question.explanation}">
+                                    Explanation
+                                </div>
 
                             </div>
 
@@ -336,14 +331,9 @@
 
                 </div>
 
-
-                <!-- =========================================
-                     NO QUESTIONS
-                ========================================== -->
-
                 <div class="no-question"
                      th:if="${test.questions == null
-                             or test.questions.isEmpty()}">
+                     or test.questions.isEmpty()}">
 
                     <i class="fas fa-circle-question"></i>
                     <h4>No Questions Found</h4>
@@ -353,12 +343,7 @@
 
             </div>
 
-        </div>
-
-
-        <!-- =================================================
-             FOOTER
-        ================================================== -->
+        </main>
 
         <div th:replace="~{fragments/layout :: footer}"></div>
 
@@ -366,677 +351,688 @@
 
 </div>
 
-
-<!-- =============================================================
-     FONT AWESOME (this page uses fa-* icons; layout only loads Bootstrap Icons)
-============================================================= -->
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      rel="stylesheet">
-
-
-<!-- =============================================================
-     PAGE-SPECIFIC CSS
-============================================================= -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .result-container {
-        width: 100%;
-        max-width: 1900px;
-        margin: 0 auto;
-        padding: 18px;
-    }
+.result-container {
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 18px;
+}
 
-    /* ===== QUESTION NAVIGATION PANEL ===== */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 20px 0 25px;
+}
 
-    .status-panel {
-        width: 100%;
-        background: #ffffff;
-        border: 1px solid #e5eaf1;
-        border-radius: 12px;
-        padding: 18px 22px 20px;
-        margin-top: 4px;
-        margin-bottom: 25px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.04);
-    }
+.page-title-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0d6efd;
+    color: white;
+    font-size: 22px;
+}
 
-    .status-summary {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 18px;
-    }
+.page-title h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
 
-    .status-left {
-        display: flex;
-        align-items: center;
-        gap: 32px;
-        flex-wrap: wrap;
-    }
+.page-title p {
+    margin: 4px 0 0;
+    color: #6c757d;
+    font-size: 14px;
+}
 
-    .status-item {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        color: #64748b;
-        font-size: 15px;
-        font-weight: 500;
-    }
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
 
-    .status-item strong {
-        color: #27364a;
-        font-size: 16px;
-        font-weight: 700;
-    }
+.info-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+}
 
-    .status-right {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        color: #64748b;
-        font-size: 15px;
-        font-weight: 500;
-    }
+.info-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 10px;
+    background: #eef4ff;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
 
-    .status-right strong {
-        color: #27364a;
-        font-size: 16px;
-        font-weight: 700;
-    }
+.info-label {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 3px;
+}
 
-    .status-icon {
-        width: 27px;
-        height: 27px;
-        min-width: 27px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-    }
+.info-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    word-break: break-word;
+}
 
-    .wrong-icon {
-        background: #ef4444;
-        color: #ffffff;
-    }
+/* ===== Chapter card: subject once, chapters after it ===== */
+.chapter-card {
+    grid-column: span 2;
+    align-items: flex-start;
+}
 
-    .never-icon {
-        background: #f1f4f8;
-        border: 2px solid #9ba9bb;
-    }
+.chapter-wrap {
+    flex: 1;
+    min-width: 0;
+}
 
-    .correct-icon {
-        background: #20a568;
-        color: #ffffff;
-    }
+.chapter-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
+.chapter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.chapter-subject {
+    font-weight: 700;
+    color: #0d6efd;
+    background: #eef4ff;
+    padding: 3px 10px;
+    border-radius: 14px;
+    font-size: 13px;
+}
+
+.chapter-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #343a40;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 3px 10px;
+    border-radius: 14px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #e8f7ee;
+    color: #198754;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-panel {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e5eaf1;
+    border-radius: 12px;
+    padding: 18px 22px 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+}
+
+.status-summary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.status-left {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.status-item,
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #64748b;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.status-item strong,
+.status-right strong {
+    color: #27364a;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.status-icon {
+    width: 27px;
+    height: 27px;
+    min-width: 27px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.wrong-icon {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.never-icon {
+    background: #f1f4f8;
+    border: 2px solid #9ba9bb;
+}
+
+.correct-icon {
+    background: #20a568;
+    color: #ffffff;
+}
+
+.question-grid {
+    display: grid;
+    grid-template-columns: repeat(26, minmax(40px, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.question-number {
+    width: 100%;
+    min-width: 40px;
+    height: 47px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #26374c;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.question-number:hover {
+    background: #f7f9fc;
+    border-color: #b8c4d4;
+    transform: translateY(-1px);
+}
+
+.question-number.active {
+    background: #e9eef7;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 2px rgba(67,97,238,0.10);
+}
+
+.question-circle {
+    width: 9px;
+    height: 9px;
+    margin-top: 3px;
+    border-radius: 50%;
+    border: 2px solid #b8c5d5;
+    background: #ffffff;
+}
+
+.question-view-container {
+    width: 100%;
+}
+
+.question-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    scroll-margin-top: 80px;
+}
+
+/* counts shown above "Question N" */
+.question-stats {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 14px 22px;
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.question-header {
+    padding: 18px 22px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.question-label {
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.question-label i {
+    color: #0d6efd;
+}
+
+.marks-badge {
+    background: #e9f2ff;
+    color: #0d6efd;
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.question-body {
+    padding: 25px;
+}
+
+.question-text {
+    font-size: 18px;
+    line-height: 1.7;
+    font-weight: 500;
+    margin-bottom: 25px;
+    white-space: pre-wrap;
+}
+
+.answer-information {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 17px;
+    background: #f4fbf7;
+    border: 1px solid #c9ead6;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.answer-information-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #198754;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.answer-information-title i {
+    font-size: 17px;
+}
+
+.correct-answer-display {
+    background: #198754;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #ffffff;
+}
+
+.option-letter {
+    min-width: 30px;
+    color: #495057;
+}
+
+.option-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.correct-answer {
+    background: #eaf7ef;
+    border-color: #9fd5b5;
+}
+
+.correct-answer .option-letter {
+    color: #198754;
+}
+
+.answer-badge {
+    white-space: nowrap;
+    padding: 4px 9px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.correct-badge {
+    background: #198754;
+    color: white;
+}
+
+.explanation {
+    margin-top: 25px;
+    padding: 18px;
+    border-radius: 10px;
+    background: #eef4ff;
+    border: 1px solid #cfe2ff;
+}
+
+.explanation-title {
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.explanation-text {
+    color: #495057;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.no-question {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    padding: 50px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.no-question i {
+    font-size: 45px;
+    margin-bottom: 15px;
+    color: #adb5bd;
+}
+
+@media (max-width: 1600px) {
     .question-grid {
-        display: grid;
-        grid-template-columns: repeat(26, minmax(40px, 1fr));
-        gap: 8px;
-        width: 100%;
+        grid-template-columns: repeat(20, minmax(40px, 1fr));
     }
+}
 
-    .question-number {
-        width: 100%;
-        min-width: 40px;
-        height: 47px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        border: 1px solid #e1e7ef;
-        border-radius: 12px;
-        background: #ffffff;
-        color: #26374c;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .question-number:hover {
-        background: #f7f9fc;
-        border-color: #b8c4d4;
-        transform: translateY(-1px);
-    }
-
-    .question-circle {
-        width: 9px;
-        height: 9px;
-        margin-top: 3px;
-        border-radius: 50%;
-        border: 2px solid #b8c5d5;
-        background: #ffffff;
-    }
-
-    .question-number.never-opened {
-        background: #ffffff;
-        color: #26374c;
-        border-color: #e1e7ef;
-    }
-
-    .question-number.never-opened .question-circle {
-        background: #ffffff;
-        border-color: #b8c5d5;
-    }
-
-    .question-number.active {
-        background: #e9eef7;
-        border-color: #cbd5e1;
-        box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.06);
-    }
-
-    .question-number.wrong {
-        background: #fff0f0;
-        border-color: #ffd0d0;
-        color: #c62828;
-    }
-
-    .question-number.wrong .question-circle {
-        width: 14px;
-        height: 14px;
-        border: none;
-        background: #ef4444;
-        position: relative;
-    }
-
-    .question-number.wrong .question-circle::before {
-        content: "";
-        position: absolute;
-        width: 8px;
-        height: 2px;
-        background: #ffffff;
-        left: 3px;
-        top: 6px;
-        transform: rotate(45deg);
-        border-radius: 2px;
-    }
-
-    .question-number.wrong .question-circle::after {
-        content: "";
-        position: absolute;
-        width: 8px;
-        height: 2px;
-        background: #ffffff;
-        left: 3px;
-        top: 6px;
-        transform: rotate(-45deg);
-        border-radius: 2px;
-    }
-
-    .question-number.correct {
-        background: #effbf5;
-        border-color: #bdebd2;
-        color: #168452;
-    }
-
-    .question-number.correct .question-circle {
-        width: 14px;
-        height: 14px;
-        border: none;
-        background: #20a568;
-        position: relative;
-    }
-
-    .question-number.correct .question-circle::before {
-        content: "";
-        position: absolute;
-        width: 7px;
-        height: 4px;
-        border-left: 2px solid white;
-        border-bottom: 2px solid white;
-        transform: rotate(-45deg);
-        left: 3px;
-        top: 3px;
-    }
-
-    .page-title {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin: 20px 0 25px;
-    }
-
-    .page-title-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #0d6efd;
-        color: white;
-        font-size: 22px;
-    }
-
-    .page-title h2 {
-        margin: 0;
-        font-size: 28px;
-        font-weight: 700;
-    }
-
-    .page-title p {
-        margin: 4px 0 0;
-        color: #6c757d;
-        font-size: 14px;
+@media (max-width: 1200px) {
+    .question-grid {
+        grid-template-columns: repeat(14, minmax(40px, 1fr));
     }
 
     .info-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-        margin-bottom: 25px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+
+    .result-container {
+        padding: 12px;
     }
 
-    .info-card {
-        background: white;
-        border-radius: 14px;
-        padding: 18px;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        border: 1px solid #e9ecef;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    .status-summary {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .info-icon {
-        width: 45px;
-        height: 45px;
-        min-width: 45px;
-        border-radius: 10px;
-        background: #eef4ff;
-        color: #0d6efd;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-    }
-
-    .info-label {
-        font-size: 12px;
-        color: #6c757d;
-        margin-bottom: 3px;
-    }
-
-    .info-value {
-        font-size: 16px;
-        font-weight: 600;
-        color: #212529;
-        word-break: break-word;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 5px 12px;
-        border-radius: 20px;
-        background: #e8f7ee;
-        color: #198754;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .question-card {
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 15px;
-        overflow: hidden;
-        margin-bottom: 25px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-        scroll-margin-top: 20px;
-    }
-
-    .question-header {
-        padding: 18px 22px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    .status-left {
         gap: 15px;
     }
 
-    .question-label {
-        font-size: 16px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+    .question-stats {
+        gap: 15px;
+        padding: 12px 18px;
     }
 
-    .question-label i {
-        color: #0d6efd;
+    .question-grid {
+        grid-template-columns: repeat(8, 1fr);
+        gap: 6px;
     }
 
-    .marks-badge {
-        background: #e9f2ff;
-        color: #0d6efd;
-        padding: 5px 11px;
-        border-radius: 20px;
+    .question-number {
+        min-width: 0;
+        height: 43px;
         font-size: 12px;
-        font-weight: 600;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chapter-card {
+        grid-column: span 1;
+    }
+
+    .page-title h2 {
+        font-size: 23px;
     }
 
     .question-body {
-        padding: 25px;
+        padding: 18px;
     }
 
     .question-text {
-        font-size: 18px;
-        line-height: 1.7;
-        font-weight: 500;
-        margin-bottom: 25px;
-        white-space: pre-wrap;
+        font-size: 16px;
     }
 
-    .options-container {
-        display: flex;
+    .question-header {
         flex-direction: column;
-        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .answer-information {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .question-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .question-number {
+        height: 42px;
+        border-radius: 9px;
+    }
+
+    .status-left {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .option {
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        padding: 15px 18px;
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        background: #fff;
-    }
-
-    .option-letter {
-        min-width: 30px;
-        color: #495057;
-    }
-
-    .option-text {
-        flex: 1;
-        line-height: 1.5;
-    }
-
-    .correct-answer {
-        background: #eaf7ef;
-        border-color: #9fd5b5;
-    }
-
-    .correct-answer .option-letter {
-        color: #198754;
+        padding: 12px;
+        font-size: 14px;
+        flex-wrap: wrap;
     }
 
     .answer-badge {
-        white-space: nowrap;
-        padding: 4px 9px;
-        border-radius: 15px;
-        font-size: 11px;
-        font-weight: 600;
+        margin-left: 42px;
     }
-
-    .correct-badge {
-        background: #198754;
-        color: white;
-    }
-
-    .explanation {
-        margin-top: 25px;
-        padding: 18px;
-        border-radius: 10px;
-        background: #eef4ff;
-        border: 1px solid #cfe2ff;
-    }
-
-    .explanation-title {
-        color: #0d6efd;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-
-    .explanation-text {
-        color: #495057;
-        line-height: 1.6;
-        white-space: pre-wrap;
-    }
-
-    .no-question {
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 15px;
-        padding: 50px 20px;
-        text-align: center;
-        color: #6c757d;
-    }
-
-    .no-question i {
-        font-size: 45px;
-        margin-bottom: 15px;
-        color: #adb5bd;
-    }
-
-    /* ===== RESPONSIVE ===== */
-
-    @media (max-width: 1600px) {
-        .question-grid {
-            grid-template-columns: repeat(20, minmax(40px, 1fr));
-        }
-    }
-
-    @media (max-width: 1200px) {
-        .question-grid {
-            grid-template-columns: repeat(14, minmax(40px, 1fr));
-        }
-        .info-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .result-container {
-            padding: 12px;
-        }
-        .status-summary {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .status-left {
-            gap: 15px;
-        }
-        .question-grid {
-            grid-template-columns: repeat(8, 1fr);
-            gap: 6px;
-        }
-        .question-number {
-            min-width: 0;
-            height: 43px;
-            font-size: 12px;
-        }
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
-        .page-title h2 {
-            font-size: 23px;
-        }
-        .question-body {
-            padding: 18px;
-        }
-        .question-text {
-            font-size: 16px;
-        }
-        .question-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .question-grid {
-            grid-template-columns: repeat(5, 1fr);
-        }
-        .question-number {
-            height: 42px;
-            border-radius: 9px;
-        }
-        .status-left {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .option {
-            padding: 12px;
-            font-size: 14px;
-        }
-    }
+}
 
 </style>
-
-
-<!-- =============================================================
-     PAGE-SPECIFIC JAVASCRIPT
-============================================================= -->
 
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const navigation = document.querySelectorAll(".question-number");
-    const questionCards = document.querySelectorAll(".question-card");
+    const questionButtons = document.querySelectorAll(".question-number");
+    const questionCards   = document.querySelectorAll(".js-question-card");
 
-    const wrongCount = document.getElementById("wrongCount");
-    const correctCount = document.getElementById("correctCount");
-    const neverOpenedCount = document.getElementById("neverOpenedCount");
+    const correctCount    = document.getElementById("topCorrectCount");
+    const wrongCount      = document.getElementById("topWrongCount");
+    const unansweredCount = document.getElementById("topNeverOpenedCount");
 
-    const openedQuestions = new Set();
-
-    function updateCounters() {
-
-        let neverOpened = 0;
-
-        navigation.forEach(function (nav) {
-
-            const questionId = nav.dataset.questionId;
-
-            if (!openedQuestions.has(questionId)) {
-
-                neverOpened++;
-
-                nav.classList.remove("correct");
-                nav.classList.remove("wrong");
-                nav.classList.add("never-opened");
-
-            }
-
-        });
-
-        wrongCount.textContent = "0";
-        correctCount.textContent = "0";
-        neverOpenedCount.textContent = neverOpened;
-
+    function clamp(index) {
+        if (Number.isNaN(index) || index < 0) {
+            return 0;
+        }
+        return Math.min(index, questionCards.length - 1);
     }
 
-    function openQuestion(nav) {
+    // scroll: true -> smoothly bring the question (and its answer) into view
+    function showQuestion(index, updateUrl, scroll) {
 
-        const questionId = nav.dataset.questionId;
-        const card = document.getElementById("question-" + questionId);
+        index = clamp(index);
 
-        if (!card) {
+        let selectedCard = null;
+
+        questionCards.forEach(function (card) {
+
+            const cardIndex = Number(card.dataset.questionIndex);
+
+            if (cardIndex === index) {
+                card.style.display = "block";
+                selectedCard = card;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        questionButtons.forEach(function (button) {
+
+            const buttonIndex = Number(button.dataset.questionIndex);
+
+            button.classList.toggle("active", buttonIndex === index);
+        });
+
+        if (!selectedCard) {
             return;
         }
 
-        openedQuestions.add(questionId);
+        if (correctCount) {
+            correctCount.textContent = selectedCard.dataset.correct || "0";
+        }
 
-        navigation.forEach(function (item) {
-            item.classList.remove("active");
-        });
+        if (wrongCount) {
+            wrongCount.textContent = selectedCard.dataset.wrong || "0";
+        }
 
-        nav.classList.add("active");
-        nav.classList.remove("never-opened");
+        if (unansweredCount) {
+            unansweredCount.textContent = selectedCard.dataset.unanswered || "0";
+        }
 
-        card.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        if (updateUrl) {
 
-        updateCounters();
+            const currentUrl = new URL(window.location.href);
 
+            currentUrl.searchParams.set("question", index);
+
+            window.history.pushState(
+                { question: index },
+                "",
+                currentUrl.toString()
+            );
+        }
+
+        if (scroll) {
+
+            // wait a frame so the card is laid out before scrolling
+            requestAnimationFrame(function () {
+                selectedCard.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            });
+        }
     }
 
-    navigation.forEach(function (nav) {
+    questionButtons.forEach(function (button) {
 
-        nav.addEventListener("click", function (event) {
+        button.addEventListener("click", function (event) {
 
             event.preventDefault();
-            openQuestion(nav);
 
+            const index = Number(button.dataset.questionIndex);
+
+            showQuestion(index, true, true);
         });
-
     });
 
-    const observer = new IntersectionObserver(
+    window.addEventListener("popstate", function () {
 
-        function (entries) {
+        const params = new URLSearchParams(window.location.search);
 
-            entries.forEach(function (entry) {
+        let index = Number(params.get("question"));
 
-                if (entry.isIntersecting) {
+        if (Number.isNaN(index)) {
+            index = 0;
+        }
 
-                    const questionId =
-                        entry.target.id.replace("question-", "");
-
-                    const nav =
-                        document.getElementById("nav-question-" + questionId);
-
-                    if (!nav) {
-                        return;
-                    }
-
-                    openedQuestions.add(questionId);
-
-                    navigation.forEach(function (item) {
-                        item.classList.remove("active");
-                    });
-
-                    nav.classList.add("active");
-                    nav.classList.remove("never-opened");
-
-                    updateCounters();
-
-                }
-
-            });
-
-        },
-
-        { threshold: 0.45 }
-
-    );
-
-    questionCards.forEach(function (card) {
-        observer.observe(card);
+        showQuestion(index, false, true);
     });
 
-    if (navigation.length > 0) {
-        navigation[0].classList.add("active");
+    const params = new URLSearchParams(window.location.search);
+
+    let initialIndex = Number(params.get("question"));
+
+    if (!params.has("question") || Number.isNaN(initialIndex)) {
+
+        const activeButton = document.querySelector(".question-number.active");
+
+        initialIndex = activeButton
+            ? Number(activeButton.dataset.questionIndex)
+            : 0;
     }
 
-    updateCounters();
+    // no scroll on first page load, only on click
+    showQuestion(initialIndex, false, false);
 
 });
 
 </script>
 
-
-<!-- =============================================================
-     LAYOUT SCRIPTS (Bootstrap + sidebar toggle JS)
-============================================================= -->
-
 <div th:replace="~{fragments/layout :: scripts}"></div>
 
 </body>
-
 </html>

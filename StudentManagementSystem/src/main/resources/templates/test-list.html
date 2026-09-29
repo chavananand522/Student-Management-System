@@ -13,7 +13,6 @@
     <div th:replace="~{fragments/layout::sidebar}">
     </div>
 
-
     <!-- MAIN CONTENT -->
     <div id="page-content-wrapper">
 
@@ -21,13 +20,9 @@
         <div th:replace="~{fragments/layout::navbar}">
         </div>
 
-
         <main class="container-fluid p-4">
 
-            <!-- ================================================= -->
             <!-- FLASH MESSAGES -->
-            <!-- ================================================= -->
-
             <div th:if="${message}"
                  class="alert alert-success alert-dismissible fade show text-center mx-auto flash-alert"
                  role="alert">
@@ -44,7 +39,6 @@
                 </button>
 
             </div>
-
 
             <div th:if="${error}"
                  class="alert alert-danger alert-dismissible fade show text-center mx-auto flash-alert"
@@ -63,11 +57,7 @@
 
             </div>
 
-
-            <!-- ================================================= -->
             <!-- BREADCRUMB -->
-            <!-- ================================================= -->
-
             <nav aria-label="breadcrumb"
                  class="mb-3">
 
@@ -95,11 +85,7 @@
 
             </nav>
 
-
-            <!-- ================================================= -->
             <!-- PAGE HEADER -->
-            <!-- ================================================= -->
-
             <div class="d-flex justify-content-between align-items-center mb-4">
 
                 <div>
@@ -120,7 +106,6 @@
 
                 </div>
 
-
                 <a th:href="@{/tests/create}"
                    class="btn btn-primary">
 
@@ -132,16 +117,10 @@
 
             </div>
 
-
-            <!-- ================================================= -->
             <!-- STATISTICS -->
-            <!-- ================================================= -->
-
             <div class="row g-3 mb-4">
 
-
                 <!-- TOTAL TESTS -->
-
                 <div class="col-md-3">
 
                     <div class="card border-0 shadow-sm h-100">
@@ -149,12 +128,16 @@
                         <div class="card-body">
 
                             <div class="text-muted small">
+
                                 Total Tests
+
                             </div>
 
                             <h3 class="fw-bold mb-0"
                                 th:text="${totalTests}">
+
                                 0
+
                             </h3>
 
                         </div>
@@ -163,9 +146,7 @@
 
                 </div>
 
-
                 <!-- PUBLISHED -->
-
                 <div class="col-md-3">
 
                     <div class="card border-0 shadow-sm h-100">
@@ -173,12 +154,16 @@
                         <div class="card-body">
 
                             <div class="text-muted small">
+
                                 Published Tests
+
                             </div>
 
                             <h3 class="fw-bold mb-0 text-success"
                                 th:text="${publishedTests}">
+
                                 0
+
                             </h3>
 
                         </div>
@@ -187,9 +172,7 @@
 
                 </div>
 
-
                 <!-- DRAFT -->
-
                 <div class="col-md-3">
 
                     <div class="card border-0 shadow-sm h-100">
@@ -197,12 +180,16 @@
                         <div class="card-body">
 
                             <div class="text-muted small">
+
                                 Draft Tests
+
                             </div>
 
                             <h3 class="fw-bold mb-0"
                                 th:text="${draftTests}">
+
                                 0
+
                             </h3>
 
                         </div>
@@ -211,9 +198,7 @@
 
                 </div>
 
-
                 <!-- QUESTIONS -->
-
                 <div class="col-md-3">
 
                     <div class="card border-0 shadow-sm h-100">
@@ -221,16 +206,22 @@
                         <div class="card-body">
 
                             <div class="text-muted small">
+
                                 Created Questions
+
                             </div>
 
                             <h3 class="fw-bold mb-0 text-primary"
                                 th:text="${totalQuestions}">
+
                                 0
+
                             </h3>
 
                             <small class="text-muted">
+
                                 Questions added to tests
+
                             </small>
 
                         </div>
@@ -241,11 +232,7 @@
 
             </div>
 
-
-            <!-- ================================================= -->
             <!-- TEST TABLE -->
-            <!-- ================================================= -->
-
             <div class="card border-0 shadow-sm">
 
                 <div class="card-body p-0">
@@ -298,19 +285,12 @@
 
                             </thead>
 
-
                             <tbody>
 
-
-                            <!-- ================================================= -->
                             <!-- TEST ROW -->
-                            <!-- ================================================= -->
-
                             <tr th:each="test, stat : ${tests}">
 
-
                                 <!-- NUMBER -->
-
                                 <td class="px-4"
                                     th:text="${stat.count}">
 
@@ -318,13 +298,10 @@
 
                                 </td>
 
-
                                 <!-- TEST NAME -->
-
                                 <td>
 
-                                    <strong
-                                            th:text="${test.testName}">
+                                    <strong th:text="${test.testName}">
 
                                         Test Name
 
@@ -332,91 +309,128 @@
 
                                 </td>
 
-
                                 <!-- COURSE -->
-
                                 <td th:text="${test.course}">
 
                                     NEET
 
                                 </td>
 
-
                                 <!-- SUBJECT -->
-
                                 <td>
 
-                                    <span
-                                            th:text="${test.subject}">
+                                    <div class="subject-display">
 
-                                        Physics
+                                        <div th:if="${test.subject != null and !test.subject.isEmpty()}">
 
-                                    </span>
+                                            <span th:each="subject, subjectStat : ${#strings.arraySplit(test.subject, ' | ')}">
+
+                                                <span class="subject-name"
+                                                      th:text="${subject}">
+                                                    Biology
+                                                </span>
+
+                                                <span th:if="${!subjectStat.last}">
+                                                    ,
+                                                </span>
+
+                                            </span>
+
+                                        </div>
+
+                                        <span th:if="${test.subject == null or test.subject.isEmpty()}"
+                                              class="text-muted">
+
+                                            -
+
+                                        </span>
+
+                                    </div>
 
                                 </td>
-
 
                                 <!-- CHAPTER -->
-
                                 <td>
 
-                                    <span
-                                            th:text="${test.chapter}">
+                                    <div class="chapter-display"
+                                         th:if="${test.chapter != null and !test.chapter.isEmpty()}">
 
-                                        Chapter 1
+                                        <th:block
+                                                th:each="chapter, chapterStat : ${#strings.arraySplit(test.chapter, ' \\| ')}">
+
+                                            <div class="chapter-item"
+                                                 th:if="${chapter != null and !chapter.trim().isEmpty()}">
+
+                                                <span class="chapter-subject"
+                                                      th:if="${#strings.contains(chapter, ':')}">
+
+                                                    <strong
+                                                            th:text="${#strings.substringBefore(chapter, ':')} + ':'">
+                                                        Biology:
+                                                    </strong>
+
+                                                    <span
+                                                            th:text="${#strings.trim(#strings.substringAfter(chapter, ':'))}">
+                                                        The Living World
+                                                    </span>
+
+                                                </span>
+
+                                                <span
+                                                        th:unless="${#strings.contains(chapter, ':')}"
+                                                        th:text="${chapter}">
+                                                    Chapter
+                                                </span>
+
+                                            </div>
+
+                                        </th:block>
+
+                                    </div>
+
+                                    <span th:if="${test.chapter == null or test.chapter.isEmpty()}"
+                                          class="text-muted">
+
+                                        -
 
                                     </span>
 
                                 </td>
 
-
-                                <!-- ================================================= -->
-                                <!-- IMPORTANT: CREATED QUESTION COUNT -->
-                                <!-- ================================================= -->
-
+                                <!-- QUESTIONS -->
                                 <td>
 
                                     <span class="badge bg-primary">
 
                                         <i class="bi bi-question-circle me-1"></i>
 
-                                        <span
-                                                th:text="${test.questions != null ? test.questions.size() : 0}">
-
+                                        <span th:text="${test.questions != null ? test.questions.size() : 0}">
                                             0
-
                                         </span>
 
                                     </span>
 
                                 </td>
 
-
                                 <!-- TOTAL MARKS -->
-
                                 <td th:text="${test.totalMarks}">
 
                                     100
 
                                 </td>
 
-
                                 <!-- STATUS -->
-
                                 <td>
 
-                                    <span
-                                            th:if="${'PUBLISHED'.equalsIgnoreCase(test.status)}"
-                                            class="badge bg-success">
+                                    <span th:if="${'PUBLISHED'.equalsIgnoreCase(test.status)}"
+                                          class="badge bg-success">
 
                                         Published
 
                                     </span>
 
-
-                                    <span
-                                            th:unless="${'PUBLISHED'.equalsIgnoreCase(test.status)}"
-                                            class="badge bg-secondary">
+                                    <span th:unless="${'PUBLISHED'.equalsIgnoreCase(test.status)}"
+                                          class="badge bg-secondary">
 
                                         Draft
 
@@ -424,15 +438,10 @@
 
                                 </td>
 
-
-                                <!-- ================================================= -->
                                 <!-- ACTIONS -->
-                                <!-- ================================================= -->
-
                                 <td class="text-center">
 
                                     <!-- VIEW -->
-
                                     <a th:href="@{/tests/results/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-outline-primary me-1"
                                        title="View Test">
@@ -441,9 +450,7 @@
 
                                     </a>
 
-
                                     <!-- EDIT -->
-
                                     <a th:href="@{/tests/edit/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-outline-warning me-1"
                                        title="Edit Test">
@@ -452,9 +459,7 @@
 
                                     </a>
 
-
                                     <!-- DELETE -->
-
                                     <a th:href="@{/tests/delete/{id}(id=${test.id})}"
                                        class="btn btn-sm btn-outline-danger"
                                        title="Delete Test"
@@ -468,11 +473,7 @@
 
                             </tr>
 
-
-                            <!-- ================================================= -->
                             <!-- NO TESTS -->
-                            <!-- ================================================= -->
-
                             <tr th:if="${#lists.isEmpty(tests)}">
 
                                 <td colspan="9"
@@ -481,11 +482,15 @@
                                     <i class="bi bi-file-earmark-x fs-1 d-block mb-3"></i>
 
                                     <h5>
+
                                         No tests found.
+
                                     </h5>
 
                                     <p class="mb-3">
+
                                         Create your first test.
+
                                     </p>
 
                                     <a th:href="@{/tests/create}"
@@ -500,7 +505,6 @@
                                 </td>
 
                             </tr>
-
 
                             </tbody>
 
@@ -518,25 +522,51 @@
 
 </div>
 
-
-<!-- ===================================================== -->
 <!-- PAGE-SPECIFIC STYLE -->
-<!-- ===================================================== -->
-
 <style>
+
     .flash-alert {
         max-width: 720px;
         margin-left: auto;
         margin-right: auto;
     }
+
+    .subject-display {
+        min-width: 100px;
+    }
+
+    .subject-name {
+        font-weight: 600;
+    }
+
+    .chapter-display {
+        min-width: 320px;
+        max-width: 500px;
+        line-height: 1.8;
+    }
+
+    .chapter-item {
+        padding: 3px 0;
+        white-space: normal;
+    }
+
+    .chapter-subject {
+        display: block;
+    }
+
+    .chapter-subject strong {
+        margin-right: 5px;
+    }
+
+    .table td {
+        vertical-align: top;
+    }
+
 </style>
 
-
 <!-- SCRIPTS -->
-
 <div th:replace="~{fragments/layout::scripts}">
 </div>
 
 </body>
-
 </html>

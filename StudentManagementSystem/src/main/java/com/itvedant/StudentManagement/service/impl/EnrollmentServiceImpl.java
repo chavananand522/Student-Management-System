@@ -33,18 +33,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private static final Logger log =
             LoggerFactory.getLogger(EnrollmentServiceImpl.class);
 
-    private static final boolean ALLOW_MULTIPLE_ENROLLMENT = true;
-
-    private static final boolean PREVENT_DUPLICATE_ENROLLMENT = true;
-
     private static final int MAX_COURSES_PER_STUDENT = 5;
 
     private final EnrollmentRepository enrollmentRepository;
-
     private final StudentRepositiry studentRepository;
-
     private final CourseRepository courseRepository;
-
     private final ModelMapper mapper;
 
     public EnrollmentServiceImpl(
@@ -61,71 +54,55 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional
-    public void enrollStudentToCourses(
-            EnrollmentDTO enrollmentDTO) {
+    public void enrollStudentToCourses(EnrollmentDTO enrollmentDTO) {
 
         log.info("Request from enrollStudentToCourses");
 
-        Long studentId =
-                enrollmentDTO.getStudentId();
+        Long studentId = enrollmentDTO.getStudentId();
 
-        Students student =
-                studentRepository.findById(studentId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Student Not Found"
-                                ));
+        if (studentId == null) {
+            throw new RuntimeException("Student must be selected");
+        }
+
+        Students student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new RuntimeException("Student Not Found"));
 
         List<Long> requestedCourseIds =
                 enrollmentDTO.getCourseIds() == null
                         ? List.of()
                         : enrollmentDTO.getCourseIds()
                                 .stream()
+                                .filter(id -> id != null)
                                 .distinct()
                                 .toList();
 
-        List<Enrollment> existingEnrollments =
-                enrollmentRepository.findByStudentId(
-                        studentId
-                );
-
-        int currentCourseCount =
-                existingEnrollments.size();
-
-        log.info(
-                "Student ID: {}",
-                studentId
-        );
-
-        log.info(
-                "Current course count: {}",
-                currentCourseCount
-        );
-
-        if (!ALLOW_MULTIPLE_ENROLLMENT &&
-                currentCourseCount > 0) {
-
-            throw new RuntimeException(
-                    "Multiple course enrollment is disabled for this student."
-            );
+        if (requestedCourseIds.isEmpty()) {
+            throw new RuntimeException("Please select at least one course");
         }
 
-        long newCoursesToAdd =
-                requestedCourseIds.stream()
-                        .filter(courseId ->
-                                !PREVENT_DUPLICATE_ENROLLMENT
-                                        || !enrollmentRepository
-                                        .existsByStudentIdAndCourseId(
-                                                studentId,
-                                                courseId
-                                        ))
-                        .count();
+        List<Enrollment> existingEnrollments =
+                enrollmentRepository.findByStudentId(studentId);
+
+        int currentCourseCount = existingEnrollments.size();
+
+        log.info("Student ID: {}", studentId);
+        log.info("Current course count: {}", currentCourseCount);
+
+        long newCoursesToAdd = requestedCourseIds.stream()
+                .filter(courseId ->
+                        !enrollmentRepository
+                                .existsByStudentIdAndCourseId(
+                                        studentId,
+                                        courseId
+                                ))
+                .count();
 
         if (currentCourseCount + newCoursesToAdd >
                 MAX_COURSES_PER_STUDENT) {
 
             throw new RuntimeException(
-                    "Only can enroll in "
+                    "A student can enroll in maximum "
                             + MAX_COURSES_PER_STUDENT
                             + " courses"
             );
@@ -133,12 +110,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         for (Long courseId : requestedCourseIds) {
 
-            Courses course =
-                    courseRepository.findById(courseId)
-                            .orElseThrow(() ->
-                                    new RuntimeException(
-                                            "Course Not Found"
-                                    ));
+            Courses course = courseRepository.findById(courseId)
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Course Not Found with id: "
+                                            + courseId
+                            ));
 
             boolean alreadyEnrolled =
                     enrollmentRepository
@@ -147,32 +124,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                                     courseId
                             );
 
-            if (PREVENT_DUPLICATE_ENROLLMENT &&
-                    alreadyEnrolled) {
-
+            if (alreadyEnrolled) {
                 log.info(
                         "Student {} already enrolled in course {}",
                         studentId,
                         courseId
                 );
-
                 continue;
             }
 
-            Enrollment enrollment =
-                    new Enrollment();
+            Enrollment enrollment = new Enrollment();
 
             enrollment.setStudent(student);
-
             enrollment.setCourse(course);
+            enrollment.setEnrolledDate(LocalDateTime.now());
 
-            enrollment.setEnrolledDate(
-                    LocalDateTime.now()
-            );
-
-            enrollmentRepository.save(
-                    enrollment
-            );
+            enrollmentRepository.save(enrollment);
 
             currentCourseCount++;
 
@@ -185,6 +152,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<EnrollmentSummeryDTO> getEnrolledStudents(
             int page,
             int size) {
@@ -204,10 +172,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                         )
                 );
 
-        return studentRepository
-                .findEnrolledStudentIds(
-                        pageRequest
-                );
+        return studentRepository.findEnrolledStudentIds(
+                pageRequest
+        );
     }
 
     @Override
@@ -216,17 +183,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             Long studentId) {
 
         return studentRepository
-                .findEnrolledStudentCourseDetails(
-                        studentId
-                )
+                .findEnrolledStudentCourseDetails(studentId)
                 .map(student -> {
 
                     EnrollmentSummeryDTO dto =
                             new EnrollmentSummeryDTO();
 
-                    dto.setStudentId(
-                            student.getId()
-                    );
+                    dto.setStudentId(student.getId());
 
                     dto.setStudentName(
                             student.getFirstName()
@@ -234,9 +197,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                                     + student.getLastName()
                     );
 
-                    dto.setEmail(
-                            student.getEmail()
-                    );
+                    dto.setEmail(student.getEmail());
 
                     List<Enrollment> enrollments =
                             student.getEnrollments();
@@ -252,35 +213,26 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                                                     .getCourse()
                                                     .getFee()
                                     )
-                                    .filter(fee ->
-                                            fee != null)
+                                    .filter(fee -> fee != null)
                                     .reduce(
                                             BigDecimal.ZERO,
                                             BigDecimal::add
                                     );
 
-                    dto.setTotalFee(
-                            totalFee
-                    );
+                    dto.setTotalFee(totalFee);
 
                     List<CourseDTO> courseList =
                             enrollments.stream()
-                                    .map(
-                                            Enrollment::getCourse
-                                    )
+                                    .map(Enrollment::getCourse)
                                     .map(course ->
                                             mapper.map(
                                                     course,
                                                     CourseDTO.class
                                             )
                                     )
-                                    .collect(
-                                            Collectors.toList()
-                                    );
+                                    .collect(Collectors.toList());
 
-                    dto.setCourseList(
-                            courseList
-                    );
+                    dto.setCourseList(courseList);
 
                     return dto;
 
@@ -292,39 +244,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<EnrollmentSummeryDTO> getRecentlyEnrolledStudents(
             int page,
             int size) {
 
-        log.info(
-                "List of Recently Enrolled Students"
-        );
+        log.info("List of Recently Enrolled Students");
 
         PageRequest pageRequest =
-                PageRequest.of(
-                        page,
-                        size
-                );
+                PageRequest.of(page, size);
 
         Page<Long> idPage =
-                studentRepository
-                        .findRecentlyEnrolledStudentIds(
-                                pageRequest
-                        );
+                studentRepository.findRecentlyEnrolledStudentIds(
+                        pageRequest
+                );
 
-        List<Long> ids =
-                idPage.getContent();
+        List<Long> ids = idPage.getContent();
 
         if (ids.isEmpty()) {
             return List.of();
         }
 
         List<Students> students =
-                studentRepository
-                        .findStudentsWithCoursesByIds(
-                                ids
-                        );
+                studentRepository.findStudentsWithCoursesByIds(ids);
 
         Map<Long, Students> studentsById =
                 students.stream()
@@ -337,16 +279,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         return ids.stream()
                 .map(studentsById::get)
-                .filter(student ->
-                        student != null)
+                .filter(student -> student != null)
                 .map(student -> {
 
                     EnrollmentSummeryDTO dto =
                             new EnrollmentSummeryDTO();
 
-                    dto.setStudentId(
-                            student.getId()
-                    );
+                    dto.setStudentId(student.getId());
 
                     dto.setStudentName(
                             student.getFirstName()
@@ -354,9 +293,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                                     + student.getLastName()
                     );
 
-                    dto.setEmail(
-                            student.getEmail()
-                    );
+                    dto.setEmail(student.getEmail());
 
                     List<Enrollment> enrollments =
                             student.getEnrollments();
@@ -372,51 +309,38 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                                                     .getCourse()
                                                     .getFee()
                                     )
-                                    .filter(fee ->
-                                            fee != null)
+                                    .filter(fee -> fee != null)
                                     .reduce(
                                             BigDecimal.ZERO,
                                             BigDecimal::add
                                     );
 
-                    dto.setTotalFee(
-                            totalFee
-                    );
+                    dto.setTotalFee(totalFee);
 
                     List<CourseDTO> courseList =
                             enrollments.stream()
-                                    .map(
-                                            Enrollment::getCourse
-                                    )
+                                    .map(Enrollment::getCourse)
                                     .map(course ->
                                             mapper.map(
                                                     course,
                                                     CourseDTO.class
                                             )
                                     )
-                                    .collect(
-                                            Collectors.toList()
-                                    );
+                                    .collect(Collectors.toList());
 
-                    dto.setCourseList(
-                            courseList
-                    );
+                    dto.setCourseList(courseList);
 
                     return dto;
 
                 })
-                .collect(
-                        Collectors.toList()
-                );
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Enrollment findEnrollmentById(
-            Long id) {
+    public Enrollment findEnrollmentById(Long id) {
 
-        return enrollmentRepository
-                .findById(id)
+        return enrollmentRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "Enrollment not found with id: "
@@ -434,33 +358,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 findEnrollmentById(id);
 
         if (newFee != null) {
-
-            enrollment.setFee(
-                    newFee
-            );
+            enrollment.setFee(newFee);
         }
 
-        enrollmentRepository.save(
-                enrollment
-        );
+        enrollmentRepository.save(enrollment);
     }
 
     @Override
     @Transactional
-    public void deleteEnrollment(
-            Long id) {
+    public void deleteEnrollment(Long id) {
 
         if (!enrollmentRepository.existsById(id)) {
-
             throw new RuntimeException(
                     "Enrollment not found with id: "
                             + id
             );
         }
 
-        enrollmentRepository.deleteById(
-                id
-        );
+        enrollmentRepository.deleteById(id);
     }
 
     @Override
@@ -474,16 +389,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         );
 
         if (!studentRepository.existsById(studentId)) {
-
             throw new RuntimeException(
                     "Student not found with id: "
                             + studentId
             );
         }
 
-        enrollmentRepository.deleteAllByStudentId(
-                studentId
-        );
+        enrollmentRepository.deleteAllByStudentId(studentId);
 
         log.info(
                 "Deleted all enrollments for student {}",
@@ -497,7 +409,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             Long studentId) {
 
         if (!studentRepository.existsById(studentId)) {
-
             throw new RuntimeException(
                     "Student not found with id: "
                             + studentId
@@ -505,9 +416,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         return enrollmentRepository
-                .findCourseIdsByStudentId(
-                        studentId
-                );
+                .findCourseIdsByStudentId(studentId);
     }
 
     @Override
@@ -522,17 +431,17 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         );
 
         Students student =
-                studentRepository.findById(
-                        studentId
-                ).orElseThrow(() ->
-                        new RuntimeException(
-                                "Student Not Found"
-                        ));
+                studentRepository.findById(studentId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Student Not Found"
+                                ));
 
         List<Long> selectedCourseIds =
                 courseIds == null
                         ? List.of()
                         : courseIds.stream()
+                                .filter(id -> id != null)
                                 .distinct()
                                 .toList();
 
@@ -540,17 +449,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 MAX_COURSES_PER_STUDENT) {
 
             throw new RuntimeException(
-                    "Only can enroll in "
+                    "A student can enroll in maximum "
                             + MAX_COURSES_PER_STUDENT
                             + " courses"
             );
         }
 
         List<Enrollment> existingEnrollments =
-                enrollmentRepository
-                        .findByStudentId(
-                                studentId
-                        );
+                enrollmentRepository.findByStudentId(
+                        studentId
+                );
 
         List<Long> existingCourseIds =
                 existingEnrollments.stream()
@@ -561,8 +469,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                         )
                         .toList();
 
-        for (Long existingCourseId :
-                existingCourseIds) {
+        for (Long existingCourseId : existingCourseIds) {
 
             if (!selectedCourseIds.contains(
                     existingCourseId
@@ -582,42 +489,30 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             }
         }
 
-        for (Long courseId :
-                selectedCourseIds) {
+        for (Long courseId : selectedCourseIds) {
 
-            if (existingCourseIds.contains(
-                    courseId
-            )) {
-
+            if (existingCourseIds.contains(courseId)) {
                 continue;
             }
 
             Courses course =
-                    courseRepository.findById(
-                            courseId
-                    ).orElseThrow(() ->
-                            new RuntimeException(
-                                    "Course Not Found"
-                            ));
+                    courseRepository.findById(courseId)
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Course Not Found with id: "
+                                                    + courseId
+                                    ));
 
             Enrollment enrollment =
                     new Enrollment();
 
-            enrollment.setStudent(
-                    student
-            );
-
-            enrollment.setCourse(
-                    course
-            );
-
+            enrollment.setStudent(student);
+            enrollment.setCourse(course);
             enrollment.setEnrolledDate(
                     LocalDateTime.now()
             );
 
-            enrollmentRepository.save(
-                    enrollment
-            );
+            enrollmentRepository.save(enrollment);
 
             log.info(
                     "Added course {} to student {}",

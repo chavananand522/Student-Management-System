@@ -1,16 +1,23 @@
 package com.itvedant.StudentManagement.controller;
 
+import com.itvedant.StudentManagement.dto.QuestionResultStats;
 import com.itvedant.StudentManagement.model.Chapter;
 import com.itvedant.StudentManagement.model.Module;
 import com.itvedant.StudentManagement.model.Question;
 import com.itvedant.StudentManagement.model.Test;
 import com.itvedant.StudentManagement.services.ChapterService;
 import com.itvedant.StudentManagement.services.ModuleService;
+import com.itvedant.StudentManagement.services.TestResultService;
 import com.itvedant.StudentManagement.services.TestService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -22,652 +29,749 @@ import java.util.Map;
 @RequestMapping("/tests")
 public class TestController {
 
-	private static final List<String> SUBJECTS = List.of("Physics", "Chemistry", "Biology");
+    private static final List<String> SUBJECTS =
+            List.of("Physics", "Chemistry", "Biology");
 
-	private final TestService testService;
-	private final ModuleService moduleService;
-	private final ChapterService chapterService;
+    private final TestService testService;
+    private final ModuleService moduleService;
+    private final ChapterService chapterService;
+    private final TestResultService testResultService;
 
-	public TestController(TestService testService, ModuleService moduleService, ChapterService chapterService) {
+    public TestController(
+            TestService testService,
+            ModuleService moduleService,
+            ChapterService chapterService,
+            TestResultService testResultService) {
 
-		this.testService = testService;
-		this.moduleService = moduleService;
-		this.chapterService = chapterService;
-	}
+        this.testService = testService;
+        this.moduleService = moduleService;
+        this.chapterService = chapterService;
+        this.testResultService = testResultService;
+    }
 
-	// =========================================================
-	// GET CHAPTERS GROUPED BY SUBJECT
-	// =========================================================
+    private Map<String, List<Chapter>> getChaptersBySubject() {
 
-	private Map<String, List<Chapter>> getChaptersBySubject() {
+        Map<String, List<Chapter>> result =
+                new LinkedHashMap<>();
 
-		Map<String, List<Chapter>> result = new LinkedHashMap<>();
+        for (String subject : SUBJECTS) {
 
-		for (String subject : SUBJECTS) {
+            List<Chapter> chapters =
+                    new ArrayList<>();
 
-			List<Chapter> chapters = new ArrayList<>();
+            List<Module> modules =
+                    moduleService.getModulesBySubject(subject);
 
-			List<Module> modules = moduleService.getModulesBySubject(subject);
+            if (modules != null) {
 
-			if (modules != null) {
+                for (Module module : modules) {
 
-				for (Module module : modules) {
+                    if (module == null ||
+                            module.getId() == null) {
+                        continue;
+                    }
 
-					if (module == null || module.getId() == null) {
-						continue;
-					}
+                    List<Chapter> moduleChapters =
+                            chapterService.getChaptersByModuleId(
+                                    module.getId());
 
-					List<Chapter> moduleChapters = chapterService.getChaptersByModuleId(module.getId());
+                    if (moduleChapters != null) {
+                        chapters.addAll(moduleChapters);
+                    }
+                }
+            }
 
-					if (moduleChapters != null) {
-						chapters.addAll(moduleChapters);
-					}
-				}
-			}
+            result.put(subject, chapters);
+        }
 
-			result.put(subject, chapters);
-		}
+        return result;
+    }
 
-		return result;
-	}
+    @GetMapping("/create")
+    public String showCreateTest(Model model) {
 
-	// =========================================================
-	// CREATE TEST
-	// =========================================================
+        Test test = new Test();
 
-	@GetMapping("/create")
-	public String showCreateTest(Model model) {
+        model.addAttribute(
+                "test",
+                test);
 
-		Test test = new Test();
+        model.addAttribute(
+                "chaptersBySubject",
+                getChaptersBySubject());
 
-		model.addAttribute("test", test);
+        return "create-test";
+    }
 
-		model.addAttribute("chaptersBySubject", getChaptersBySubject());
+    @PostMapping("/save")
+    public String saveTest(
+            @ModelAttribute Test test,
 
-		return "create-test";
-	}
+            @RequestParam(
+                    value = "biologyChapter",
+                    required = false)
+            List<String> biologyChapters,
 
-	// =========================================================
-	// SAVE TEST
-	// =========================================================
+            @RequestParam(
+                    value = "chemistryChapter",
+                    required = false)
+            List<String> chemistryChapters,
 
-	@PostMapping("/save")
-	public String saveTest(
+            @RequestParam(
+                    value = "physicsChapter",
+                    required = false)
+            List<String> physicsChapters,
 
-			@ModelAttribute Test test,
+            @RequestParam(
+                    value = "chapter",
+                    required = false)
+            List<String> oldChapters,
 
-			@RequestParam(value = "biologyChapter", required = false) List<String> biologyChapters,
+            @RequestParam(
+                    value = "chapterSubjects",
+                    required = false)
+            List<String> oldChapterSubjects,
 
-			@RequestParam(value = "chemistryChapter", required = false) List<String> chemistryChapters,
+            RedirectAttributes redirectAttributes) {
 
-			@RequestParam(value = "physicsChapter", required = false) List<String> physicsChapters,
+        Map<String, List<String>> chaptersBySelectedSubject =
+                new LinkedHashMap<>();
 
-			@RequestParam(value = "chapter", required = false) List<String> oldChapters,
+        chaptersBySelectedSubject.put(
+                "Biology",
+                new ArrayList<>());
 
-			@RequestParam(value = "chapterSubjects", required = false) List<String> oldChapterSubjects,
+        chaptersBySelectedSubject.put(
+                "Chemistry",
+                new ArrayList<>());
 
-			RedirectAttributes redirectAttributes) {
+        chaptersBySelectedSubject.put(
+                "Physics",
+                new ArrayList<>());
 
-		// =====================================================
-		// COLLECT SELECTED CHAPTERS
-		// =====================================================
+        if (biologyChapters != null) {
 
-		List<String> chapterPairs = new ArrayList<>();
+            for (String chapter : biologyChapters) {
 
-		List<String> subjects = new ArrayList<>();
+                if (chapter == null ||
+                        chapter.trim().isEmpty()) {
+                    continue;
+                }
 
-		// =====================================================
-		// BIOLOGY
-		// =====================================================
+                String chapterName =
+                        chapter.trim();
 
-		if (biologyChapters != null) {
+                List<String> biologyList =
+                        chaptersBySelectedSubject.get("Biology");
 
-			for (String chapter : biologyChapters) {
+                if (!biologyList.contains(chapterName)) {
+                    biologyList.add(chapterName);
+                }
+            }
+        }
 
-				if (chapter == null || chapter.trim().isEmpty()) {
-					continue;
-				}
+        if (chemistryChapters != null) {
 
-				chapterPairs.add("Biology: " + chapter.trim());
+            for (String chapter : chemistryChapters) {
 
-				if (!subjects.contains("Biology")) {
-					subjects.add("Biology");
-				}
-			}
-		}
+                if (chapter == null ||
+                        chapter.trim().isEmpty()) {
+                    continue;
+                }
 
-		// =====================================================
-		// CHEMISTRY
-		// =====================================================
+                String chapterName =
+                        chapter.trim();
 
-		if (chemistryChapters != null) {
+                List<String> chemistryList =
+                        chaptersBySelectedSubject.get("Chemistry");
 
-			for (String chapter : chemistryChapters) {
+                if (!chemistryList.contains(chapterName)) {
+                    chemistryList.add(chapterName);
+                }
+            }
+        }
 
-				if (chapter == null || chapter.trim().isEmpty()) {
-					continue;
-				}
+        if (physicsChapters != null) {
 
-				chapterPairs.add("Chemistry: " + chapter.trim());
+            for (String chapter : physicsChapters) {
 
-				if (!subjects.contains("Chemistry")) {
-					subjects.add("Chemistry");
-				}
-			}
-		}
+                if (chapter == null ||
+                        chapter.trim().isEmpty()) {
+                    continue;
+                }
 
-		// =====================================================
-		// PHYSICS
-		// =====================================================
+                String chapterName =
+                        chapter.trim();
 
-		if (physicsChapters != null) {
+                List<String> physicsList =
+                        chaptersBySelectedSubject.get("Physics");
 
-			for (String chapter : physicsChapters) {
+                if (!physicsList.contains(chapterName)) {
+                    physicsList.add(chapterName);
+                }
+            }
+        }
 
-				if (chapter == null || chapter.trim().isEmpty()) {
-					continue;
-				}
+        if (oldChapters != null &&
+                !oldChapters.isEmpty() &&
+                biologyChapters == null &&
+                chemistryChapters == null &&
+                physicsChapters == null) {
 
-				chapterPairs.add("Physics: " + chapter.trim());
+            for (int i = 0;
+                 i < oldChapters.size();
+                 i++) {
 
-				if (!subjects.contains("Physics")) {
-					subjects.add("Physics");
-				}
-			}
-		}
+                String chapter =
+                        oldChapters.get(i);
 
-		// =====================================================
-		// OLD CHAPTER FORMAT SUPPORT
-		// =====================================================
+                if (chapter == null ||
+                        chapter.trim().isEmpty()) {
+                    continue;
+                }
 
-		if (oldChapters != null && !oldChapters.isEmpty() && chapterPairs.isEmpty()) {
+                String chapterName =
+                        chapter.trim();
 
-			for (int i = 0; i < oldChapters.size(); i++) {
+                String subject = "";
 
-				String chapter = oldChapters.get(i);
+                if (oldChapterSubjects != null &&
+                        i < oldChapterSubjects.size() &&
+                        oldChapterSubjects.get(i) != null) {
 
-				if (chapter == null || chapter.trim().isEmpty()) {
-					continue;
-				}
+                    subject =
+                            oldChapterSubjects
+                                    .get(i)
+                                    .trim();
+                }
 
-				String subject = "";
+                if (chaptersBySelectedSubject.containsKey(subject)) {
 
-				if (oldChapterSubjects != null && i < oldChapterSubjects.size() && oldChapterSubjects.get(i) != null) {
+                    List<String> subjectChapters =
+                            chaptersBySelectedSubject.get(subject);
 
-					subject = oldChapterSubjects.get(i).trim();
-				}
+                    if (!subjectChapters.contains(chapterName)) {
+                        subjectChapters.add(chapterName);
+                    }
+                }
+            }
+        }
 
-				if (!subject.isEmpty()) {
+        List<String> selectedSubjects =
+                new ArrayList<>();
 
-					chapterPairs.add(subject + ": " + chapter.trim());
+        for (Map.Entry<String, List<String>> entry :
+                chaptersBySelectedSubject.entrySet()) {
 
-					if (!subjects.contains(subject)) {
-						subjects.add(subject);
-					}
+            if (!entry.getValue().isEmpty()) {
+                selectedSubjects.add(entry.getKey());
+            }
+        }
 
-				} else {
+        test.setSubject(
+                selectedSubjects.isEmpty()
+                        ? ""
+                        : String.join(
+                                " | ",
+                                selectedSubjects));
 
-					chapterPairs.add(chapter.trim());
-				}
-			}
-		}
+        StringBuilder chapterBuilder =
+                new StringBuilder();
 
-		// =====================================================
-		// SAVE SUBJECT
-		// =====================================================
+        for (Map.Entry<String, List<String>> entry :
+                chaptersBySelectedSubject.entrySet()) {
 
-		if (!subjects.isEmpty()) {
+            String subject =
+                    entry.getKey();
 
-			test.setSubject(String.join(" | ", subjects));
+            List<String> subjectChapters =
+                    entry.getValue();
 
-		} else {
+            if (subjectChapters.isEmpty()) {
+                continue;
+            }
 
-			test.setSubject("");
-		}
+            if (chapterBuilder.length() > 0) {
+                chapterBuilder.append("\n\n");
+            }
 
-		// =====================================================
-		// SAVE CHAPTER
-		// =====================================================
+            chapterBuilder
+                    .append(subject)
+                    .append(":\n");
 
-		if (!chapterPairs.isEmpty()) {
+            for (String chapter :
+                    subjectChapters) {
 
-			test.setChapter(String.join(" | ", chapterPairs));
+                chapterBuilder
+                        .append("    ")
+                        .append(chapter)
+                        .append("\n");
+            }
+        }
 
-		} else {
+        test.setChapter(
+                chapterBuilder
+                        .toString()
+                        .trim());
 
-			test.setChapter("");
-		}
+        if (test.getQuestions() != null) {
 
-		// =====================================================
-		// CONNECT QUESTIONS TO TEST
-		// =====================================================
+            List<Question> validQuestions =
+                    new ArrayList<>();
 
-		if (test.getQuestions() != null) {
+            for (Question question :
+                    test.getQuestions()) {
 
-			List<Question> validQuestions = new ArrayList<>();
+                if (question == null) {
+                    continue;
+                }
 
-			for (Question question : test.getQuestions()) {
+                if (question.getQuestionText() == null ||
+                        question.getQuestionText()
+                                .trim()
+                                .isEmpty()) {
+                    continue;
+                }
 
-				if (question == null) {
-					continue;
-				}
+                question.setTest(test);
 
-				if (question.getQuestionText() == null || question.getQuestionText().trim().isEmpty()) {
-					continue;
-				}
+                if (question.getMarks() == null ||
+                        question.getMarks() <= 0) {
 
-				question.setTest(test);
+                    question.setMarks(1);
+                }
 
-				validQuestions.add(question);
-			}
+                validQuestions.add(question);
+            }
 
-			test.getQuestions().clear();
+            test.getQuestions().clear();
+            test.getQuestions().addAll(validQuestions);
+        }
 
-			test.getQuestions().addAll(validQuestions);
-		}
+        int questionCount =
+                test.getQuestions() != null
+                        ? test.getQuestions().size()
+                        : 0;
 
-		// =====================================================
-		// QUESTION COUNT
-		// =====================================================
+        if (test.getStatus() == null ||
+                test.getStatus().trim().isEmpty()) {
 
-		int questionCount = test.getQuestions() != null ? test.getQuestions().size() : 0;
+            test.setStatus("DRAFT");
+        }
 
-		// =====================================================
-		// DEFAULT VALUES
-		// =====================================================
+        if (test.getPassingMarks() == null &&
+                test.getTotalMarks() != null) {
 
-		if (test.getStatus() == null || test.getStatus().trim().isEmpty()) {
+            test.setPassingMarks(
+                    (int) Math.ceil(
+                            test.getTotalMarks() * 0.40));
+        }
 
-			test.setStatus("DRAFT");
-		}
+        if (test.getShuffleQuestions() == null) {
+            test.setShuffleQuestions(false);
+        }
 
-		if (test.getPassingMarks() == null && test.getTotalMarks() != null) {
+        if (test.getShuffleOptions() == null) {
+            test.setShuffleOptions(false);
+        }
 
-			test.setPassingMarks((int) Math.ceil(test.getTotalMarks() * 0.40));
-		}
+        if (test.getShowResultImmediately() == null) {
+            test.setShowResultImmediately(true);
+        }
 
-		if (test.getShuffleQuestions() == null) {
-			test.setShuffleQuestions(false);
-		}
+        if (test.getAllowTestRetake() == null) {
+            test.setAllowTestRetake(false);
+        }
 
-		if (test.getShuffleOptions() == null) {
-			test.setShuffleOptions(false);
-		}
+        if (test.getNumberOfAttempts() == null ||
+                test.getNumberOfAttempts() < 1) {
 
-		if (test.getShowResultImmediately() == null) {
-			test.setShowResultImmediately(true);
-		}
+            test.setNumberOfAttempts(1);
+        }
 
-		if (test.getAllowTestRetake() == null) {
-			test.setAllowTestRetake(false);
-		}
+        testService.save(test);
 
-		if (test.getNumberOfAttempts() == null || test.getNumberOfAttempts() < 1) {
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Test created successfully with "
+                        + questionCount
+                        + " questions!");
 
-			test.setNumberOfAttempts(1);
-		}
+        return "redirect:/tests/list";
+    }
 
-		// =====================================================
-		// SAVE TEST
-		// =====================================================
+    @GetMapping("/list")
+    public String listTests(Model model) {
 
-		testService.save(test);
+        List<Test> tests =
+                testService.getAll();
 
-		// =====================================================
-		// SUCCESS MESSAGE
-		// =====================================================
+        long totalTests =
+                tests.size();
 
-		redirectAttributes.addFlashAttribute("message",
-				"Test created successfully with " + questionCount + " questions!");
+        long publishedTests =
+                tests.stream()
+                        .filter(test ->
+                                "PUBLISHED".equalsIgnoreCase(
+                                        test.getStatus()))
+                        .count();
 
-		return "redirect:/tests/list";
-	}
+        long draftTests =
+                tests.stream()
+                        .filter(test ->
+                                !"PUBLISHED".equalsIgnoreCase(
+                                        test.getStatus()))
+                        .count();
 
-	// =========================================================
-	// TEST LIST
-	// =========================================================
+        long totalQuestions =
+                tests.stream()
+                        .mapToLong(test ->
+                                test.getQuestions() != null
+                                        ? test.getQuestions().size()
+                                        : 0)
+                        .sum();
 
-	@GetMapping("/list")
-	public String listTests(Model model) {
+        model.addAttribute(
+                "tests",
+                tests);
 
-		List<Test> tests = testService.getAll();
+        model.addAttribute(
+                "totalTests",
+                totalTests);
 
-		// Force question collections to load
-		for (Test test : tests) {
+        model.addAttribute(
+                "publishedTests",
+                publishedTests);
 
-			if (test.getQuestions() != null) {
-				test.getQuestions().size();
-			}
-		}
+        model.addAttribute(
+                "draftTests",
+                draftTests);
 
-		// =====================================================
-		// TOTAL TESTS
-		// =====================================================
+        model.addAttribute(
+                "totalQuestions",
+                totalQuestions);
 
-		long totalTests = tests.size();
+        return "test-list";
+    }
 
-		// =====================================================
-		// PUBLISHED TESTS
-		// =====================================================
+    @GetMapping("/results")
+    public String allTestResults(Model model) {
 
-		long publishedTests = tests.stream().filter(test -> "PUBLISHED".equalsIgnoreCase(test.getStatus())).count();
+        List<Test> tests =
+                testService.getAll();
 
-		// =====================================================
-		// DRAFT TESTS
-		// =====================================================
+        model.addAttribute(
+                "tests",
+                tests);
 
-		long draftTests = tests.stream().filter(test -> !"PUBLISHED".equalsIgnoreCase(test.getStatus())).count();
+        return "test-results-list";
+    }
 
-		// =====================================================
-		// TOTAL CREATED QUESTIONS
-		// =====================================================
+    @GetMapping("/results/{id}")
+    public String testResults(
+            @PathVariable Long id,
 
-		long totalQuestions = tests.stream()
-				.mapToLong(test -> test.getQuestions() != null ? test.getQuestions().size() : 0).sum();
+            @RequestParam(
+                    value = "question",
+                    defaultValue = "0")
+            int questionIndex,
 
-		model.addAttribute("tests", tests);
+            Model model) {
 
-		model.addAttribute("totalTests", totalTests);
+        Test test =
+                testService.getById(id);
 
-		model.addAttribute("publishedTests", publishedTests);
+        if (test == null) {
+            return "redirect:/tests/results";
+        }
 
-		model.addAttribute("draftTests", draftTests);
+        List<Question> questions =
+                test.getQuestions();
 
-		model.addAttribute("totalQuestions", totalQuestions);
+        if (questions == null) {
+            questions = new ArrayList<>();
+        }
 
-		return "test-list";
-	}
+        model.addAttribute(
+                "test",
+                test);
 
-	// =========================================================
-	// ALL TEST RESULTS
-	// =========================================================
+        model.addAttribute(
+                "questions",
+                questions);
 
-	@GetMapping("/results")
-	public String allTestResults(Model model) {
+        int questionCount =
+                questions.size();
 
-		List<Test> tests = testService.getAll();
+        model.addAttribute(
+                "questionCount",
+                questionCount);
 
-		model.addAttribute("tests", tests);
+        Map<Long, QuestionResultStats> questionStats =
+                new LinkedHashMap<>();
 
-		return "test-results-list";
-	}
+        if (!questions.isEmpty()) {
 
-	// =========================================================
-	// INDIVIDUAL TEST RESULTS
-	// =========================================================
+            questionStats =
+                    testResultService
+                            .getQuestionResultStats(
+                                    id,
+                                    questions);
+        }
 
-	@GetMapping("/results/{id}")
-	public String testResults(
+        model.addAttribute(
+                "questionStats",
+                questionStats);
 
-			@PathVariable Long id,
+        if (questions.isEmpty()) {
 
-			@RequestParam(value = "question", defaultValue = "0") int questionIndex,
+            model.addAttribute(
+                    "selectedQuestion",
+                    null);
 
-			Model model) {
+            model.addAttribute(
+                    "selectedQuestionNumber",
+                    0);
 
-		Test test = testService.getById(id);
+            model.addAttribute(
+                    "submittedAttemptCount",
+                    0);
 
-		if (test == null) {
-			return "redirect:/tests/results";
-		}
+            return "test-results";
+        }
 
-		List<Question> questions = test.getQuestions();
+        if (questionIndex < 0 ||
+                questionIndex >= questions.size()) {
 
-		model.addAttribute("test", test);
+            questionIndex = 0;
+        }
 
-		// =====================================================
-		// CREATED QUESTION COUNT
-		// =====================================================
+        Question selectedQuestion =
+                questions.get(questionIndex);
 
-		int questionCount = questions != null ? questions.size() : 0;
+        model.addAttribute(
+                "selectedQuestion",
+                selectedQuestion);
 
-		model.addAttribute("questionCount", questionCount);
+        model.addAttribute(
+                "selectedQuestionNumber",
+                questionIndex + 1);
 
-		// =====================================================
-		// NO QUESTIONS
-		// =====================================================
+        return "test-results";
+    }
 
-		if (questions == null || questions.isEmpty()) {
+    @GetMapping("/edit/{id}")
+    public String editTest(
+            @PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
-			model.addAttribute("selectedQuestion", null);
+        Test test =
+                testService.getById(id);
 
-			model.addAttribute("selectedQuestionNumber", 0);
+        if (test == null) {
 
-			model.addAttribute("correctCount", 0);
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Test not found.");
 
-			model.addAttribute("wrongCount", 0);
+            return "redirect:/tests/list";
+        }
 
-			model.addAttribute("neverOpenedCount", 0);
+        model.addAttribute(
+                "test",
+                test);
 
-			return "test-results";
-		}
+        model.addAttribute(
+                "chaptersBySubject",
+                getChaptersBySubject());
 
-		// =====================================================
-		// VALIDATE QUESTION INDEX
-		// =====================================================
+        return "test-edit";
+    }
 
-		if (questionIndex < 0 || questionIndex >= questions.size()) {
+    @PostMapping("/update/{id}")
+    public String updateTest(
+            @PathVariable Long id,
+            @ModelAttribute Test updatedTest,
+            RedirectAttributes redirectAttributes) {
 
-			questionIndex = 0;
-		}
+        Test existingTest =
+                testService.getById(id);
 
-		Question selectedQuestion = questions.get(questionIndex);
+        if (existingTest == null) {
 
-		model.addAttribute("selectedQuestion", selectedQuestion);
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Test not found.");
 
-		model.addAttribute("selectedQuestionNumber", questionIndex + 1);
+            return "redirect:/tests/list";
+        }
 
-		// =====================================================
-		// DEFAULT RESULT COUNTS
-		// =====================================================
+        existingTest.setTestName(
+                updatedTest.getTestName());
 
-		model.addAttribute("correctCount", 0);
+        existingTest.setCourse(
+                updatedTest.getCourse());
 
-		model.addAttribute("wrongCount", 0);
+        existingTest.setSubject(
+                updatedTest.getSubject());
 
-		model.addAttribute("neverOpenedCount", 0);
+        existingTest.setChapter(
+                updatedTest.getChapter());
 
-		return "test-results";
-	}
+        existingTest.setDuration(
+                updatedTest.getDuration());
 
-	// =========================================================
-	// EDIT TEST
-	// =========================================================
+        existingTest.setTotalMarks(
+                updatedTest.getTotalMarks());
 
-	@GetMapping("/edit/{id}")
-	public String editTest(
+        existingTest.setPassingMarks(
+                updatedTest.getPassingMarks());
 
-			@PathVariable Long id,
+        existingTest.setShuffleQuestions(
+                updatedTest.getShuffleQuestions());
 
-			Model model,
+        existingTest.setShuffleOptions(
+                updatedTest.getShuffleOptions());
 
-			RedirectAttributes redirectAttributes) {
+        existingTest.setShowResultImmediately(
+                updatedTest.getShowResultImmediately());
 
-		Test test = testService.getById(id);
+        existingTest.setAllowTestRetake(
+                updatedTest.getAllowTestRetake());
 
-		if (test == null) {
+        existingTest.setNumberOfAttempts(
+                updatedTest.getNumberOfAttempts());
 
-			redirectAttributes.addFlashAttribute("error", "Test not found.");
+        existingTest.setStatus(
+                updatedTest.getStatus());
 
-			return "redirect:/tests/list";
-		}
+        if (updatedTest.getQuestions() != null) {
 
-		model.addAttribute("test", test);
+            existingTest.getQuestions().clear();
 
-		model.addAttribute("chaptersBySubject", getChaptersBySubject());
+            for (Question question :
+                    updatedTest.getQuestions()) {
 
-		return "test-edit";
-	}
+                if (question == null) {
+                    continue;
+                }
 
-	// =========================================================
-	// UPDATE TEST
-	// =========================================================
+                if (question.getQuestionText() == null ||
+                        question.getQuestionText()
+                                .trim()
+                                .isEmpty()) {
 
-	@PostMapping("/update/{id}")
-	public String updateTest(
+                    continue;
+                }
 
-			@PathVariable Long id,
+                question.setTest(existingTest);
 
-			@ModelAttribute Test updatedTest,
+                if (question.getMarks() == null ||
+                        question.getMarks() <= 0) {
 
-			RedirectAttributes redirectAttributes) {
+                    question.setMarks(1);
+                }
 
-		Test existingTest = testService.getById(id);
+                existingTest
+                        .getQuestions()
+                        .add(question);
+            }
+        }
 
-		if (existingTest == null) {
+        testService.save(existingTest);
 
-			redirectAttributes.addFlashAttribute("error", "Test not found.");
+        int questionCount =
+                existingTest.getQuestions() != null
+                        ? existingTest.getQuestions().size()
+                        : 0;
 
-			return "redirect:/tests/list";
-		}
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Test updated successfully with "
+                        + questionCount
+                        + " questions!");
 
-		// =====================================================
-		// BASIC INFORMATION
-		// =====================================================
+        return "redirect:/tests/list";
+    }
 
-		existingTest.setTestName(updatedTest.getTestName());
+    @GetMapping("/delete/{id}")
+    public String deleteTest(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
 
-		existingTest.setCourse(updatedTest.getCourse());
+        Test test =
+                testService.getById(id);
 
-		existingTest.setSubject(updatedTest.getSubject());
+        if (test == null) {
 
-		existingTest.setChapter(updatedTest.getChapter());
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Test not found.");
 
-		existingTest.setDuration(updatedTest.getDuration());
+            return "redirect:/tests/list";
+        }
 
-		existingTest.setTotalMarks(updatedTest.getTotalMarks());
+        testService.delete(id);
 
-		existingTest.setPassingMarks(updatedTest.getPassingMarks());
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Test deleted successfully!");
 
-		// =====================================================
-		// SETTINGS
-		// =====================================================
+        return "redirect:/tests/list";
+    }
 
-		existingTest.setShuffleQuestions(updatedTest.getShuffleQuestions());
+    @GetMapping("/analysis")
+    public String testAnalysis(Model model) {
 
-		existingTest.setShuffleOptions(updatedTest.getShuffleOptions());
+        List<Test> tests =
+                testService.getAll();
 
-		existingTest.setShowResultImmediately(updatedTest.getShowResultImmediately());
+        long totalTests =
+                tests.size();
 
-		existingTest.setAllowTestRetake(updatedTest.getAllowTestRetake());
+        long publishedTests =
+                tests.stream()
+                        .filter(test ->
+                                "PUBLISHED".equalsIgnoreCase(
+                                        test.getStatus()))
+                        .count();
 
-		existingTest.setNumberOfAttempts(updatedTest.getNumberOfAttempts());
+        long draftTests =
+                tests.stream()
+                        .filter(test ->
+                                !"PUBLISHED".equalsIgnoreCase(
+                                        test.getStatus()))
+                        .count();
 
-		existingTest.setStatus(updatedTest.getStatus());
+        long totalQuestions =
+                tests.stream()
+                        .mapToLong(test ->
+                                test.getQuestions() != null
+                                        ? test.getQuestions().size()
+                                        : 0)
+                        .sum();
 
-		// =====================================================
-		// UPDATE QUESTIONS
-		// =====================================================
+        model.addAttribute(
+                "tests",
+                tests);
 
-		if (updatedTest.getQuestions() != null) {
+        model.addAttribute(
+                "totalTests",
+                totalTests);
 
-			existingTest.getQuestions().clear();
+        model.addAttribute(
+                "publishedTests",
+                publishedTests);
 
-			for (Question question : updatedTest.getQuestions()) {
+        model.addAttribute(
+                "draftTests",
+                draftTests);
 
-				if (question == null) {
-					continue;
-				}
+        model.addAttribute(
+                "totalQuestions",
+                totalQuestions);
 
-				if (question.getQuestionText() == null || question.getQuestionText().trim().isEmpty()) {
-					continue;
-				}
-
-				question.setTest(existingTest);
-
-				existingTest.getQuestions().add(question);
-			}
-		}
-
-		// =====================================================
-		// SAVE
-		// =====================================================
-
-		testService.save(existingTest);
-
-		// =====================================================
-		// QUESTION COUNT AFTER UPDATE
-		// =====================================================
-
-		int questionCount = existingTest.getQuestions() != null ? existingTest.getQuestions().size() : 0;
-
-		redirectAttributes.addFlashAttribute("message",
-				"Test updated successfully with " + questionCount + " questions!");
-
-		return "redirect:/tests/list";
-	}
-
-	// =========================================================
-	// DELETE TEST
-	// =========================================================
-
-	@GetMapping("/delete/{id}")
-	public String deleteTest(
-
-			@PathVariable Long id,
-
-			RedirectAttributes redirectAttributes) {
-
-		Test test = testService.getById(id);
-
-		if (test == null) {
-
-			redirectAttributes.addFlashAttribute("error", "Test not found.");
-
-			return "redirect:/tests/list";
-		}
-
-		testService.delete(id);
-
-		redirectAttributes.addFlashAttribute("message", "Test deleted successfully!");
-
-		return "redirect:/tests/list";
-	}
-
-	// =========================================================
-	// TEST ANALYSIS
-	// =========================================================
-
-	@GetMapping("/analysis")
-	public String testAnalysis(Model model) {
-
-		List<Test> tests = testService.getAll();
-
-		// =====================================================
-		// TOTAL TESTS
-		// =====================================================
-
-		long totalTests = tests.size();
-
-		// =====================================================
-		// PUBLISHED
-		// =====================================================
-
-		long publishedTests = tests.stream().filter(test -> "PUBLISHED".equalsIgnoreCase(test.getStatus())).count();
-
-		// =====================================================
-		// DRAFT
-		// =====================================================
-
-		long draftTests = tests.stream().filter(test -> !"PUBLISHED".equalsIgnoreCase(test.getStatus())).count();
-
-		// =====================================================
-		// TOTAL CREATED QUESTIONS
-		// =====================================================
-
-		long totalQuestions = tests.stream()
-				.mapToLong(test -> test.getQuestions() != null ? test.getQuestions().size() : 0).sum();
-
-		model.addAttribute("tests", tests);
-
-		model.addAttribute("totalTests", totalTests);
-
-		model.addAttribute("publishedTests", publishedTests);
-
-		model.addAttribute("draftTests", draftTests);
-
-		model.addAttribute("totalQuestions", totalQuestions);
-
-		return "analysis";
-	}
+        return "analysis";
+    }
 }

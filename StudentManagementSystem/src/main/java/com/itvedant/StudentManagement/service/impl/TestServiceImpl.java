@@ -20,7 +20,6 @@ public class TestServiceImpl implements TestService {
     public TestServiceImpl(
             TestRepository testRepository,
             QuestionRepository questionRepository) {
-
         this.testRepository = testRepository;
         this.questionRepository = questionRepository;
     }
@@ -32,6 +31,10 @@ public class TestServiceImpl implements TestService {
         if (test.getQuestions() != null) {
 
             for (Question question : test.getQuestions()) {
+
+                if (question == null) {
+                    continue;
+                }
 
                 question.setTest(test);
 
@@ -51,11 +54,8 @@ public class TestServiceImpl implements TestService {
         Test test = testRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Test not found with id: " + id
-                        )
-                );
+                                "Test not found with id: " + id));
 
-        // Force loading of questions
         if (test.getQuestions() != null) {
             test.getQuestions().size();
         }
@@ -69,8 +69,8 @@ public class TestServiceImpl implements TestService {
 
         List<Test> tests = testRepository.findAll();
 
-        // Force loading of questions
         tests.forEach(test -> {
+
             if (test.getQuestions() != null) {
                 test.getQuestions().size();
             }
@@ -86,9 +86,7 @@ public class TestServiceImpl implements TestService {
         Test existingTest = testRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Test not found with id: " + id
-                        )
-                );
+                                "Test not found with id: " + id));
 
         existingTest.setTestName(updatedTest.getTestName());
         existingTest.setCourse(updatedTest.getCourse());
@@ -99,34 +97,21 @@ public class TestServiceImpl implements TestService {
         existingTest.setPassingMarks(updatedTest.getPassingMarks());
 
         existingTest.setShuffleQuestions(
-                Boolean.TRUE.equals(
-                        updatedTest.getShuffleQuestions()
-                )
-        );
+                Boolean.TRUE.equals(updatedTest.getShuffleQuestions()));
 
         existingTest.setShuffleOptions(
-                Boolean.TRUE.equals(
-                        updatedTest.getShuffleOptions()
-                )
-        );
+                Boolean.TRUE.equals(updatedTest.getShuffleOptions()));
 
         existingTest.setShowResultImmediately(
-                Boolean.TRUE.equals(
-                        updatedTest.getShowResultImmediately()
-                )
-        );
+                Boolean.TRUE.equals(updatedTest.getShowResultImmediately()));
 
         existingTest.setAllowTestRetake(
-                Boolean.TRUE.equals(
-                        updatedTest.getAllowTestRetake()
-                )
-        );
+                Boolean.TRUE.equals(updatedTest.getAllowTestRetake()));
 
         existingTest.setNumberOfAttempts(
                 updatedTest.getNumberOfAttempts() == null
                         ? 1
-                        : updatedTest.getNumberOfAttempts()
-        );
+                        : updatedTest.getNumberOfAttempts());
 
         existingTest.setStatus(updatedTest.getStatus());
 
@@ -139,8 +124,7 @@ public class TestServiceImpl implements TestService {
 
         if (!testRepository.existsById(id)) {
             throw new RuntimeException(
-                    "Test not found with id: " + id
-            );
+                    "Test not found with id: " + id);
         }
 
         testRepository.deleteById(id);
@@ -160,8 +144,7 @@ public class TestServiceImpl implements TestService {
         return testRepository.findAll()
                 .stream()
                 .mapToLong(test ->
-                        questionRepository.countByTestId(test.getId())
-                )
+                        questionRepository.countByTestId(test.getId()))
                 .sum();
     }
 }

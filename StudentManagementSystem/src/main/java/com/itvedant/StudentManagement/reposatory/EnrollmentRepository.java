@@ -10,11 +10,25 @@ import org.springframework.data.repository.query.Param;
 
 import com.itvedant.StudentManagement.model.Enrollment;
 
-public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
+public interface EnrollmentRepository
+        extends JpaRepository<Enrollment, Long> {
 
     boolean existsByStudentIdAndCourseId(
             Long studentId,
             Long courseId
+    );
+
+    List<Enrollment> findByStudentId(
+            Long studentId
+    );
+
+    @Query("""
+        SELECT e.course.id
+        FROM Enrollment e
+        WHERE e.student.id = :studentId
+        """)
+    List<Long> findCourseIdsByStudentId(
+            @Param("studentId") Long studentId
     );
 
     @Query("""
@@ -27,17 +41,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("endDate") LocalDateTime endDate
     );
 
-    List<Enrollment> findByStudentId(Long studentId);
-
-    @Query("""
-        SELECT e.course.id
-        FROM Enrollment e
-        WHERE e.student.id = :studentId
-        """)
-    List<Long> findCourseIdsByStudentId(
-            @Param("studentId") Long studentId
-    );
-
     @Query("""
         SELECT e
         FROM Enrollment e
@@ -48,7 +51,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     );
 
     @Query("""
-        SELECT e.course.courseName, COUNT(DISTINCT e.student.id)
+        SELECT e.course.courseName,
+               COUNT(DISTINCT e.student.id)
         FROM Enrollment e
         GROUP BY e.course.courseName
         ORDER BY COUNT(DISTINCT e.student.id) DESC
@@ -56,7 +60,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Object[]> getStudentsByCourse();
 
     @Query("""
-        SELECT MONTH(e.enrolledDate), COUNT(DISTINCT e.student.id)
+        SELECT MONTH(e.enrolledDate),
+               COUNT(DISTINCT e.student.id)
         FROM Enrollment e
         WHERE YEAR(e.enrolledDate) = :year
         GROUP BY MONTH(e.enrolledDate)
@@ -66,7 +71,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("year") int year
     );
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(
+            clearAutomatically = true,
+            flushAutomatically = true
+    )
     @Query("""
         DELETE FROM Enrollment e
         WHERE e.student.id = :studentId
@@ -77,7 +85,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("courseId") Long courseId
     );
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(
+            clearAutomatically = true,
+            flushAutomatically = true
+    )
     @Query("""
         DELETE FROM Enrollment e
         WHERE e.student.id = :studentId
@@ -86,13 +97,16 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("studentId") Long studentId
     );
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(
+            clearAutomatically = true,
+            flushAutomatically = true
+    )
     @Query(
-        value = """
-            DELETE FROM enrollment
-            WHERE course_id = :courseId
-            """,
-        nativeQuery = true
+            value = """
+                DELETE FROM enrollment
+                WHERE course_id = :courseId
+                """,
+            nativeQuery = true
     )
     void deleteAllByCourseId(
             @Param("courseId") Long courseId
