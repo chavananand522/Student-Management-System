@@ -33,14 +33,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private static final Logger log =
             LoggerFactory.getLogger(EnrollmentServiceImpl.class);
 
-    // Hardcoded defaults (previously came from SettingsService)
     private static final boolean ALLOW_MULTIPLE_ENROLLMENT = true;
+
     private static final boolean PREVENT_DUPLICATE_ENROLLMENT = true;
+
     private static final int MAX_COURSES_PER_STUDENT = 5;
 
     private final EnrollmentRepository enrollmentRepository;
+
     private final StudentRepositiry studentRepository;
+
     private final CourseRepository courseRepository;
+
     private final ModelMapper mapper;
 
     public EnrollmentServiceImpl(
@@ -57,93 +61,126 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional
-    public void enrollStudentToCourses(EnrollmentDTO enrollmentDTO) {
+    public void enrollStudentToCourses(
+            EnrollmentDTO enrollmentDTO) {
 
         log.info("Request from enrollStudentToCourses");
 
-        Students student = studentRepository
-                .findById(enrollmentDTO.getStudentId())
-                .orElseThrow(() ->
-                        new RuntimeException("Student Not Found"));
+        Long studentId =
+                enrollmentDTO.getStudentId();
 
-        boolean allowMultipleEnrollment = ALLOW_MULTIPLE_ENROLLMENT;
+        Students student =
+                studentRepository.findById(studentId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Student Not Found"
+                                ));
 
-        boolean preventDuplicateEnrollment = PREVENT_DUPLICATE_ENROLLMENT;
+        List<Long> requestedCourseIds =
+                enrollmentDTO.getCourseIds() == null
+                        ? List.of()
+                        : enrollmentDTO.getCourseIds()
+                                .stream()
+                                .distinct()
+                                .toList();
 
-        int maxCoursesPerStudent = MAX_COURSES_PER_STUDENT;
+        List<Enrollment> existingEnrollments =
+                enrollmentRepository.findByStudentId(
+                        studentId
+                );
 
         int currentCourseCount =
-                student.getEnrollments().size();
+                existingEnrollments.size();
 
-        log.info("Student ID: {}", student.getId());
-        log.info("Current course count: {}", currentCourseCount);
-        log.info("Allow multiple enrollment: {}",
-                allowMultipleEnrollment);
-        log.info("Prevent duplicate enrollment: {}",
-                preventDuplicateEnrollment);
-        log.info("Maximum courses: {}", maxCoursesPerStudent);
+        log.info(
+                "Student ID: {}",
+                studentId
+        );
 
-        if (!allowMultipleEnrollment && currentCourseCount > 0) {
+        log.info(
+                "Current course count: {}",
+                currentCourseCount
+        );
+
+        if (!ALLOW_MULTIPLE_ENROLLMENT &&
+                currentCourseCount > 0) {
+
             throw new RuntimeException(
-                    "Multiple course enrollment is disabled for this student.");
+                    "Multiple course enrollment is disabled for this student."
+            );
         }
 
-        // Pre-check: count how many NEW (non-duplicate) courses are actually
-        // being requested, so we fail fast BEFORE saving anything.
-        long newCoursesToAdd = enrollmentDTO.getCourseIds().stream()
-                .filter(courseId -> !preventDuplicateEnrollment
-                        || !enrollmentRepository.existsByStudentIdAndCourseId(
-                                enrollmentDTO.getStudentId(), courseId))
-                .count();
+        long newCoursesToAdd =
+                requestedCourseIds.stream()
+                        .filter(courseId ->
+                                !PREVENT_DUPLICATE_ENROLLMENT
+                                        || !enrollmentRepository
+                                        .existsByStudentIdAndCourseId(
+                                                studentId,
+                                                courseId
+                                        ))
+                        .count();
 
-        if (currentCourseCount + newCoursesToAdd > maxCoursesPerStudent) {
+        if (currentCourseCount + newCoursesToAdd >
+                MAX_COURSES_PER_STUDENT) {
+
             throw new RuntimeException(
-                    "Cannot enroll: student would exceed the maximum of "
-                            + maxCoursesPerStudent + " courses (currently enrolled in "
-                            + currentCourseCount + ", requested " + newCoursesToAdd + " new).");
+                    "Only can enroll in "
+                            + MAX_COURSES_PER_STUDENT
+                            + " courses"
+            );
         }
 
-        for (Long courseId : enrollmentDTO.getCourseIds()) {
+        for (Long courseId : requestedCourseIds) {
 
-            Courses course = courseRepository
-                    .findById(courseId)
-                    .orElseThrow(() ->
-                            new RuntimeException("Course Not Found"));
+            Courses course =
+                    courseRepository.findById(courseId)
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Course Not Found"
+                                    ));
 
             boolean alreadyEnrolled =
                     enrollmentRepository
                             .existsByStudentIdAndCourseId(
-                                    enrollmentDTO.getStudentId(),
-                                    courseId);
+                                    studentId,
+                                    courseId
+                            );
 
-            if (preventDuplicateEnrollment && alreadyEnrolled) {
+            if (PREVENT_DUPLICATE_ENROLLMENT &&
+                    alreadyEnrolled) {
 
                 log.info(
-                        "Student {} is already enrolled in course {}",
-                        student.getId(),
-                        courseId);
+                        "Student {} already enrolled in course {}",
+                        studentId,
+                        courseId
+                );
 
                 continue;
             }
 
-            Enrollment enrollment = new Enrollment();
+            Enrollment enrollment =
+                    new Enrollment();
 
             enrollment.setStudent(student);
+
             enrollment.setCourse(course);
-            enrollment.setEnrolledDate(LocalDateTime.now());
 
-            student.getEnrollments().add(enrollment);
-            course.getEnrollments().add(enrollment);
+            enrollment.setEnrolledDate(
+                    LocalDateTime.now()
+            );
 
-            enrollmentRepository.save(enrollment);
+            enrollmentRepository.save(
+                    enrollment
+            );
 
             currentCourseCount++;
 
             log.info(
-                    "Student {} enrolled in course {} at {}",
-                    student.getId(),
+                    "Added course {} to student {}",
                     courseId,
-                    enrollment.getEnrolledDate());
+                    studentId
+            );
         }
     }
 
@@ -154,156 +191,444 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         log.info(
                 "List of Enrolled Students from page {}",
-                page);
+                page
+        );
 
         PageRequest pageRequest =
                 PageRequest.of(
                         page,
                         size,
-                        Sort.by(Direction.DESC, "id"));
+                        Sort.by(
+                                Direction.DESC,
+                                "id"
+                        )
+                );
 
-        return studentRepository.findEnrolledStudentIds(pageRequest);
+        return studentRepository
+                .findEnrolledStudentIds(
+                        pageRequest
+                );
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EnrollmentSummeryDTO findEnrolledStudentCourseDetails(
             Long studentId) {
 
         return studentRepository
-                .findEnrolledStudentCourseDetails(studentId)
+                .findEnrolledStudentCourseDetails(
+                        studentId
+                )
                 .map(student -> {
 
                     EnrollmentSummeryDTO dto =
                             new EnrollmentSummeryDTO();
 
-                    dto.setStudentId(student.getId());
+                    dto.setStudentId(
+                            student.getId()
+                    );
 
                     dto.setStudentName(
                             student.getFirstName()
                                     + " "
-                                    + student.getLastName());
+                                    + student.getLastName()
+                    );
 
-                    dto.setEmail(student.getEmail());
+                    dto.setEmail(
+                            student.getEmail()
+                    );
+
+                    List<Enrollment> enrollments =
+                            student.getEnrollments();
 
                     dto.setCourseCount(
-                            student.getEnrollments().size());
+                            enrollments.size()
+                    );
 
                     BigDecimal totalFee =
-                            student.getEnrollments()
-                                    .stream()
+                            enrollments.stream()
                                     .map(enrollment ->
-                                            enrollment.getCourse().getFee())
-                                    .filter(fee -> fee != null)
+                                            enrollment
+                                                    .getCourse()
+                                                    .getFee()
+                                    )
+                                    .filter(fee ->
+                                            fee != null)
                                     .reduce(
                                             BigDecimal.ZERO,
-                                            BigDecimal::add);
+                                            BigDecimal::add
+                                    );
 
-                    dto.setTotalFee(totalFee);
+                    dto.setTotalFee(
+                            totalFee
+                    );
 
                     List<CourseDTO> courseList =
-                            student.getEnrollments()
-                                    .stream()
-                                    .map(Enrollment::getCourse)
+                            enrollments.stream()
+                                    .map(
+                                            Enrollment::getCourse
+                                    )
                                     .map(course ->
                                             mapper.map(
                                                     course,
-                                                    CourseDTO.class))
-                                    .collect(Collectors.toList());
+                                                    CourseDTO.class
+                                            )
+                                    )
+                                    .collect(
+                                            Collectors.toList()
+                                    );
 
-                    dto.setCourseList(courseList);
+                    dto.setCourseList(
+                            courseList
+                    );
 
                     return dto;
 
                 })
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Enrolled Student Not Found"));
+                                "Enrolled Student Not Found"
+                        ));
     }
 
     @Override
+    @Transactional
     public List<EnrollmentSummeryDTO> getRecentlyEnrolledStudents(
             int page,
             int size) {
 
-        log.info("List of Recently Enrolled Students");
+        log.info(
+                "List of Recently Enrolled Students"
+        );
 
         PageRequest pageRequest =
-                PageRequest.of(page, size);
+                PageRequest.of(
+                        page,
+                        size
+                );
 
-        // Step 1:
-        // Get recently enrolled student IDs.
         Page<Long> idPage =
                 studentRepository
                         .findRecentlyEnrolledStudentIds(
-                                pageRequest);
+                                pageRequest
+                        );
 
-        List<Long> ids = idPage.getContent();
+        List<Long> ids =
+                idPage.getContent();
 
         if (ids.isEmpty()) {
             return List.of();
         }
 
-        // Step 2:
-        // Fetch complete student + course information.
         List<Students> students =
                 studentRepository
-                        .findStudentsWithCoursesByIds(ids);
+                        .findStudentsWithCoursesByIds(
+                                ids
+                        );
 
-        // Convert students to Map using student ID.
         Map<Long, Students> studentsById =
                 students.stream()
-                        .collect(Collectors.toMap(
-                                Students::getId,
-                                student -> student));
+                        .collect(
+                                Collectors.toMap(
+                                        Students::getId,
+                                        student -> student
+                                )
+                        );
 
-        // Keep the same order as the IDs returned above.
         return ids.stream()
                 .map(studentsById::get)
-                .filter(student -> student != null)
+                .filter(student ->
+                        student != null)
                 .map(student -> {
 
                     EnrollmentSummeryDTO dto =
                             new EnrollmentSummeryDTO();
 
-                    dto.setStudentId(student.getId());
+                    dto.setStudentId(
+                            student.getId()
+                    );
 
                     dto.setStudentName(
                             student.getFirstName()
                                     + " "
-                                    + student.getLastName());
+                                    + student.getLastName()
+                    );
 
-                    dto.setEmail(student.getEmail());
+                    dto.setEmail(
+                            student.getEmail()
+                    );
+
+                    List<Enrollment> enrollments =
+                            student.getEnrollments();
 
                     dto.setCourseCount(
-                            student.getEnrollments().size());
+                            enrollments.size()
+                    );
 
                     BigDecimal totalFee =
-                            student.getEnrollments()
-                                    .stream()
+                            enrollments.stream()
                                     .map(enrollment ->
-                                            enrollment.getCourse().getFee())
-                                    .filter(fee -> fee != null)
+                                            enrollment
+                                                    .getCourse()
+                                                    .getFee()
+                                    )
+                                    .filter(fee ->
+                                            fee != null)
                                     .reduce(
                                             BigDecimal.ZERO,
-                                            BigDecimal::add);
+                                            BigDecimal::add
+                                    );
 
-                    dto.setTotalFee(totalFee);
+                    dto.setTotalFee(
+                            totalFee
+                    );
 
                     List<CourseDTO> courseList =
-                            student.getEnrollments()
-                                    .stream()
-                                    .map(Enrollment::getCourse)
+                            enrollments.stream()
+                                    .map(
+                                            Enrollment::getCourse
+                                    )
                                     .map(course ->
                                             mapper.map(
                                                     course,
-                                                    CourseDTO.class))
-                                    .collect(Collectors.toList());
+                                                    CourseDTO.class
+                                            )
+                                    )
+                                    .collect(
+                                            Collectors.toList()
+                                    );
 
-                    dto.setCourseList(courseList);
+                    dto.setCourseList(
+                            courseList
+                    );
 
                     return dto;
 
                 })
-                .collect(Collectors.toList());
+                .collect(
+                        Collectors.toList()
+                );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Enrollment findEnrollmentById(
+            Long id) {
+
+        return enrollmentRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Enrollment not found with id: "
+                                        + id
+                        ));
+    }
+
+    @Override
+    @Transactional
+    public void updateEnrollmentFee(
+            Long id,
+            BigDecimal newFee) {
+
+        Enrollment enrollment =
+                findEnrollmentById(id);
+
+        if (newFee != null) {
+
+            enrollment.setFee(
+                    newFee
+            );
+        }
+
+        enrollmentRepository.save(
+                enrollment
+        );
+    }
+
+    @Override
+    @Transactional
+    public void deleteEnrollment(
+            Long id) {
+
+        if (!enrollmentRepository.existsById(id)) {
+
+            throw new RuntimeException(
+                    "Enrollment not found with id: "
+                            + id
+            );
+        }
+
+        enrollmentRepository.deleteById(
+                id
+        );
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllEnrollmentsForStudent(
+            Long studentId) {
+
+        log.info(
+                "Deleting all enrollments for student {}",
+                studentId
+        );
+
+        if (!studentRepository.existsById(studentId)) {
+
+            throw new RuntimeException(
+                    "Student not found with id: "
+                            + studentId
+            );
+        }
+
+        enrollmentRepository.deleteAllByStudentId(
+                studentId
+        );
+
+        log.info(
+                "Deleted all enrollments for student {}",
+                studentId
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> findEnrolledCourseIdsByStudent(
+            Long studentId) {
+
+        if (!studentRepository.existsById(studentId)) {
+
+            throw new RuntimeException(
+                    "Student not found with id: "
+                            + studentId
+            );
+        }
+
+        return enrollmentRepository
+                .findCourseIdsByStudentId(
+                        studentId
+                );
+    }
+
+    @Override
+    @Transactional
+    public void updateStudentCourses(
+            Long studentId,
+            List<Long> courseIds) {
+
+        log.info(
+                "Updating courses for student {}",
+                studentId
+        );
+
+        Students student =
+                studentRepository.findById(
+                        studentId
+                ).orElseThrow(() ->
+                        new RuntimeException(
+                                "Student Not Found"
+                        ));
+
+        List<Long> selectedCourseIds =
+                courseIds == null
+                        ? List.of()
+                        : courseIds.stream()
+                                .distinct()
+                                .toList();
+
+        if (selectedCourseIds.size() >
+                MAX_COURSES_PER_STUDENT) {
+
+            throw new RuntimeException(
+                    "Only can enroll in "
+                            + MAX_COURSES_PER_STUDENT
+                            + " courses"
+            );
+        }
+
+        List<Enrollment> existingEnrollments =
+                enrollmentRepository
+                        .findByStudentId(
+                                studentId
+                        );
+
+        List<Long> existingCourseIds =
+                existingEnrollments.stream()
+                        .map(enrollment ->
+                                enrollment
+                                        .getCourse()
+                                        .getId()
+                        )
+                        .toList();
+
+        for (Long existingCourseId :
+                existingCourseIds) {
+
+            if (!selectedCourseIds.contains(
+                    existingCourseId
+            )) {
+
+                enrollmentRepository
+                        .deleteByStudentIdAndCourseId(
+                                studentId,
+                                existingCourseId
+                        );
+
+                log.info(
+                        "Removed course {} from student {}",
+                        existingCourseId,
+                        studentId
+                );
+            }
+        }
+
+        for (Long courseId :
+                selectedCourseIds) {
+
+            if (existingCourseIds.contains(
+                    courseId
+            )) {
+
+                continue;
+            }
+
+            Courses course =
+                    courseRepository.findById(
+                            courseId
+                    ).orElseThrow(() ->
+                            new RuntimeException(
+                                    "Course Not Found"
+                            ));
+
+            Enrollment enrollment =
+                    new Enrollment();
+
+            enrollment.setStudent(
+                    student
+            );
+
+            enrollment.setCourse(
+                    course
+            );
+
+            enrollment.setEnrolledDate(
+                    LocalDateTime.now()
+            );
+
+            enrollmentRepository.save(
+                    enrollment
+            );
+
+            log.info(
+                    "Added course {} to student {}",
+                    courseId,
+                    studentId
+            );
+        }
+
+        log.info(
+                "Courses updated successfully for student {}",
+                studentId
+        );
     }
 }

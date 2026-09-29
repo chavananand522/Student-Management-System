@@ -16,112 +16,110 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="courses")
+@Table(name = "courses")
 public class Courses {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id; 
-	
-	@Column(nullable=false)
-	private String courseName;
-	
-	@Column(nullable=false , unique =true)
-	private String courseCode;
-	
-	private String duration;
-	
-	@Column(name="active",nullable=false)
-	private boolean active =true;
-	
-	@Column (precision=12,scale =2, nullable =false)
-	private BigDecimal fee;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	@Column(length = 1000) 
-	private String description;
-	
-	@Column(nullable=false,updatable=false)
-	private LocalDateTime createdAt;
-	
-	@OneToMany(mappedBy="course", cascade =CascadeType.ALL, orphanRemoval=true)
-	private Set<Enrollment> enrollments =new HashSet<>(); 
-	
-	@PrePersist
-	public void onCreate() {
-		createdAt=LocalDateTime.now();
-	}
+    @Column(nullable = false)
+    private String courseName;
 
-	public long getId() {
-		return id;
-	}
+    @Column(nullable = false, unique = true)
+    private String courseCode;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    private String duration;
 
-	public String getCourseName() {
-		return courseName;
-	}
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
-	public void setCourseName(String courseName) {
-		this.courseName = courseName;
-	}
+    @Column(precision = 12, scale = 2, nullable = false)
+    private BigDecimal fee;
 
-	public String getCourseCode() {
-		return courseCode;
-	}
+    @Column(length = 1000)
+    private String description;
 
-	public void setCourseCode(String courseCode) {
-		this.courseCode = courseCode;
-	}
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-	public boolean isActive() {
-		return active;
-	}
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Enrollment> enrollments = new HashSet<>();
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
-	public BigDecimal getFee() {
-		return fee;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setFee(BigDecimal fee) {
-		this.fee = fee;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public String getDuration() {
-	    return duration;
-	}
+    public String getCourseName() {
+        return courseName;
+    }
 
-	public void setDuration(String duration) {
-	    this.duration = duration;
-	}
-	
-	public String getDescription() {
-		return description;
-	}
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getCourseCode() {
+        return courseCode;
+    }
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    public String getDuration() {
+        return duration;
+    }
 
-	public Set<Enrollment> getEnrollments() {
-		return enrollments;
-	}
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 
-	public void setEnrollments(Set<Enrollment> enrollments) {
-		this.enrollments = enrollments;
-	}
-	
-	
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public BigDecimal getFee() {
+        return fee;
+    }
+
+    public void setFee(BigDecimal fee) {
+        this.fee = fee;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(Set<Enrollment> enrollments) {
+        this.enrollments = enrollments;
+    }
 }

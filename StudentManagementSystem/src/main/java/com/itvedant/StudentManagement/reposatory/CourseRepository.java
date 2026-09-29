@@ -9,14 +9,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.itvedant.StudentManagement.model.Courses;
 
-public interface CourseRepository extends JpaRepository<Courses,Long>{
-	
-	boolean existsByCourseCodeIgnoreCase(String courseCode);
-	
-	boolean existsByCourseCodeIgnoreCaseAndIdNot(String courseCode, Long id);
-	
-	Page<Courses>findByActiveTrue(Pageable pageable);
-	
-	List<Courses>findByActiveTrue(Sort sort);
+public interface CourseRepository extends JpaRepository<Courses, Long> {
 
+    boolean existsByCourseCodeIgnoreCase(String courseCode);
+
+    boolean existsByCourseCodeIgnoreCaseAndIdNot(
+            String courseCode,
+            Long id
+    );
+
+    Page<Courses> findByActiveTrue(Pageable pageable);
+
+    List<Courses> findByActiveTrue(Sort sort);
 }

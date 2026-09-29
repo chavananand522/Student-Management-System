@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout::head}"></head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+
+    <div th:replace="~{fragments/layout::sidebar}"></div>
+
+    <div id="page-content-wrapper">
+
+        <div th:replace="~{fragments/layout::navbar}"></div>
+
+        <div class="container-fluid px-4 py-4">
+
+            <div class="bg-primary text-white rounded-3 p-4 mb-4">
+
+                <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+
+                    <div>
+                        <h2 class="mb-1">Edit Enrollment</h2>
+
+                        <p class="mb-0 opacity-75">
+                            Add or remove courses for this student
+                        </p>
+                    </div>
+
+                    <a th:href="@{/enrollments/enrollmentList}"
+                       class="btn btn-light text-primary fw-semibold">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Back to Enrollments
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <form th:action="@{/enrollments/edit/{studentId}(studentId=${enrollmentDto.studentId})}"
+                  method="post">
+
+                <input type="hidden"
+                       name="studentId"
+                       th:value="${enrollmentDto.studentId}">
+
+                <div class="row g-4">
+
+                    <div class="col-lg-8">
+
+                        <div class="card h-100">
+
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                                <span>
+                                    <i class="bi bi-book me-1"></i>
+                                    Course Selection
+                                </span>
+
+                                <span class="text-muted small">
+                                    Select courses to keep or add
+                                </span>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover align-middle">
+
+                                        <thead>
+
+                                        <tr>
+
+                                            <th style="width:70px;">
+                                                Select
+                                            </th>
+
+                                            <th>
+                                                Course Name
+                                            </th>
+
+                                            <th class="text-end">
+                                                Fee
+                                            </th>
+
+                                            <th style="width:190px;">
+                                                Status
+                                            </th>
+
+                                        </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                        <tr th:each="course : ${courseList}"
+                                            class="course-row">
+
+                                            <td>
+
+                                                <div class="form-check">
+
+                                                    <input
+                                                            class="form-check-input course-checkbox"
+                                                            type="checkbox"
+                                                            name="courseIds"
+                                                            th:value="${course.id}"
+                                                            th:checked="${enrolledCourseIds != null and enrolledCourseIds.contains(course.id)}"
+                                                            th:data-name="${course.courseName}"
+                                                            th:data-fee="${course.fee}"
+                                                            th:data-existing="${enrolledCourseIds != null and enrolledCourseIds.contains(course.id)}">
+
+                                                </div>
+
+                                            </td>
+
+                                            <td th:text="${course.courseName}">
+                                            </td>
+
+                                            <td class="text-end"
+                                                th:text="${'Rs ' + #numbers.formatDecimal(course.fee, 1, 'COMMA', 2, 'POINT')}">
+                                            </td>
+
+                                            <td class="course-status">
+
+                                                <span
+                                                        class="badge bg-danger existing-status"
+                                                        th:if="${enrolledCourseIds != null and enrolledCourseIds.contains(course.id)}">
+
+                                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                                    Already Enrolled
+
+                                                </span>
+
+                                                <span
+                                                        class="badge bg-secondary"
+                                                        th:unless="${enrolledCourseIds != null and enrolledCourseIds.contains(course.id)}">
+
+                                                    Available
+
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                                <div th:if="${#lists.isEmpty(courseList)}"
+                                     class="text-center text-muted py-4">
+
+                                    <i class="bi bi-book fs-2"></i>
+
+                                    <p class="mt-2 mb-0">
+                                        No courses available
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4">
+
+                        <div class="card h-100">
+
+                            <div class="card-header bg-white">
+
+                                <i class="bi bi-person-check me-1"></i>
+                                Student & Summary
+
+                            </div>
+
+                            <div class="card-body d-flex flex-column gap-3">
+
+                                <div class="p-3 bg-light border rounded">
+
+                                    <div class="text-muted small">
+                                        Student
+                                    </div>
+
+                                    <div class="fw-semibold fs-5"
+                                         th:each="student : ${studentList}"
+                                         th:if="${student.id == enrollmentDto.studentId}"
+                                         th:text="${student.firstName + ' ' + student.lastName}">
+                                    </div>
+
+                                    <div class="small text-muted"
+                                         th:each="student : ${studentList}"
+                                         th:if="${student.id == enrollmentDto.studentId}"
+                                         th:text="${student.email}">
+                                    </div>
+
+                                </div>
+
+                                <div class="p-3 bg-light border rounded">
+
+                                    <div class="d-flex justify-content-between mb-2">
+
+                                        <span class="text-muted">
+                                            Selected Courses
+                                        </span>
+
+                                        <strong id="courseCount">
+                                            0
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mb-2">
+
+                                        <span class="text-muted">
+                                            Existing Courses
+                                        </span>
+
+                                        <strong id="existingCount">
+                                            0
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+
+                                        <span class="text-muted">
+                                            New Fee
+                                        </span>
+
+                                        <strong class="text-primary"
+                                                id="newFee">
+
+                                            Rs. 0.00
+
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                    <div class="text-muted small mb-2">
+                                        Selected Courses
+                                    </div>
+
+                                    <ul class="mb-3"
+                                        id="selectedCourses">
+
+                                        <li>No course selected</li>
+
+                                    </ul>
+
+                                </div>
+
+                                <div class="mt-auto d-flex gap-2">
+
+                                    <a th:href="@{/enrollments/enrollmentList}"
+                                       class="btn btn-outline-secondary flex-grow-1">
+
+                                        <i class="bi bi-x-lg me-1"></i>
+                                        Cancel
+
+                                    </a>
+
+                                    <button type="submit"
+                                            class="btn btn-primary flex-grow-1">
+
+                                        <i class="bi bi-check2-circle me-1"></i>
+                                        Save Changes
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/layout::scripts}"></div>
+
+<script>
+
+    const checkboxes =
+        document.querySelectorAll(".course-checkbox");
+
+    const courseCount =
+        document.getElementById("courseCount");
+
+    const existingCount =
+        document.getElementById("existingCount");
+
+    const newFee =
+        document.getElementById("newFee");
+
+    const selectedCourses =
+        document.getElementById("selectedCourses");
+
+    function updateSummary() {
+
+        let selected = [];
+
+        let existing = 0;
+
+        let newTotal = 0;
+
+        checkboxes.forEach(checkbox => {
+
+            if (!checkbox.checked) {
+                return;
+            }
+
+            const name =
+                checkbox.dataset.name;
+
+            const fee =
+                parseFloat(
+                    checkbox.dataset.fee || "0"
+                );
+
+            const isExisting =
+                checkbox.dataset.existing === "true";
+
+            selected.push({
+                name: name,
+                fee: fee,
+                existing: isExisting
+            });
+
+            if (isExisting) {
+
+                existing++;
+
+            } else {
+
+                newTotal += fee;
+
+            }
+
+        });
+
+        courseCount.textContent =
+            selected.length;
+
+        existingCount.textContent =
+            existing;
+
+        newFee.textContent =
+            "Rs. " +
+            newTotal.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+        selectedCourses.innerHTML = "";
+
+        if (selected.length === 0) {
+
+            selectedCourses.innerHTML =
+                "<li>No course selected</li>";
+
+            return;
+        }
+
+        selected.forEach(course => {
+
+            const li =
+                document.createElement("li");
+
+            li.className =
+                "mb-2";
+
+            if (course.existing) {
+
+                li.innerHTML = `
+                    <span>${course.name}</span>
+
+                    <span class="badge bg-danger ms-2">
+                        Already Enrolled
+                    </span>
+                `;
+
+            } else {
+
+                li.innerHTML = `
+                    <span>${course.name}</span>
+
+                    <span class="badge bg-success ms-2">
+                        New
+                    </span>
+
+                    <span class="text-muted ms-2">
+                        Rs. ${course.fee.toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })}
+                    </span>
+                `;
+
+            }
+
+            selectedCourses.appendChild(li);
+
+        });
+
+    }
+
+    checkboxes.forEach(checkbox => {
+
+        checkbox.addEventListener("change", function () {
+
+            const row =
+                this.closest(".course-row");
+
+            const statusCell =
+                row.querySelector(".course-status");
+
+            const isExisting =
+                this.dataset.existing === "true";
+
+            if (this.checked) {
+
+                if (isExisting) {
+
+                    statusCell.innerHTML = `
+                        <span class="badge bg-danger">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Already Enrolled
+                        </span>
+                    `;
+
+                } else {
+
+                    statusCell.innerHTML = `
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Selected
+                        </span>
+                    `;
+
+                }
+
+            } else {
+
+                if (isExisting) {
+
+                    statusCell.innerHTML = `
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-dash-circle-fill me-1"></i>
+                            Will Be Removed
+                        </span>
+                    `;
+
+                } else {
+
+                    statusCell.innerHTML = `
+                        <span class="badge bg-secondary">
+                            Available
+                        </span>
+                    `;
+
+                }
+
+            }
+
+            updateSummary();
+
+        });
+
+    });
+
+    updateSummary();
+
+</script>
+
+</body>
+
+</html>

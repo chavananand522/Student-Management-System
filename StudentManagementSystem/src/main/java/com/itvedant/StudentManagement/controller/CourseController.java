@@ -23,7 +23,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/course")
 public class CourseController {
 
-    private static final Logger log = LoggerFactory.getLogger(CourseController.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(CourseController.class);
 
     private final CourseService courseService;
 
@@ -33,14 +34,26 @@ public class CourseController {
 
     @GetMapping("")
     public String redirectToList() {
-        log.info("Get /course - redirecting to /course/list");
+
+        log.info(
+                "GET /course - redirecting to /course/list"
+        );
+
         return "redirect:/course/list";
     }
 
     @GetMapping("/new")
     public String showCreateCourse(Model model) {
-        log.info("Get /course/new - showing create course page.");
-        model.addAttribute("courseDto", new CourseDTO());
+
+        log.info(
+                "GET /course/new - showing create course page"
+        );
+
+        model.addAttribute(
+                "courseDto",
+                new CourseDTO()
+        );
+
         return "add-course";
     }
 
@@ -49,95 +62,202 @@ public class CourseController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "7") int size,
             Model model) {
-        log.info("Get /course/list - showing course list page.");
 
-        Page<CourseDTO> courses = courseService.getCourses(page, size);
-        model.addAttribute("courses", courses);
+        log.info(
+                "GET /course/list - showing course list page"
+        );
+
+        Page<CourseDTO> courses =
+                courseService.getCourses(page, size);
+
+        model.addAttribute(
+                "courses",
+                courses
+        );
 
         return "courses";
     }
 
     @PostMapping("/list")
     public String createCourse(
-            @Valid @ModelAttribute("courseDto") CourseDTO courseDTO,
+            @Valid
+            @ModelAttribute("courseDto")
+            CourseDTO courseDTO,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttribute) {
 
-        log.info("Post /course - create course request received.");
+        log.info(
+                "POST /course/list - create course request received"
+        );
 
         if (bindingResult.hasErrors()) {
-            log.error("Post /course - page return due to validation error");
             return "add-course";
         }
 
-        if (courseService.existsByCourseCode(courseDTO.getCourseCode())) {
-            log.info("Post /course - Code must be unique.");
-            bindingResult.rejectValue("courseCode", "duplicate", "Code must be unique");
+        if (courseService.existsByCourseCode(
+                courseDTO.getCourseCode())) {
+
+            bindingResult.rejectValue(
+                    "courseCode",
+                    "duplicate",
+                    "Code must be unique"
+            );
+
             return "add-course";
         }
 
-        courseService.createCourse(courseDTO);
-        redirectAttribute.addFlashAttribute("message", "Course is created successfully");
-        log.info("Post /course - Course is created successfully");
+        try {
+
+            courseService.createCourse(courseDTO);
+
+            redirectAttribute.addFlashAttribute(
+                    "message",
+                    "Course is created successfully"
+            );
+
+        } catch (RuntimeException e) {
+
+            log.error(
+                    "Error creating course",
+                    e
+            );
+
+            redirectAttribute.addFlashAttribute(
+                    "errorMessage",
+                    e.getMessage()
+            );
+        }
+
         return "redirect:/course/list";
     }
 
     @GetMapping("/{id}")
-    public String getCourseByid(@PathVariable Long id, Model model) {
-        CourseDTO course = courseService.getCourseById(id);
-        model.addAttribute("course", course);
+    public String getCourseById(
+            @PathVariable Long id,
+            Model model) {
+
+        CourseDTO course =
+                courseService.getCourseById(id);
+
+        model.addAttribute(
+                "course",
+                course
+        );
+
         return "view-course";
     }
 
     @GetMapping("/{id}/edit")
-    public String editCourse(@PathVariable Long id, Model model) {
-        CourseDTO courseDto = courseService.getCourseById(id);
-        model.addAttribute("courseDto", courseDto);
+    public String editCourse(
+            @PathVariable Long id,
+            Model model) {
+
+        CourseDTO courseDto =
+                courseService.getCourseById(id);
+
+        model.addAttribute(
+                "courseDto",
+                courseDto
+        );
+
         return "edit-course";
     }
 
     @PostMapping("/{id}/update")
     public String updateCourse(
             @PathVariable Long id,
-            @Valid @ModelAttribute("courseDto") CourseDTO courseDTO,
+            @Valid
+            @ModelAttribute("courseDto")
+            CourseDTO courseDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttribute) {
 
-        log.info("Post/{id} /update - update course request received.{}", id);
+        log.info(
+                "POST /course/{}/update - update course request received",
+                id
+        );
 
         if (bindingResult.hasErrors()) {
-            log.error("Post/{id} /update - page return due to validation error");
-            return "add-course";
-        }
-
-        if (courseService.existsByCourseCodeAndIdNot(courseDTO.getCourseCode(), id)) {
-            log.info("Post/{id} /update - Code must be unique.");
-            bindingResult.rejectValue("courseCode", "duplicate", "Code must be unique");
             return "edit-course";
         }
 
-        courseService.updateCourse(id, courseDTO);
-        redirectAttribute.addFlashAttribute("message", "Course is upadated successfully");
-        log.info("Post/{id} /update - updated course successfully");
+        if (courseService.existsByCourseCodeAndIdNot(
+                courseDTO.getCourseCode(),
+                id
+        )) {
+
+            bindingResult.rejectValue(
+                    "courseCode",
+                    "duplicate",
+                    "Code must be unique"
+            );
+
+            return "edit-course";
+        }
+
+        try {
+
+            courseService.updateCourse(
+                    id,
+                    courseDTO
+            );
+
+            redirectAttribute.addFlashAttribute(
+                    "message",
+                    "Course is updated successfully"
+            );
+
+        } catch (RuntimeException e) {
+
+            log.error(
+                    "Error updating course with id: {}",
+                    id,
+                    e
+            );
+
+            redirectAttribute.addFlashAttribute(
+                    "errorMessage",
+                    e.getMessage()
+            );
+        }
+
         return "redirect:/course/list";
     }
 
-    // ============================================================
-    // NEW DELETE ENDPOINT
-    // ============================================================
     @PostMapping("/delete/{id}")
     public String deleteCourse(
-            @PathVariable("id") Long id,
+            @PathVariable Long id,
             RedirectAttributes redirectAttributes) {
-        log.info("Post /course/delete/{} - delete course request received.", id);
+
+        log.info(
+                "POST /course/delete/{} - delete request received",
+                id
+        );
+
         try {
+
             courseService.deleteCourse(id);
-            redirectAttributes.addFlashAttribute("message", "Course deleted successfully!");
+
+            redirectAttributes.addFlashAttribute(
+                    "message",
+                    "Course deleted successfully"
+            );
+
         } catch (Exception e) {
-            log.error("Error deleting course with id: {}", id, e);
-            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course: " + e.getMessage());
+
+            log.error(
+                    "Error deleting course with id: {}",
+                    id,
+                    e
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Error deleting course: " + e.getMessage()
+            );
         }
+
         return "redirect:/course/list";
     }
 }

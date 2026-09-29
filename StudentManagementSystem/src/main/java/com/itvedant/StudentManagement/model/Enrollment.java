@@ -1,6 +1,8 @@
 package com.itvedant.StudentManagement.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,51 +17,68 @@ import jakarta.persistence.Table;
 @Table(name = "enrollment")
 public class Enrollment {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "student_id", nullable = false)
-	private Students student;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Students student;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "course_id", nullable = false)
-	private Courses course;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Courses course;
 
-	@Column(nullable = false)
-	private LocalDateTime enrolledDate = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime enrolledDate = LocalDateTime.now();
 
-	public long getId() {
-		return id;
-	}
+    // =========================================================
+    // NEW FIELD — needed by Edit form
+    // =========================================================
+    @Column(precision = 10, scale = 2)
+    private BigDecimal fee;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    // =========================================================
+    // GETTERS & SETTERS
+    // =========================================================
 
-	public Students getStudent() {
-		return student;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setStudent(Students student) {
-		this.student = student;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public Courses getCourse() {
-		return course;
-	}
+    public Students getStudent() {
+        return student;
+    }
 
-	public void setCourse(Courses course) {
-		this.course = course;
-	}
+    public void setStudent(Students student) {
+        this.student = student;
+    }
 
-	public LocalDateTime getEnrolledDate() {
-		return enrolledDate;
-	}
+    public Courses getCourse() {
+        return course;
+    }
 
-	public void setEnrolledDate(LocalDateTime enrolledDate) {
-		this.enrolledDate = enrolledDate;
-	}
+    public void setCourse(Courses course) {
+        this.course = course;
+    }
 
+    public LocalDateTime getEnrolledDate() {
+        return enrolledDate;
+    }
+
+    public void setEnrolledDate(LocalDateTime enrolledDate) {
+        this.enrolledDate = enrolledDate;
+    }
+
+    public BigDecimal getFee() {
+        return fee;
+    }
+
+    public void setFee(BigDecimal fee) {
+        this.fee = fee;
+    }
 }

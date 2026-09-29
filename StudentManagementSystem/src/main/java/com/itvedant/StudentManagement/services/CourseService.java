@@ -14,14 +14,22 @@ public interface CourseService {
 
     boolean existsByCourseCode(String courseCode);
 
-    boolean existsByCourseCodeAndIdNot(String courseCode, Long id);
+    boolean existsByCourseCodeAndIdNot(
+            String courseCode,
+            Long id
+    );
 
-    Page<CourseDTO> getCourses(int page, int size);
+    Page<CourseDTO> getCourses(
+            int page,
+            int size
+    );
 
     CourseDTO getCourseById(Long id);
 
-    CourseDTO updateCourse(Long id, CourseDTO courseDTO);
+    CourseDTO updateCourse(
+            Long id,
+            CourseDTO courseDTO
+    );
 
-    // ADD THIS METHOD
     void deleteCourse(Long id);
 }
