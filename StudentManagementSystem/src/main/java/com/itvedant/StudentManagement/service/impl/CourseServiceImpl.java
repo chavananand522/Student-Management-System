@@ -24,234 +24,161 @@ import jakarta.persistence.EntityManager;
 @Transactional
 public class CourseServiceImpl implements CourseService {
 
-    private static final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
 
-    private final CourseRepository courseRepository;
-    private final EnrollmentRepository enrollmentRepository;
-    private final ModelMapper mapper;
-    private final EntityManager entityManager;
+	private final CourseRepository courseRepository;
 
-    public CourseServiceImpl(
-            CourseRepository courseRepository,
-            EnrollmentRepository enrollmentRepository,
-            ModelMapper mapper,
-            EntityManager entityManager) {
+	private final ModelMapper mapper;
+	private final EntityManager entityManager;
 
-        this.courseRepository = courseRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.mapper = mapper;
-        this.entityManager = entityManager;
-    }
+	public CourseServiceImpl(CourseRepository courseRepository, EnrollmentRepository enrollmentRepository,
+			ModelMapper mapper, EntityManager entityManager) {
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CourseDTO> getAllCourses() {
+		this.courseRepository = courseRepository;
 
-        return courseRepository
-                .findAll(Sort.by(Sort.Direction.ASC, "id"))
-                .stream()
-                .map(course -> mapper.map(course, CourseDTO.class))
-                .collect(Collectors.toList());
-    }
+		this.mapper = mapper;
+		this.entityManager = entityManager;
+	}
 
-    @Override
-    public CourseDTO createCourse(CourseDTO courseDTO) {
+	@Override
+	@Transactional(readOnly = true)
+	public List<CourseDTO> getAllCourses() {
 
-        if (existsByCourseCode(courseDTO.getCourseCode())) {
-            throw new RuntimeException("Course code already exists");
-        }
+		return courseRepository.findAll(Sort.by(Sort.Direction.ASC, "id")).stream()
+				.map(course -> mapper.map(course, CourseDTO.class)).collect(Collectors.toList());
+	}
 
-        Courses course = mapper.map(courseDTO, Courses.class);
+	@Override
+	public CourseDTO createCourse(CourseDTO courseDTO) {
 
-        course.setActive(true);
+		if (existsByCourseCode(courseDTO.getCourseCode())) {
+			throw new RuntimeException("Course code already exists");
+		}
 
-        Courses savedCourse = courseRepository.save(course);
+		Courses course = mapper.map(courseDTO, Courses.class);
 
-        return mapper.map(savedCourse, CourseDTO.class);
-    }
+		course.setActive(true);
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsByCourseCode(String courseCode) {
+		Courses savedCourse = courseRepository.save(course);
 
-        return courseRepository.existsByCourseCodeIgnoreCase(courseCode);
-    }
+		return mapper.map(savedCourse, CourseDTO.class);
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsByCourseCodeAndIdNot(String courseCode, Long id) {
+	@Override
+	@Transactional(readOnly = true)
+	public boolean existsByCourseCode(String courseCode) {
 
-        return courseRepository.existsByCourseCodeIgnoreCaseAndIdNot(
-                courseCode,
-                id
-        );
-    }
+		return courseRepository.existsByCourseCodeIgnoreCase(courseCode);
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<CourseDTO> getCourses(int page, int size) {
+	@Override
+	@Transactional(readOnly = true)
+	public boolean existsByCourseCodeAndIdNot(String courseCode, Long id) {
 
-        PageRequest pageRequest = PageRequest.of(
-                page,
-                size,
-                Sort.by(Sort.Direction.ASC, "id")
-        );
+		return courseRepository.existsByCourseCodeIgnoreCaseAndIdNot(courseCode, id);
+	}
 
-        return courseRepository
-                .findByActiveTrue(pageRequest)
-                .map(course -> mapper.map(course, CourseDTO.class));
-    }
+	@Override
+	@Transactional(readOnly = true)
+	public Page<CourseDTO> getCourses(int page, int size) {
 
-    @Override
-    @Transactional(readOnly = true)
-    public CourseDTO getCourseById(Long id) {
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
 
-        Courses course = courseRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Course not found with id: " + id
-                        )
-                );
+		return courseRepository.findByActiveTrue(pageRequest).map(course -> mapper.map(course, CourseDTO.class));
+	}
 
-        return mapper.map(course, CourseDTO.class);
-    }
+	@Override
+	@Transactional(readOnly = true)
+	public CourseDTO getCourseById(Long id) {
 
-    @Override
-    public CourseDTO updateCourse(Long id, CourseDTO courseDTO) {
+		Courses course = courseRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
 
-        Courses course = courseRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Course not found with id: " + id
-                        )
-                );
+		return mapper.map(course, CourseDTO.class);
+	}
 
-        if (courseRepository.existsByCourseCodeIgnoreCaseAndIdNot(
-                courseDTO.getCourseCode(),
-                id
-        )) {
-            throw new RuntimeException("Course code already exists");
-        }
+	@Override
+	public CourseDTO updateCourse(Long id, CourseDTO courseDTO) {
 
-        course.setCourseName(courseDTO.getCourseName());
-        course.setCourseCode(courseDTO.getCourseCode());
-        course.setDuration(courseDTO.getDuration());
-        course.setFee(courseDTO.getFee());
-        course.setDescription(courseDTO.getDescription());
-        course.setActive(courseDTO.isActive());
+		Courses course = courseRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
 
-        Courses updatedCourse = courseRepository.save(course);
+		if (courseRepository.existsByCourseCodeIgnoreCaseAndIdNot(courseDTO.getCourseCode(), id)) {
+			throw new RuntimeException("Course code already exists");
+		}
 
-        return mapper.map(updatedCourse, CourseDTO.class);
-    }
+		course.setCourseName(courseDTO.getCourseName());
+		course.setCourseCode(courseDTO.getCourseCode());
+		course.setDuration(courseDTO.getDuration());
+		course.setFee(courseDTO.getFee());
+		course.setDescription(courseDTO.getDescription());
+		course.setActive(courseDTO.isActive());
 
-    @Override
-    public void deleteCourse(Long id) {
+		Courses updatedCourse = courseRepository.save(course);
 
-        log.info("Deleting course permanently: {}", id);
+		return mapper.map(updatedCourse, CourseDTO.class);
+	}
 
-        courseRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Course not found with id: " + id
-                        )
-                );
+	@Override
+	public void deleteCourse(Long id) {
 
-        entityManager.flush();
-        entityManager.clear();
+		log.info("Deleting course permanently: {}", id);
 
-        try {
+		courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
 
-            entityManager.createNativeQuery(
-                    "SET FOREIGN_KEY_CHECKS = 0"
-            ).executeUpdate();
+		entityManager.flush();
+		entityManager.clear();
 
-            entityManager.createNativeQuery(
-                    "DELETE FROM enrollment WHERE course_id = :courseId"
-            )
-            .setParameter("courseId", id)
-            .executeUpdate();
+		try {
 
-            entityManager.createNativeQuery(
-                    "DELETE FROM courses WHERE id = :courseId"
-            )
-            .setParameter("courseId", id)
-            .executeUpdate();
+			entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "CREATE TEMPORARY TABLE course_id_map (" +
-                    "old_id BIGINT PRIMARY KEY, " +
-                    "new_id BIGINT NOT NULL)"
-            ).executeUpdate();
+			entityManager.createNativeQuery("DELETE FROM enrollment WHERE course_id = :courseId")
+					.setParameter("courseId", id).executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "SET @new_id = 0"
-            ).executeUpdate();
+			entityManager.createNativeQuery("DELETE FROM courses WHERE id = :courseId").setParameter("courseId", id)
+					.executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "INSERT INTO course_id_map (old_id, new_id) " +
-                    "SELECT id, (@new_id := @new_id + 1) " +
-                    "FROM courses " +
-                    "ORDER BY id"
-            ).executeUpdate();
+			entityManager.createNativeQuery("CREATE TEMPORARY TABLE course_id_map (" + "old_id BIGINT PRIMARY KEY, "
+					+ "new_id BIGINT NOT NULL)").executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "UPDATE courses " +
-                    "SET id = -id " +
-                    "WHERE id > 0"
-            ).executeUpdate();
+			entityManager.createNativeQuery("SET @new_id = 0").executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "UPDATE enrollment " +
-                    "SET course_id = -course_id " +
-                    "WHERE course_id > 0"
-            ).executeUpdate();
+			entityManager.createNativeQuery("INSERT INTO course_id_map (old_id, new_id) "
+					+ "SELECT id, (@new_id := @new_id + 1) " + "FROM courses " + "ORDER BY id").executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "UPDATE enrollment e " +
-                    "JOIN course_id_map m " +
-                    "ON -e.course_id = m.old_id " +
-                    "SET e.course_id = m.new_id"
-            ).executeUpdate();
+			entityManager.createNativeQuery("UPDATE courses " + "SET id = -id " + "WHERE id > 0").executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "UPDATE courses c " +
-                    "JOIN course_id_map m " +
-                    "ON -c.id = m.old_id " +
-                    "SET c.id = m.new_id"
-            ).executeUpdate();
+			entityManager
+					.createNativeQuery("UPDATE enrollment " + "SET course_id = -course_id " + "WHERE course_id > 0")
+					.executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "DROP TEMPORARY TABLE course_id_map"
-            ).executeUpdate();
+			entityManager.createNativeQuery("UPDATE enrollment e " + "JOIN course_id_map m "
+					+ "ON -e.course_id = m.old_id " + "SET e.course_id = m.new_id").executeUpdate();
 
-            Number countResult = (Number) entityManager
-                    .createNativeQuery(
-                            "SELECT COUNT(*) FROM courses"
-                    )
-                    .getSingleResult();
+			entityManager.createNativeQuery(
+					"UPDATE courses c " + "JOIN course_id_map m " + "ON -c.id = m.old_id " + "SET c.id = m.new_id")
+					.executeUpdate();
 
-            long courseCount = countResult.longValue();
+			entityManager.createNativeQuery("DROP TEMPORARY TABLE course_id_map").executeUpdate();
 
-            entityManager.createNativeQuery(
-                    "ALTER TABLE courses AUTO_INCREMENT = " +
-                    (courseCount + 1)
-            ).executeUpdate();
+			Number countResult = (Number) entityManager.createNativeQuery("SELECT COUNT(*) FROM courses")
+					.getSingleResult();
 
-            entityManager.clear();
+			long courseCount = countResult.longValue();
 
-            log.info(
-                    "Course {} deleted and IDs renumbered successfully",
-                    id
-            );
+			entityManager.createNativeQuery("ALTER TABLE courses AUTO_INCREMENT = " + (courseCount + 1))
+					.executeUpdate();
 
-        } finally {
+			entityManager.clear();
 
-            entityManager.createNativeQuery(
-                    "SET FOREIGN_KEY_CHECKS = 1"
-            ).executeUpdate();
+			log.info("Course {} deleted and IDs renumbered successfully", id);
 
-            entityManager.clear();
-        }
-    }
+		} finally {
+
+			entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+
+			entityManager.clear();
+		}
+	}
 }

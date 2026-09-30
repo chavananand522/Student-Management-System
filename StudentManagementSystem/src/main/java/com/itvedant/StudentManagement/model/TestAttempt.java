@@ -1,6 +1,7 @@
 package com.itvedant.StudentManagement.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,24 +15,48 @@ public class TestAttempt {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_id", nullable = false)
+    @JoinColumn(
+            name = "test_id",
+            nullable = false
+    )
     private Test test;
 
     private String studentUsername;
+
     private Integer attemptNumber;
+
     private Integer correctAnswers = 0;
+
     private Integer wrongAnswers = 0;
+
     private Integer unansweredQuestions = 0;
+
     private Integer obtainedMarks = 0;
+
     private String status;
+
     private LocalDateTime startedAt;
+
     private LocalDateTime submittedAt;
 
-    @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StudentAnswer> answers = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "attempt",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<StudentAnswer> answers =
+            new ArrayList<>();
+
+    // =====================================================
+    // CONSTRUCTOR
+    // =====================================================
 
     public TestAttempt() {
     }
+
+    // =====================================================
+    // GETTERS / SETTERS
+    // =====================================================
 
     public Long getId() {
         return id;
@@ -129,13 +154,25 @@ public class TestAttempt {
         this.answers = answers;
     }
 
+    // =====================================================
+    // ADD ANSWER
+    // =====================================================
+
     public void addAnswer(StudentAnswer answer) {
+
         answers.add(answer);
+
         answer.setAttempt(this);
     }
 
+    // =====================================================
+    // REMOVE ANSWER
+    // =====================================================
+
     public void removeAnswer(StudentAnswer answer) {
+
         answers.remove(answer);
+
         answer.setAttempt(null);
     }
 }

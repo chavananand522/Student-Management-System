@@ -11,11 +11,17 @@ public class StudentAnswer {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "attempt_id", nullable = false)
+    @JoinColumn(
+            name = "attempt_id",
+            nullable = false
+    )
     private TestAttempt attempt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(
+            name = "question_id",
+            nullable = false
+    )
     private Question question;
 
     private String selectedAnswer;
@@ -24,8 +30,16 @@ public class StudentAnswer {
 
     private Integer marksObtained;
 
+    // =====================================================
+    // CONSTRUCTOR
+    // =====================================================
+
     public StudentAnswer() {
     }
+
+    // =====================================================
+    // GETTERS / SETTERS
+    // =====================================================
 
     public Long getId() {
         return id;

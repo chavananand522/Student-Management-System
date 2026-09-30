@@ -1,6 +1,7 @@
 package com.itvedant.StudentManagement.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Test {
     private Integer numberOfAttempts = 1;
 
     // =====================================================
-    // NEGATIVE MARKING (NEW)
+    // NEGATIVE MARKING
     // =====================================================
 
     private Boolean negativeMarking = false;
@@ -55,13 +56,27 @@ public class Test {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    // =====================================================
+    // QUESTIONS
+    // =====================================================
+
+    @OneToMany(
+            mappedBy = "test",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @OrderBy("id ASC")
     private List<Question> questions = new ArrayList<>();
 
+    // =====================================================
+    // CREATE
+    // =====================================================
+
     @PrePersist
     protected void onCreate() {
+
         createdAt = LocalDateTime.now();
+
         updatedAt = LocalDateTime.now();
 
         if (status == null || status.isBlank()) {
@@ -73,7 +88,10 @@ public class Test {
         }
 
         if (passingMarks == null && totalMarks != null) {
-            passingMarks = (int) Math.ceil(totalMarks * 0.40);
+
+            passingMarks =
+                    (int) Math.ceil(totalMarks * 0.40);
+
         }
 
         if (negativeMarking == null) {
@@ -85,20 +103,38 @@ public class Test {
         }
     }
 
+    // =====================================================
+    // UPDATE
+    // =====================================================
+
     @PreUpdate
     protected void onUpdate() {
+
         updatedAt = LocalDateTime.now();
+
     }
 
+    // =====================================================
+    // QUESTIONS
+    // =====================================================
+
     public void addQuestion(Question question) {
+
         questions.add(question);
+
         question.setTest(this);
     }
 
     public void removeQuestion(Question question) {
+
         questions.remove(question);
+
         question.setTest(null);
     }
+
+    // =====================================================
+    // GETTERS / SETTERS
+    // =====================================================
 
     public Long getId() {
         return id;
@@ -200,10 +236,6 @@ public class Test {
         this.numberOfAttempts = numberOfAttempts;
     }
 
-    // =====================================================
-    // NEGATIVE MARKING GETTERS / SETTERS
-    // =====================================================
-
     public Boolean getNegativeMarking() {
         return negativeMarking;
     }
@@ -219,8 +251,6 @@ public class Test {
     public void setNegativeMarks(Integer negativeMarks) {
         this.negativeMarks = negativeMarks;
     }
-
-    // =====================================================
 
     public String getStatus() {
         return status;
@@ -243,11 +273,15 @@ public class Test {
     }
 
     public void setQuestions(List<Question> questions) {
+
         this.questions = questions;
 
         if (questions != null) {
+
             for (Question question : questions) {
+
                 question.setTest(this);
+
             }
         }
     }

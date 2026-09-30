@@ -34,16 +34,18 @@ public class Question {
     private Integer marks;
 
     // =====================================================
-    // OPTIONAL PER-QUESTION PENALTY (NEW)
+    // QUESTION LEVEL NEGATIVE MARKING
     // null = use test-level negativeMarks
     // =====================================================
 
     private Integer negativeMarks;
 
-    // =====================================================
-
     @Column(columnDefinition = "TEXT")
     private String explanation;
+
+    // =====================================================
+    // GETTERS / SETTERS
+    // =====================================================
 
     public Long getId() {
         return id;
@@ -113,10 +115,6 @@ public class Question {
         this.marks = marks;
     }
 
-    // =====================================================
-    // NEGATIVE MARKS
-    // =====================================================
-
     public Integer getNegativeMarks() {
         return negativeMarks;
     }
@@ -124,8 +122,6 @@ public class Question {
     public void setNegativeMarks(Integer negativeMarks) {
         this.negativeMarks = negativeMarks;
     }
-
-    // =====================================================
 
     public String getExplanation() {
         return explanation;
