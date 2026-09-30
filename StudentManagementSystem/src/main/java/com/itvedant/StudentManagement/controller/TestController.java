@@ -100,7 +100,7 @@ public class TestController {
                 "chaptersBySubject",
                 getChaptersBySubject());
 
-        return "create-test";
+        return "tests/create-test";
     }
 
     @PostMapping("/save")
@@ -451,7 +451,7 @@ public class TestController {
                 "totalQuestions",
                 totalQuestions);
 
-        return "test-list";
+        return "tests/test-list";
     }
 
     @GetMapping("/results")
@@ -464,7 +464,7 @@ public class TestController {
                 "tests",
                 tests);
 
-        return "test-results-list";
+        return "tests/test-results-list";
     }
 
     @GetMapping("/results/{id}")
@@ -537,7 +537,7 @@ public class TestController {
                     "submittedAttemptCount",
                     0);
 
-            return "test-results";
+            return "tests/test-results";
         }
 
         if (questionIndex < 0 ||
@@ -557,7 +557,7 @@ public class TestController {
                 "selectedQuestionNumber",
                 questionIndex + 1);
 
-        return "test-results";
+        return "tests/test-results";
     }
 
     @GetMapping("/edit/{id}")
@@ -586,7 +586,7 @@ public class TestController {
                 "chaptersBySubject",
                 getChaptersBySubject());
 
-        return "test-edit";
+        return "tests/test-edit";
     }
 
     @PostMapping("/update/{id}")
@@ -772,6 +772,6 @@ public class TestController {
                 "totalQuestions",
                 totalQuestions);
 
-        return "analysis";
+        return "tests/analysis";
     }
 }

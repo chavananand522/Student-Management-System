@@ -18,14 +18,14 @@
 
     <title>SMS Admin</title>
 
-	<!-- ===================================================== -->
-	<!-- FAVICON -->
-	<!-- ===================================================== -->
+    <!-- ===================================================== -->
+    <!-- FAVICON -->
+    <!-- ===================================================== -->
 
-	<link rel="icon" type="image/png" sizes="96x96" th:href="@{/favicon-96x96.png}" />
-	<link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}" />
-	<link rel="shortcut icon" th:href="@{/favicon.ico}" />
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}" />
+    <link rel="icon" type="image/png" sizes="96x96" th:href="@{/favicon-96x96.png}" />
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}" />
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" />
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}" />
 
 
     <!-- ================================================= -->
@@ -110,23 +110,28 @@
 
         </a>
 
-        <!-- STUDY MAIN MENU -->
+        <!-- STUDY MAIN MENU (link + separate toggle arrow) -->
 
-        <a class="sidebar-link study-main-link"
-           href="javascript:void(0)"
-           data-bs-toggle="collapse"
-           data-bs-target="#studyMenu"
-           role="button"
-           aria-expanded="false"
-           aria-controls="studyMenu">
+        <div class="sidebar-link study-main-link d-flex align-items-center p-0">
 
-            <i class="bi bi-mortarboard"></i>
+            <a th:href="@{/study}"
+               class="flex-grow-1 d-flex align-items-center text-decoration-none text-white py-3 px-3">
 
-            <span>Study</span>
+                <i class="bi bi-mortarboard"></i>
 
-            <i class="bi bi-chevron-down ms-auto study-arrow"></i>
+                <span class="ms-2">Study</span>
 
-        </a>
+            </a>
+
+            <i class="bi bi-chevron-down study-arrow px-3 py-3"
+               data-bs-toggle="collapse"
+               data-bs-target="#studyMenu"
+               role="button"
+               aria-expanded="false"
+               aria-controls="studyMenu"
+               style="cursor:pointer;"></i>
+
+        </div>
 
         <!-- STUDY SUB MENU -->
 
@@ -163,23 +168,28 @@
 
         </div>
 
-        <!-- TESTS MAIN MENU -->
+        <!-- TESTS MAIN MENU (link + separate toggle arrow) -->
 
-        <a class="sidebar-link test-main-link"
-           href="javascript:void(0)"
-           data-bs-toggle="collapse"
-           data-bs-target="#testMenu"
-           role="button"
-           aria-expanded="false"
-           aria-controls="testMenu">
+        <div class="sidebar-link test-main-link d-flex align-items-center p-0">
 
-            <i class="bi bi-file-earmark-text"></i>
+            <a th:href="@{/tests/list}"
+               class="flex-grow-1 d-flex align-items-center text-decoration-none text-white py-3 px-3">
 
-            <span>Tests</span>
+                <i class="bi bi-file-earmark-text"></i>
 
-            <i class="bi bi-chevron-down ms-auto test-arrow"></i>
+                <span class="ms-2">Tests</span>
 
-        </a>
+            </a>
+
+            <i class="bi bi-chevron-down test-arrow px-3 py-3"
+               data-bs-toggle="collapse"
+               data-bs-target="#testMenu"
+               role="button"
+               aria-expanded="false"
+               aria-controls="testMenu"
+               style="cursor:pointer;"></i>
+
+        </div>
 
         <!-- TESTS SUB MENU -->
 
@@ -602,6 +612,10 @@
                 openMenu("studyMenu");
 
             } else if (currentPath.startsWith("/tests")) {
+
+                openMenu("testMenu");
+
+            } else if (currentPath.startsWith("/admin/tests")) {
 
                 openMenu("testMenu");
 

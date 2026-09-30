@@ -18,122 +18,162 @@ import com.itvedant.StudentManagement.services.ModuleService;
 @RequestMapping("/chapter")
 public class ChapterController {
 
-	private final ChapterService chapterService;
-	private final ModuleService moduleService;
+    private final ChapterService chapterService;
+    private final ModuleService moduleService;
 
-	public ChapterController(ChapterService chapterService, ModuleService moduleService) {
+    public ChapterController(
+            ChapterService chapterService,
+            ModuleService moduleService) {
 
-		this.chapterService = chapterService;
-		this.moduleService = moduleService;
-	}
+        this.chapterService = chapterService;
+        this.moduleService = moduleService;
+    }
 
-	// /chapter
-	@GetMapping
-	public String chapterHome() {
-		return "redirect:/chapter/list";
-	}
+    // /chapter
+    @GetMapping
+    public String chapterHome() {
+        return "redirect:/chapter/list";
+    }
 
-	// /chapter/list
-	@GetMapping("/list")
-	public String chapterList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-			Model model) {
+    // /chapter/list
+    @GetMapping("/list")
+    public String chapterList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
 
-		model.addAttribute("chapters", chapterService.getChapters(page, size));
+        model.addAttribute(
+                "chapters",
+                chapterService.getChapters(page, size)
+        );
 
-		return "chapter-list";
-	}
+        return "study/chapter-list";
+    }
 
-	// /chapter/new?moduleId=1
-	@GetMapping("/new")
-	public String addChapter(@RequestParam Long moduleId, Model model) {
+    // /chapter/new?moduleId=1
+    @GetMapping("/new")
+    public String addChapter(
+            @RequestParam Long moduleId,
+            Model model) {
 
-		Module module = moduleService.getModuleById(moduleId);
+        Module module = moduleService.getModuleById(moduleId);
 
-		Chapter chapter = new Chapter();
+        Chapter chapter = new Chapter();
 
-		chapter.setSubject(module.getSubject());
-		chapter.setModuleId(module.getId());
+        chapter.setSubject(module.getSubject());
+        chapter.setModuleId(module.getId());
 
-		model.addAttribute("chapter", chapter);
-		model.addAttribute("module", module);
+        model.addAttribute("chapter", chapter);
+        model.addAttribute("module", module);
 
-		return "add-chapter";
-	}
+        return "study/add-chapter";
+    }
 
-	// Save Chapter
-	@PostMapping("/list")
-	public String saveChapter(Chapter chapter, RedirectAttributes redirectAttributes) {
+    // Save Chapter
+    @PostMapping("/list")
+    public String saveChapter(
+            Chapter chapter,
+            RedirectAttributes redirectAttributes) {
 
-		Chapter savedChapter = chapterService.createChapter(chapter);
+        Chapter savedChapter = chapterService.createChapter(chapter);
 
-		Module module = moduleService.getModuleById(savedChapter.getModuleId());
+        Module module =
+                moduleService.getModuleById(savedChapter.getModuleId());
 
-		redirectAttributes.addFlashAttribute("message", "Chapter added successfully.");
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Chapter added successfully."
+        );
 
-		return "redirect:/study/" + module.getSubject().toLowerCase() + "/module/" + module.getId();
-	}
+        return "redirect:/study/"
+                + module.getSubject().toLowerCase()
+                + "/module/"
+                + module.getId();
+    }
 
-	// /chapter/{id} -> chapter details
-	@GetMapping("/{id}")
-	public String viewChapter(@PathVariable Long id, Model model) {
+    // /chapter/{id} -> chapter details
+    @GetMapping("/{id}")
+    public String viewChapter(
+            @PathVariable Long id,
+            Model model) {
 
-		Chapter chapter = chapterService.getChapterById(id);
+        Chapter chapter = chapterService.getChapterById(id);
 
-		Module module = moduleService.getModuleById(chapter.getModuleId());
+        Module module = moduleService.getModuleById(chapter.getModuleId());
 
-		model.addAttribute("chapter", chapter);
-		model.addAttribute("module", module);
-		model.addAttribute("subjectName", module.getSubject());
+        model.addAttribute("chapter", chapter);
+        model.addAttribute("module", module);
+        model.addAttribute("subjectName", module.getSubject());
 
-		return "chapter-view";
-	}
+        return "study/chapter-view";
+    }
 
-	// /chapter/{id}/edit
-	@GetMapping("/{id}/edit")
-	public String editChapter(@PathVariable Long id, Model model) {
+    // /chapter/{id}/edit
+    @GetMapping("/{id}/edit")
+    public String editChapter(
+            @PathVariable Long id,
+            Model model) {
 
-		Chapter chapter = chapterService.getChapterById(id);
+        Chapter chapter = chapterService.getChapterById(id);
 
-		Module module = moduleService.getModuleById(chapter.getModuleId());
+        Module module = moduleService.getModuleById(chapter.getModuleId());
 
-		model.addAttribute("chapter", chapter);
-		model.addAttribute("module", module);
+        model.addAttribute("chapter", chapter);
+        model.addAttribute("module", module);
 
-		return "chapter-edit";
-	}
+        return "study/chapter-edit";
+    }
 
-	// Update Chapter
-	@PostMapping("/{id}/update")
-	public String updateChapter(@PathVariable Long id, Chapter chapter, RedirectAttributes redirectAttributes) {
+    // Update Chapter
+    @PostMapping("/{id}/update")
+    public String updateChapter(
+            @PathVariable Long id,
+            Chapter chapter,
+            RedirectAttributes redirectAttributes) {
 
-		Chapter existingChapter = chapterService.getChapterById(id);
+        Chapter existingChapter = chapterService.getChapterById(id);
 
-		chapter.setSubject(existingChapter.getSubject());
-		chapter.setModuleId(existingChapter.getModuleId());
+        chapter.setSubject(existingChapter.getSubject());
+        chapter.setModuleId(existingChapter.getModuleId());
 
-		chapterService.updateChapter(id, chapter);
+        chapterService.updateChapter(id, chapter);
 
-		Module module = moduleService.getModuleById(existingChapter.getModuleId());
+        Module module =
+                moduleService.getModuleById(existingChapter.getModuleId());
 
-		redirectAttributes.addFlashAttribute("message", "Chapter updated successfully.");
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Chapter updated successfully."
+        );
 
-		return "redirect:/study/" + module.getSubject().toLowerCase() + "/module/" + module.getId();
-	}
+        return "redirect:/study/"
+                + module.getSubject().toLowerCase()
+                + "/module/"
+                + module.getId();
+    }
 
-	// Delete Chapter
-	@PostMapping("/{id}/delete")
-	public String deleteChapter(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    // Delete Chapter
+    @PostMapping("/{id}/delete")
+    public String deleteChapter(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
 
-		Chapter chapter = chapterService.getChapterById(id);
+        Chapter chapter = chapterService.getChapterById(id);
 
-		Long moduleId = chapter.getModuleId();
+        Long moduleId = chapter.getModuleId();
 
-		Module module = moduleService.getModuleById(moduleId);
+        Module module = moduleService.getModuleById(moduleId);
 
-		chapterService.deleteChapter(id);
+        chapterService.deleteChapter(id);
 
-		redirectAttributes.addFlashAttribute("message", "Chapter deleted successfully.");
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Chapter deleted successfully."
+        );
 
-		return "redirect:/study/" + module.getSubject().toLowerCase() + "/module/" + module.getId();
-	}
+        return "redirect:/study/"
+                + module.getSubject().toLowerCase()
+                + "/module/"
+                + module.getId();
+    }
 }

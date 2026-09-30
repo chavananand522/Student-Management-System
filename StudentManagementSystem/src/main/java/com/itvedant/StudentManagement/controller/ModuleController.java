@@ -19,100 +19,132 @@ import com.itvedant.StudentManagement.services.ModuleService;
 @RequestMapping("/module")
 public class ModuleController {
 
-	private final ModuleService moduleService;
-	private final ModuleRepository moduleRepository;
-	private final ChapterService chapterService;
+    private final ModuleService moduleService;
+    private final ModuleRepository moduleRepository;
+    private final ChapterService chapterService;
 
-	public ModuleController(ModuleService moduleService, ModuleRepository moduleRepository,
-			ChapterService chapterService) {
+    public ModuleController(
+            ModuleService moduleService,
+            ModuleRepository moduleRepository,
+            ChapterService chapterService) {
 
-		this.moduleService = moduleService;
-		this.moduleRepository = moduleRepository;
-		this.chapterService = chapterService;
-	}
+        this.moduleService = moduleService;
+        this.moduleRepository = moduleRepository;
+        this.chapterService = chapterService;
+    }
 
-	// /module/new?subject=Physics
-	@GetMapping("/new")
-	public String addModule(@RequestParam String subject, Model model) {
+    // /module/new?subject=Physics
+    @GetMapping("/new")
+    public String addModule(
+            @RequestParam String subject,
+            Model model) {
 
-		Module module = new Module();
+        Module module = new Module();
 
-		module.setSubject(subject);
+        module.setSubject(subject);
 
-		// suggest the next module number
-		module.setModuleNumber(moduleService.getModulesBySubject(subject).size() + 1);
+        module.setModuleNumber(
+                moduleService.getModulesBySubject(subject).size() + 1
+        );
 
-		model.addAttribute("module", module);
+        model.addAttribute("module", module);
 
-		return "add-module";
-	}
+        return "study/Add-Module";
+    }
 
-	// Save Module
-	@PostMapping("/save")
-	public String saveModule(Module module, RedirectAttributes redirectAttributes) {
+    // Save Module
+    @PostMapping("/save")
+    public String saveModule(
+            Module module,
+            RedirectAttributes redirectAttributes) {
 
-		Module saved = moduleRepository.save(module);
+        Module saved = moduleRepository.save(module);
 
-		redirectAttributes.addFlashAttribute("message", "Module added successfully.");
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Module added successfully."
+        );
 
-		return "redirect:/study/" + saved.getSubject().toLowerCase();
-	}
+        return "redirect:/study/" + saved.getSubject().toLowerCase();
+    }
 
-	// /module/{id} -> module details (view page)
-	@GetMapping("/{id}")
-	public String viewModule(@PathVariable Long id, Model model) {
+    // /module/{id} -> module details
+    @GetMapping("/{id}")
+    public String viewModule(
+            @PathVariable Long id,
+            Model model) {
 
-		Module module = moduleService.getModuleById(id);
+        Module module = moduleService.getModuleById(id);
 
-		model.addAttribute("module", module);
-		model.addAttribute("subjectName", module.getSubject());
-		model.addAttribute("chapterCount", chapterService.getChaptersByModuleId(id).size());
+        model.addAttribute("module", module);
+        model.addAttribute("subjectName", module.getSubject());
+        model.addAttribute(
+                "chapterCount",
+                chapterService.getChaptersByModuleId(id).size()
+        );
 
-		return "module-details";
-	}
+        return "study/module-details";
+    }
 
-	// /module/{id}/edit
-	@GetMapping("/{id}/edit")
-	public String editModule(@PathVariable Long id, Model model) {
+    // /module/{id}/edit
+    @GetMapping("/{id}/edit")
+    public String editModule(
+            @PathVariable Long id,
+            Model model) {
 
-		model.addAttribute("module", moduleService.getModuleById(id));
+        model.addAttribute(
+                "module",
+                moduleService.getModuleById(id)
+        );
 
-		return "module-edit";
-	}
+        return "study/module-edit";
+    }
 
-	// Update Module
-	@PostMapping("/{id}/update")
-	public String updateModule(@PathVariable Long id, Module module, RedirectAttributes redirectAttributes) {
+    // Update Module
+    @PostMapping("/{id}/update")
+    public String updateModule(
+            @PathVariable Long id,
+            Module module,
+            RedirectAttributes redirectAttributes) {
 
-		Module existing = moduleService.getModuleById(id);
+        Module existing = moduleService.getModuleById(id);
 
-		existing.setModuleNumber(module.getModuleNumber());
-		existing.setName(module.getName());
-		existing.setDescription(module.getDescription());
+        existing.setModuleNumber(module.getModuleNumber());
+        existing.setName(module.getName());
+        existing.setDescription(module.getDescription());
 
-		moduleRepository.save(existing);
+        moduleRepository.save(existing);
 
-		redirectAttributes.addFlashAttribute("message", "Module updated successfully.");
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Module updated successfully."
+        );
 
-		return "redirect:/study/" + existing.getSubject().toLowerCase();
-	}
+        return "redirect:/study/" + existing.getSubject().toLowerCase();
+    }
 
-	// Delete Module (and all chapters inside it)
-	@PostMapping("/{id}/delete")
-	public String deleteModule(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    // Delete Module (and all chapters inside it)
+    @PostMapping("/{id}/delete")
+    public String deleteModule(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
 
-		Module module = moduleService.getModuleById(id);
+        Module module = moduleService.getModuleById(id);
 
-		String subject = module.getSubject();
+        String subject = module.getSubject();
 
-		for (Chapter chapter : chapterService.getChaptersByModuleId(id)) {
-			chapterService.deleteChapter(chapter.getId());
-		}
+        for (Chapter chapter :
+                chapterService.getChaptersByModuleId(id)) {
+            chapterService.deleteChapter(chapter.getId());
+        }
 
-		moduleRepository.deleteById(id);
+        moduleRepository.deleteById(id);
 
-		redirectAttributes.addFlashAttribute("message", "Module deleted successfully.");
+        redirectAttributes.addFlashAttribute(
+                "message",
+                "Module deleted successfully."
+        );
 
-		return "redirect:/study/" + subject.toLowerCase();
-	}
+        return "redirect:/study/" + subject.toLowerCase();
+    }
 }

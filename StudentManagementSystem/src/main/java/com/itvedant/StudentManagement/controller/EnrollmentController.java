@@ -1,6 +1,5 @@
 package com.itvedant.StudentManagement.controller;
 
-
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,44 +48,21 @@ public class EnrollmentController {
 
     @GetMapping("/showEnroll")
     public String showEnroll(Model model) {
-
         log.info("GET /enrollments/showEnroll");
 
-        model.addAttribute(
-                "enrollmentDto",
-                new EnrollmentDTO()
-        );
+        model.addAttribute("enrollmentDto", new EnrollmentDTO());
+        model.addAttribute("courseList", courseService.getAllCourses());
+        model.addAttribute("studentList", studentService.getAllStudents());
+        model.addAttribute("enrolledCourseIds", List.of());
 
-        model.addAttribute(
-                "courseList",
-                courseService.getAllCourses()
-        );
-
-        model.addAttribute(
-                "studentList",
-                studentService.getAllStudents()
-        );
-
-        model.addAttribute(
-                "enrolledCourseIds",
-                List.of()
-        );
-
-        return "enroll-course";
+        return "enrollments/enroll-course";
     }
 
     @GetMapping("/student/{studentId}/courses")
     @ResponseBody
-    public List<Long> getStudentEnrolledCourses(
-            @PathVariable Long studentId) {
-
-        log.info(
-                "GET /enrollments/student/{}/courses",
-                studentId
-        );
-
-        return enrollmentService
-                .findEnrolledCourseIdsByStudent(studentId);
+    public List<Long> getStudentEnrolledCourses(@PathVariable Long studentId) {
+        log.info("GET /enrollments/student/{}/courses", studentId);
+        return enrollmentService.findEnrolledCourseIdsByStudent(studentId);
     }
 
     @GetMapping("/enrollmentList")
@@ -98,23 +74,16 @@ public class EnrollmentController {
         log.info("GET /enrollmentList");
 
         Page<EnrollmentSummeryDTO> students =
-                enrollmentService.getEnrolledStudents(
-                        page,
-                        size
-                );
+                enrollmentService.getEnrolledStudents(page, size);
 
-        model.addAttribute(
-                "students",
-                students
-        );
+        model.addAttribute("students", students);
 
-        return "enrolled-students";
+        return "enrollments/enrolled-students";
     }
 
     @PostMapping("/enrollCourse")
     public String enrollCourse(
-            @Valid @ModelAttribute("enrollmentDto")
-            EnrollmentDTO enrollmentDTO,
+            @Valid @ModelAttribute("enrollmentDto") EnrollmentDTO enrollmentDTO,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttribute) {
@@ -123,15 +92,8 @@ public class EnrollmentController {
 
         if (bindingResult.hasErrors()) {
 
-            model.addAttribute(
-                    "courseList",
-                    courseService.getAllCourses()
-            );
-
-            model.addAttribute(
-                    "studentList",
-                    studentService.getAllStudents()
-            );
+            model.addAttribute("courseList", courseService.getAllCourses());
+            model.addAttribute("studentList", studentService.getAllStudents());
 
             List<Long> enrolledCourseIds =
                     enrollmentDTO.getStudentId() != null
@@ -139,36 +101,17 @@ public class EnrollmentController {
                                     enrollmentDTO.getStudentId())
                             : List.of();
 
-            model.addAttribute(
-                    "enrolledCourseIds",
-                    enrolledCourseIds
-            );
+            model.addAttribute("enrolledCourseIds", enrolledCourseIds);
 
-            return "enroll-course";
+            return "enrollments/enroll-course";
         }
 
         try {
-
-            enrollmentService.enrollStudentToCourses(
-                    enrollmentDTO
-            );
-
-            redirectAttribute.addFlashAttribute(
-                    "message",
-                    "Enrollment successfully!!"
-            );
-
+            enrollmentService.enrollStudentToCourses(enrollmentDTO);
+            redirectAttribute.addFlashAttribute("message", "Enrollment successfully!!");
         } catch (RuntimeException ex) {
-
-            log.warn(
-                    "Enrollment failed: {}",
-                    ex.getMessage()
-            );
-
-            redirectAttribute.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+            log.warn("Enrollment failed: {}", ex.getMessage());
+            redirectAttribute.addFlashAttribute("error", ex.getMessage());
         }
 
         return "redirect:/enrollments/enrollmentList";
@@ -178,25 +121,15 @@ public class EnrollmentController {
     public String getStudentEnrollmentDetails(
             @PathVariable Long id,
             Model model,
-            @RequestParam(
-                    defaultValue = "enrollments"
-            ) String source) {
+            @RequestParam(defaultValue = "enrollments") String source) {
 
         EnrollmentSummeryDTO dto =
-                enrollmentService
-                        .findEnrolledStudentCourseDetails(id);
+                enrollmentService.findEnrolledStudentCourseDetails(id);
 
-        model.addAttribute(
-                "enrollmentSummeryDTO",
-                dto
-        );
+        model.addAttribute("enrollmentSummeryDTO", dto);
+        model.addAttribute("source", source);
 
-        model.addAttribute(
-                "source",
-                source
-        );
-
-        return "enrollment-details";
+        return "enrollments/enrollment-details";
     }
 
     @GetMapping("/edit/{studentId}")
@@ -217,41 +150,23 @@ public class EnrollmentController {
         model.addAttribute("studentList", studentService.getAllStudents());
         model.addAttribute("enrolledCourseIds", enrolledCourseIds);
 
-        return "edit-enrollment";
+        return "enrollments/edit-enrollment";
     }
 
     @PostMapping("/edit/{studentId}")
     public String updateStudentCourses(
             @PathVariable Long studentId,
-            @RequestParam(value = "courseIds", required = false)
-            List<Long> courseIds,
+            @RequestParam(value = "courseIds", required = false) List<Long> courseIds,
             RedirectAttributes ra) {
 
         log.info("POST /enrollments/edit/{}", studentId);
 
         try {
-
-            enrollmentService.updateStudentCourses(
-                    studentId,
-                    courseIds
-            );
-
-            ra.addFlashAttribute(
-                    "message",
-                    "Courses updated successfully"
-            );
-
+            enrollmentService.updateStudentCourses(studentId, courseIds);
+            ra.addFlashAttribute("message", "Courses updated successfully");
         } catch (RuntimeException ex) {
-
-            log.warn(
-                    "Course update failed: {}",
-                    ex.getMessage()
-            );
-
-            ra.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+            log.warn("Course update failed: {}", ex.getMessage());
+            ra.addFlashAttribute("error", ex.getMessage());
         }
 
         return "redirect:/enrollments/enrollmentList";
@@ -262,26 +177,13 @@ public class EnrollmentController {
             @PathVariable Long id,
             RedirectAttributes ra) {
 
-        log.info(
-                "POST /enrollments/delete/{}",
-                id
-        );
+        log.info("POST /enrollments/delete/{}", id);
 
         try {
-
             enrollmentService.deleteEnrollment(id);
-
-            ra.addFlashAttribute(
-                    "message",
-                    "Enrollment deleted successfully"
-            );
-
+            ra.addFlashAttribute("message", "Enrollment deleted successfully");
         } catch (RuntimeException ex) {
-
-            ra.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+            ra.addFlashAttribute("error", ex.getMessage());
         }
 
         return "redirect:/enrollments/enrollmentList";
@@ -292,29 +194,13 @@ public class EnrollmentController {
             @PathVariable Long studentId,
             RedirectAttributes ra) {
 
-        log.info(
-                "POST /enrollments/deleteByStudent/{}",
-                studentId
-        );
+        log.info("POST /enrollments/deleteByStudent/{}", studentId);
 
         try {
-
-            enrollmentService
-                    .deleteAllEnrollmentsForStudent(
-                            studentId
-                    );
-
-            ra.addFlashAttribute(
-                    "message",
-                    "All enrollments removed for the student"
-            );
-
+            enrollmentService.deleteAllEnrollmentsForStudent(studentId);
+            ra.addFlashAttribute("message", "All enrollments removed for the student");
         } catch (RuntimeException ex) {
-
-            ra.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+            ra.addFlashAttribute("error", ex.getMessage());
         }
 
         return "redirect:/enrollments/enrollmentList";

@@ -19,100 +19,116 @@ import com.itvedant.StudentManagement.services.StudyService;
 @RequestMapping("/study")
 public class StudyController {
 
-	private final StudyService studyService;
-	private final ChapterService chapterService;
-	private final ModuleService moduleService;
+    private final StudyService studyService;
+    private final ChapterService chapterService;
+    private final ModuleService moduleService;
 
-	public StudyController(StudyService studyService, ChapterService chapterService, ModuleService moduleService) {
+    public StudyController(
+            StudyService studyService,
+            ChapterService chapterService,
+            ModuleService moduleService) {
 
-		this.studyService = studyService;
-		this.chapterService = chapterService;
-		this.moduleService = moduleService;
-	}
+        this.studyService = studyService;
+        this.chapterService = chapterService;
+        this.moduleService = moduleService;
+    }
 
-	// /study
-	@GetMapping
-	public String study(Model model) {
+    // /study
+    @GetMapping
+    public String study(Model model) {
 
-		List<Study> subjects = studyService.getAllSubjects();
+        List<Study> subjects = studyService.getAllSubjects();
 
-		model.addAttribute("subjects", subjects);
+        model.addAttribute("subjects", subjects);
 
-		return "study";
-	}
+        return "study/study";
+    }
 
-	// /study/physics
-	// Shows Modules inside Physics
-	@GetMapping("/{subject}")
-	public String subject(@PathVariable String subject, Model model) {
+    // /study/physics
+    @GetMapping("/{subject}")
+    public String subject(
+            @PathVariable String subject,
+            Model model) {
 
-		Study study = studyService.getSubjectByName(subject);
+        Study study = studyService.getSubjectByName(subject);
 
-		if (study == null) {
-			return "redirect:/study";
-		}
+        if (study == null) {
+            return "redirect:/study";
+        }
 
-		List<Module> modules = moduleService.getModulesBySubject(study.getSubject());
+        List<Module> modules =
+                moduleService.getModulesBySubject(study.getSubject());
 
-		model.addAttribute("study", study);
-		model.addAttribute("subjectName", study.getSubject());
-		model.addAttribute("modules", modules);
+        model.addAttribute("study", study);
+        model.addAttribute("subjectName", study.getSubject());
+        model.addAttribute("modules", modules);
 
-		return "study";
-	}
+        return "study/study";
+    }
 
-	// /study/physics/module/1
-	// Shows Chapters inside a Module
-	@GetMapping("/{subject}/module/{moduleId}")
-	public String module(@PathVariable String subject, @PathVariable Long moduleId, Model model) {
+    // /study/physics/module/1
+    @GetMapping("/{subject}/module/{moduleId}")
+    public String module(
+            @PathVariable String subject,
+            @PathVariable Long moduleId,
+            Model model) {
 
-		Study study = studyService.getSubjectByName(subject);
+        Study study = studyService.getSubjectByName(subject);
 
-		if (study == null) {
-			return "redirect:/study";
-		}
+        if (study == null) {
+            return "redirect:/study";
+        }
 
-		Module module = moduleService.getModuleById(moduleId);
+        Module module = moduleService.getModuleById(moduleId);
 
-		if (module == null || !module.getSubject().equalsIgnoreCase(study.getSubject())) {
-			return "redirect:/study/" + subject.toLowerCase();
-		}
+        if (module == null ||
+                !module.getSubject().equalsIgnoreCase(study.getSubject())) {
+            return "redirect:/study/" + subject.toLowerCase();
+        }
 
-		List<Chapter> chapters = chapterService.getChaptersByModuleId(moduleId);
+        List<Chapter> chapters =
+                chapterService.getChaptersByModuleId(moduleId);
 
-		model.addAttribute("study", study);
-		model.addAttribute("subjectName", study.getSubject());
-		model.addAttribute("module", module);
-		model.addAttribute("chapters", chapters);
+        model.addAttribute("study", study);
+        model.addAttribute("subjectName", study.getSubject());
+        model.addAttribute("module", module);
+        model.addAttribute("chapters", chapters);
 
-		return "module-view";
-	}
+        return "study/module-view";
+    }
 
-	// /study/physics/module/1/chapter/1
-	// Shows individual Chapter
-	@GetMapping("/{subject}/module/{moduleId}/chapter/{chapterId}")
-	public String chapter(@PathVariable String subject, @PathVariable Long moduleId, @PathVariable Long chapterId,
-			Model model) {
+    // /study/physics/module/1/chapter/1
+    @GetMapping("/{subject}/module/{moduleId}/chapter/{chapterId}")
+    public String chapter(
+            @PathVariable String subject,
+            @PathVariable Long moduleId,
+            @PathVariable Long chapterId,
+            Model model) {
 
-		Study study = studyService.getSubjectByName(subject);
+        Study study = studyService.getSubjectByName(subject);
 
-		if (study == null) {
-			return "redirect:/study";
-		}
+        if (study == null) {
+            return "redirect:/study";
+        }
 
-		Module module = moduleService.getModuleById(moduleId);
+        Module module = moduleService.getModuleById(moduleId);
 
-		Chapter chapter = chapterService.getChapterById(chapterId);
+        Chapter chapter = chapterService.getChapterById(chapterId);
 
-		if (module == null || chapter == null || !moduleId.equals(chapter.getModuleId())) {
-			return "redirect:/study/" + subject.toLowerCase() + "/module/" + moduleId;
-		}
+        if (module == null ||
+                chapter == null ||
+                !moduleId.equals(chapter.getModuleId())) {
+            return "redirect:/study/"
+                    + subject.toLowerCase()
+                    + "/module/"
+                    + moduleId;
+        }
 
-		model.addAttribute("study", study);
-		model.addAttribute("subjectName", study.getSubject());
-		model.addAttribute("module", module);
-		model.addAttribute("chapter", chapter);
+        model.addAttribute("study", study);
+        model.addAttribute("subjectName", study.getSubject());
+        model.addAttribute("module", module);
+        model.addAttribute("chapter", chapter);
 
-		return "chapter-view";
-	}
+        return "study/chapter-view";
+    }
 }

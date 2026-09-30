@@ -8,804 +8,400 @@
 
 <div class="d-flex" id="wrapper">
 
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
+    <!-- SIDEBAR -->
     <div th:replace="~{fragments/layout::sidebar}"></div>
 
+    <!-- PAGE CONTENT -->
+    <div id="page-content-wrapper" class="flex-grow-1">
 
-    <!-- =====================================================
-         PAGE CONTENT
-    ====================================================== -->
-
-    <div id="page-content-wrapper"
-         class="flex-grow-1">
-
-
-        <!-- =================================================
-             NAVBAR
-        ================================================== -->
-
+        <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-
             <div class="container-fluid">
 
-                <button class="btn btn-outline-primary"
-                        id="menu-toggle">
-
+                <button class="btn btn-outline-primary" id="menu-toggle">
                     <i class="bi bi-list"></i>
-
                 </button>
 
                 <div class="ms-auto">
-
                     <span class="text-muted">
-
                         <i class="bi bi-person-circle me-1"></i>
-
                         Admin
-
                     </span>
-
                 </div>
 
             </div>
-
         </nav>
 
-
-        <!-- =================================================
-             MAIN CONTENT
-        ================================================== -->
-
+        <!-- MAIN CONTENT -->
         <div class="container-fluid px-4 py-4">
 
-
-            <!-- =================================================
-                 HEADER
-            ================================================== -->
-
+            <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-
                 <div>
 
+                    <!-- BREADCRUMB -->
+                    <nav class="breadcrumb-bar mb-2">
+                        <span class="current">Tests</span>
+                        <span class="sep">›</span>
+                        <a th:href="@{/tests/analysis}">Test Analysis</a>
+                        <span class="sep">›</span>
+                        <span class="current" th:text="${test.testName}">Test Name</span>
+                    </nav>
+
                     <h2 class="fw-bold mb-1">
-
                         <i class="bi bi-bar-chart-line text-primary me-2"></i>
-
                         Test Analysis
-
                     </h2>
-
                     <p class="text-muted mb-0">
-
                         Detailed performance analysis
-
                     </p>
-
                 </div>
-
-
-                <a th:href="@{/admin/tests/view-analysis}"
-                   class="btn btn-outline-secondary">
-
-                    <i class="bi bi-arrow-left me-1"></i>
-
-                    Back to Tests
-
-                </a>
 
             </div>
 
-
-            <!-- =================================================
-                 TEST INFORMATION
-            ================================================== -->
-
+            <!-- TEST INFORMATION -->
             <div class="card border-0 shadow-sm mb-4">
-
                 <div class="card-body">
-
                     <div class="row g-4">
 
-
-                        <!-- TEST NAME -->
-
                         <div class="col-lg-4 col-md-6">
-
                             <div class="info-item">
-
                                 <div class="info-icon">
-
                                     <i class="bi bi-file-earmark-text"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Test Name
-                                    </small>
-
+                                    <small class="text-muted">Test Name</small>
                                     <h5 class="fw-bold mb-0"
                                         th:text="${test.testName}">
                                         Test Name
                                     </h5>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- COURSE -->
-
                         <div class="col-lg-4 col-md-6">
-
                             <div class="info-item">
-
                                 <div class="info-icon">
-
                                     <i class="bi bi-book"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Course
-                                    </small>
-
+                                    <small class="text-muted">Course</small>
                                     <h5 class="fw-bold mb-0"
                                         th:text="${test.course != null ? test.course : 'N/A'}">
                                         Course
                                     </h5>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- SUBJECT -->
-
                         <div class="col-lg-4 col-md-6">
-
                             <div class="info-item">
-
                                 <div class="info-icon">
-
                                     <i class="bi bi-journal-text"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Subject
-                                    </small>
-
+                                    <small class="text-muted">Subject</small>
                                     <h5 class="fw-bold mb-0"
                                         th:text="${test.subject != null ? test.subject : 'N/A'}">
                                         Subject
                                     </h5>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- TOTAL QUESTIONS -->
-
                         <div class="col-lg-4 col-md-6">
-
                             <div class="info-item">
-
                                 <div class="info-icon">
-
                                     <i class="bi bi-question-circle"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Questions
-                                    </small>
-
+                                    <small class="text-muted">Questions</small>
                                     <h5 class="fw-bold mb-0"
                                         th:text="${test.questions != null ? test.questions.size() : 0}">
                                         0
                                     </h5>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- TOTAL MARKS -->
-
                         <div class="col-lg-4 col-md-6">
-
                             <div class="info-item">
-
                                 <div class="info-icon">
-
                                     <i class="bi bi-award"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Total Marks
-                                    </small>
-
+                                    <small class="text-muted">Total Marks</small>
                                     <h5 class="fw-bold mb-0">
-
                                         <span th:text="${test.totalMarks != null ? test.totalMarks : 0}">
                                             0
                                         </span>
-
                                         Marks
-
                                     </h5>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- PASSING MARKS -->
-
                         <div class="col-lg-4 col-md-6">
-
                             <div class="info-item">
-
                                 <div class="info-icon">
-
                                     <i class="bi bi-check-circle"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Passing Marks
-                                    </small>
-
+                                    <small class="text-muted">Passing Marks</small>
                                     <h5 class="fw-bold mb-0">
-
                                         <span th:text="${test.passingMarks != null ? test.passingMarks : 0}">
                                             0
                                         </span>
-
                                         Marks
-
                                     </h5>
-
                                 </div>
-
                             </div>
-
                         </div>
 
                     </div>
-
                 </div>
-
             </div>
 
-
-            <!-- =================================================
-                 STAT CARDS
-            ================================================== -->
-
+            <!-- STAT CARDS -->
             <div class="row g-4 mb-4">
 
-
-                <!-- TOTAL ATTEMPTS -->
-
                 <div class="col-xl-3 col-md-6">
-
                     <div class="stat-card">
-
                         <div class="stat-icon blue">
-
                             <i class="bi bi-people-fill"></i>
-
                         </div>
-
                         <div>
-
-                            <div class="stat-label">
-                                Total Attempts
-                            </div>
-
-                            <div class="stat-value"
-                                 th:text="${totalAttempts}">
-                                0
-                            </div>
-
+                            <div class="stat-label">Total Attempts</div>
+                            <div class="stat-value" th:text="${totalAttempts}">0</div>
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- PASSED -->
-
                 <div class="col-xl-3 col-md-6">
-
                     <div class="stat-card">
-
                         <div class="stat-icon green">
-
                             <i class="bi bi-check-circle-fill"></i>
-
                         </div>
-
                         <div>
-
-                            <div class="stat-label">
-                                Passed
-                            </div>
-
+                            <div class="stat-label">Passed</div>
                             <div class="stat-value text-success"
-                                 th:text="${passedAttempts}">
-                                0
-                            </div>
-
+                                 th:text="${passedAttempts}">0</div>
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- FAILED -->
-
                 <div class="col-xl-3 col-md-6">
-
                     <div class="stat-card">
-
                         <div class="stat-icon red">
-
                             <i class="bi bi-x-circle-fill"></i>
-
                         </div>
-
                         <div>
-
-                            <div class="stat-label">
-                                Failed
-                            </div>
-
+                            <div class="stat-label">Failed</div>
                             <div class="stat-value text-danger"
-                                 th:text="${failedAttempts}">
-                                0
-                            </div>
-
+                                 th:text="${failedAttempts}">0</div>
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- AVERAGE -->
-
                 <div class="col-xl-3 col-md-6">
-
                     <div class="stat-card">
-
                         <div class="stat-icon orange">
-
                             <i class="bi bi-graph-up-arrow"></i>
-
                         </div>
-
                         <div>
-
-                            <div class="stat-label">
-                                Average Score
-                            </div>
-
+                            <div class="stat-label">Average Score</div>
                             <div class="stat-value">
-
                                 <span th:text="${#numbers.formatDecimal(averagePercentage, 1, 2)}">
                                     0
                                 </span>%
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
 
-
-            <!-- =================================================
-                 CHARTS
-            ================================================== -->
-
+            <!-- CHARTS -->
             <div class="row g-4 mb-4">
 
-
-                <!-- PASS FAIL -->
-
                 <div class="col-lg-6">
-
                     <div class="card border-0 shadow-sm h-100">
-
                         <div class="card-header bg-white border-0 p-4">
-
                             <h5 class="fw-bold mb-0">
-
                                 <i class="bi bi-pie-chart text-primary me-2"></i>
-
                                 Pass / Fail Distribution
-
                             </h5>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="chart-box">
-
                                 <canvas id="passFailChart"></canvas>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- SCORE -->
-
                 <div class="col-lg-6">
-
                     <div class="card border-0 shadow-sm h-100">
-
                         <div class="card-header bg-white border-0 p-4">
-
                             <h5 class="fw-bold mb-0">
-
                                 <i class="bi bi-bar-chart text-primary me-2"></i>
-
                                 Score Overview
-
                             </h5>
-
                         </div>
-
                         <div class="card-body">
-
                             <div class="chart-box">
-
                                 <canvas id="scoreChart"></canvas>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
 
-
-            <!-- =================================================
-                 PERFORMANCE SUMMARY
-            ================================================== -->
-
+            <!-- PERFORMANCE SUMMARY -->
             <div class="row g-4 mb-4">
-
-
-                <!-- PASS RATE -->
 
                 <div class="col-md-4">
-
                     <div class="summary-card">
-
                         <div class="summary-icon green">
-
                             <i class="bi bi-check2-circle"></i>
-
                         </div>
-
                         <div>
-
-                            <small class="text-muted">
-                                Pass Rate
-                            </small>
-
+                            <small class="text-muted">Pass Rate</small>
                             <h3 class="fw-bold mb-0 text-success">
-
                                 <span th:text="${#numbers.formatDecimal(passPercentage, 1, 2)}">
                                     0
                                 </span>%
-
                             </h3>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- HIGHEST -->
-
                 <div class="col-md-4">
-
                     <div class="summary-card">
-
                         <div class="summary-icon orange">
-
                             <i class="bi bi-trophy-fill"></i>
-
                         </div>
-
                         <div>
-
-                            <small class="text-muted">
-                                Highest Score
-                            </small>
-
+                            <small class="text-muted">Highest Score</small>
                             <h3 class="fw-bold mb-0">
-
-                                <span th:text="${highestMarks}">
-                                    0
-                                </span>
-
+                                <span th:text="${highestMarks}">0</span>
                                 /
-
-                                <span th:text="${test.totalMarks != null ? test.totalMarks : 0}">
-                                    0
-                                </span>
-
+                                <span th:text="${test.totalMarks != null ? test.totalMarks : 0}">0</span>
                             </h3>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                <!-- TOPPER -->
-
                 <div class="col-md-4">
-
                     <div class="summary-card">
-
                         <div class="summary-icon blue">
-
                             <i class="bi bi-person-fill"></i>
-
                         </div>
-
                         <div>
-
-                            <small class="text-muted">
-                                Top Performer
-                            </small>
-
+                            <small class="text-muted">Top Performer</small>
                             <h5 class="fw-bold mb-0 text-truncate"
                                 th:text="${topperName != null ? topperName : 'No Data'}">
                                 No Data
                             </h5>
-
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
 
-
-            <!-- =================================================
-                 ANSWER STATISTICS
-            ================================================== -->
-
+            <!-- ANSWER STATISTICS -->
             <div class="card border-0 shadow-sm mb-4">
 
                 <div class="card-header bg-white border-0 p-4">
-
                     <h5 class="fw-bold mb-0">
-
                         <i class="bi bi-list-check text-primary me-2"></i>
-
                         Answer Statistics
-
                     </h5>
-
                 </div>
-
 
                 <div class="card-body">
-
                     <div class="row g-4">
 
-
-                        <!-- CORRECT -->
-
                         <div class="col-md-4">
-
                             <div class="answer-card correct">
-
                                 <div class="answer-icon">
-
                                     <i class="bi bi-check-lg"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Correct Answers
-                                    </small>
-
+                                    <small class="text-muted">Correct Answers</small>
                                     <h3 class="fw-bold mb-0 text-success"
-                                        th:text="${totalCorrectAnswers}">
-                                        0
-                                    </h3>
-
+                                        th:text="${totalCorrectAnswers}">0</h3>
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- WRONG -->
-
                         <div class="col-md-4">
-
                             <div class="answer-card wrong">
-
                                 <div class="answer-icon">
-
                                     <i class="bi bi-x-lg"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Wrong Answers
-                                    </small>
-
+                                    <small class="text-muted">Wrong Answers</small>
                                     <h3 class="fw-bold mb-0 text-danger"
-                                        th:text="${totalWrongAnswers}">
-                                        0
-                                    </h3>
-
+                                        th:text="${totalWrongAnswers}">0</h3>
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        <!-- UNANSWERED -->
-
                         <div class="col-md-4">
-
                             <div class="answer-card unanswered">
-
                                 <div class="answer-icon">
-
                                     <i class="bi bi-dash-lg"></i>
-
                                 </div>
-
                                 <div>
-
-                                    <small class="text-muted">
-                                        Unanswered
-                                    </small>
-
+                                    <small class="text-muted">Unanswered</small>
                                     <h3 class="fw-bold mb-0 text-secondary"
-                                        th:text="${totalUnanswered}">
-                                        0
-                                    </h3>
-
+                                        th:text="${totalUnanswered}">0</h3>
                                 </div>
-
                             </div>
-
                         </div>
 
                     </div>
-
                 </div>
 
             </div>
 
-
-            <!-- =================================================
-                 STUDENT PERFORMANCE
-            ================================================== -->
-
+            <!-- STUDENT PERFORMANCE -->
             <div class="card border-0 shadow-sm mb-4">
 
                 <div class="card-header bg-white border-0 p-4">
-
                     <div class="d-flex justify-content-between align-items-center">
-
                         <div>
-
                             <h5 class="fw-bold mb-1">
-
                                 <i class="bi bi-people text-primary me-2"></i>
-
                                 Student Performance
-
                             </h5>
-
                             <small class="text-muted">
                                 Submitted attempts for this test
                             </small>
-
                         </div>
 
                         <span class="badge bg-primary"
                               th:text="${totalAttempts} + ' Attempts'">
                             0 Attempts
                         </span>
-
                     </div>
-
                 </div>
-
 
                 <div class="card-body">
 
-
-                    <!-- SEARCH -->
-
                     <div class="mb-3">
-
                         <div class="input-group">
-
                             <span class="input-group-text bg-white">
-
                                 <i class="bi bi-search"></i>
-
                             </span>
-
                             <input type="text"
                                    id="studentSearch"
                                    class="form-control"
                                    placeholder="Search student...">
-
                         </div>
-
                     </div>
-
-
-                    <!-- TABLE -->
 
                     <div class="table-responsive">
 
@@ -813,227 +409,118 @@
                                id="studentTable">
 
                             <thead class="table-light">
-
                             <tr>
-
-                                <th class="text-center">
-                                    #
-                                </th>
-
-                                <th>
-                                    Student
-                                </th>
-
-                                <th class="text-center">
-                                    Attempt
-                                </th>
-
-                                <th class="text-center">
-                                    Correct
-                                </th>
-
-                                <th class="text-center">
-                                    Wrong
-                                </th>
-
-                                <th class="text-center">
-                                    Unanswered
-                                </th>
-
-                                <th class="text-center">
-                                    Score
-                                </th>
-
-                                <th class="text-center">
-                                    Percentage
-                                </th>
-
-                                <th class="text-center">
-                                    Result
-                                </th>
-
+                                <th class="text-center">#</th>
+                                <th>Student</th>
+                                <th class="text-center">Attempt</th>
+                                <th class="text-center">Correct</th>
+                                <th class="text-center">Wrong</th>
+                                <th class="text-center">Unanswered</th>
+                                <th class="text-center">Score</th>
+                                <th class="text-center">Percentage</th>
+                                <th class="text-center">Result</th>
                             </tr>
-
                             </thead>
-
 
                             <tbody>
 
                             <tr th:each="attempt, stat : ${attempts}">
 
-                                <!-- RANK -->
-
                                 <td class="text-center fw-bold"
-                                    th:text="${stat.count}">
-                                    1
-                                </td>
-
-
-                                <!-- STUDENT -->
+                                    th:text="${stat.count}">1</td>
 
                                 <td>
-
                                     <div class="d-flex align-items-center">
-
                                         <div class="student-avatar">
-
                                             <i class="bi bi-person-fill"></i>
-
                                         </div>
-
                                         <div class="ms-2">
-
                                             <div class="fw-semibold student-name"
                                                  th:text="${attempt.studentUsername}">
                                                 Student
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                 </td>
-
-
-                                <!-- ATTEMPT -->
 
                                 <td class="text-center"
                                     th:text="${attempt.attemptNumber != null ? attempt.attemptNumber : 1}">
                                     1
                                 </td>
 
-
-                                <!-- CORRECT -->
-
                                 <td class="text-center">
-
                                     <span class="badge bg-success-subtle text-success">
-
                                         <span th:text="${attempt.correctAnswers != null ? attempt.correctAnswers : 0}">
                                             0
                                         </span>
-
                                     </span>
-
                                 </td>
 
-
-                                <!-- WRONG -->
-
                                 <td class="text-center">
-
                                     <span class="badge bg-danger-subtle text-danger">
-
                                         <span th:text="${attempt.wrongAnswers != null ? attempt.wrongAnswers : 0}">
                                             0
                                         </span>
-
                                     </span>
-
                                 </td>
 
-
-                                <!-- UNANSWERED -->
-
                                 <td class="text-center">
-
                                     <span class="badge bg-secondary-subtle text-secondary">
-
                                         <span th:text="${attempt.unansweredQuestions != null ? attempt.unansweredQuestions : 0}">
                                             0
                                         </span>
-
                                     </span>
-
                                 </td>
 
-
-                                <!-- SCORE -->
-
                                 <td class="text-center fw-bold">
-
                                     <span th:text="${attempt.obtainedMarks != null ? attempt.obtainedMarks : 0}">
                                         0
                                     </span>
-
                                     /
-
                                     <span th:text="${test.totalMarks != null ? test.totalMarks : 0}">
                                         0
                                     </span>
-
                                 </td>
-
-
-                                <!-- PERCENTAGE -->
 
                                 <td class="text-center"
                                     th:with="marks=${attempt.obtainedMarks != null ? attempt.obtainedMarks : 0},
                                              total=${test.totalMarks != null ? test.totalMarks : 0},
                                              percentage=${total > 0 ? (marks * 100.0 / total) : 0}">
-
                                     <strong>
-
                                         <span th:text="${#numbers.formatDecimal(percentage, 1, 2)}">
                                             0
                                         </span>%
-
                                     </strong>
-
                                 </td>
 
-
-                                <!-- RESULT -->
-
                                 <td class="text-center">
-
                                     <span th:if="${attempt.obtainedMarks != null
                                           and test.passingMarks != null
                                           and attempt.obtainedMarks >= test.passingMarks}"
                                           class="badge bg-success">
-
                                         Passed
-
                                     </span>
-
 
                                     <span th:if="${attempt.obtainedMarks == null
                                           or test.passingMarks == null
                                           or attempt.obtainedMarks < test.passingMarks}"
                                           class="badge bg-danger">
-
                                         Failed
-
                                     </span>
-
                                 </td>
 
                             </tr>
 
-
-                            <!-- NO ATTEMPTS -->
-
                             <tr th:if="${attempts == null or #lists.isEmpty(attempts)}">
-
-                                <td colspan="9"
-                                    class="text-center py-5">
-
+                                <td colspan="9" class="text-center py-5">
                                     <div class="empty-state">
-
                                         <i class="bi bi-inbox"></i>
-
-                                        <h5 class="mt-3">
-                                            No Submitted Attempts
-                                        </h5>
-
+                                        <h5 class="mt-3">No Submitted Attempts</h5>
                                         <p class="text-muted mb-0">
                                             No students have submitted this test yet.
                                         </p>
-
                                     </div>
-
                                 </td>
-
                             </tr>
 
                             </tbody>
@@ -1046,7 +533,6 @@
 
             </div>
 
-
         </div>
 
     </div>
@@ -1054,673 +540,294 @@
 </div>
 
 
-<!-- =========================================================
-     CHART.JS
-========================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================== -->
 
 <script th:inline="javascript">
 
-    // =========================================================
-    // DYNAMIC BACKEND VALUES
-    // =========================================================
+    const passedAttempts = /*[[${passedAttempts}]]*/ 0;
+    const failedAttempts = /*[[${failedAttempts}]]*/ 0;
+    const highestMarks   = /*[[${highestMarks}]]*/ 0;
+    const lowestMarks    = /*[[${lowestMarks}]]*/ 0;
+    const averageMarks   = /*[[${averageMarks}]]*/ 0;
+    const totalMarks     = /*[[${test.totalMarks != null ? test.totalMarks : 0}]]*/ 0;
 
-    const passedAttempts =
-        /*[[${passedAttempts}]]*/ 0;
-
-    const failedAttempts =
-        /*[[${failedAttempts}]]*/ 0;
-
-    const highestMarks =
-        /*[[${highestMarks}]]*/ 0;
-
-    const lowestMarks =
-        /*[[${lowestMarks}]]*/ 0;
-
-    const averageMarks =
-        /*[[${averageMarks}]]*/ 0;
-
-    const totalMarks =
-        /*[[${test.totalMarks != null ? test.totalMarks : 0}]]*/ 0;
-
-
-    // =========================================================
     // PASS / FAIL CHART
-    // =========================================================
-
-    const passFailCanvas =
-        document.getElementById("passFailChart");
-
+    const passFailCanvas = document.getElementById("passFailChart");
     if (passFailCanvas) {
-
         new Chart(passFailCanvas, {
-
             type: "doughnut",
-
             data: {
-
-                labels: [
-                    "Passed",
-                    "Failed"
-                ],
-
+                labels: ["Passed", "Failed"],
                 datasets: [{
-
-                    data: [
-                        passedAttempts,
-                        failedAttempts
-                    ],
-
-                    backgroundColor: [
-                        "#198754",
-                        "#dc3545"
-                    ],
-
+                    data: [passedAttempts, failedAttempts],
+                    backgroundColor: ["#198754", "#dc3545"],
                     borderWidth: 0
-
                 }]
-
             },
-
             options: {
-
                 responsive: true,
-
                 maintainAspectRatio: false,
-
                 cutout: "65%",
-
-                plugins: {
-
-                    legend: {
-
-                        position: "bottom"
-
-                    }
-
-                }
-
+                plugins: { legend: { position: "bottom" } }
             }
-
         });
-
     }
 
-
-    // =========================================================
     // SCORE CHART
-    // =========================================================
-
-    const scoreCanvas =
-        document.getElementById("scoreChart");
-
+    const scoreCanvas = document.getElementById("scoreChart");
     if (scoreCanvas) {
-
         new Chart(scoreCanvas, {
-
             type: "bar",
-
             data: {
-
-                labels: [
-                    "Highest",
-                    "Average",
-                    "Lowest"
-                ],
-
+                labels: ["Highest", "Average", "Lowest"],
                 datasets: [{
-
                     label: "Marks",
-
-                    data: [
-                        highestMarks,
-                        averageMarks,
-                        lowestMarks
-                    ],
-
-                    backgroundColor: [
-                        "#198754",
-                        "#0d6efd",
-                        "#dc3545"
-                    ],
-
+                    data: [highestMarks, averageMarks, lowestMarks],
+                    backgroundColor: ["#198754", "#0d6efd", "#dc3545"],
                     borderRadius: 8
-
                 }]
-
             },
-
             options: {
-
                 responsive: true,
-
                 maintainAspectRatio: false,
-
                 scales: {
-
                     y: {
-
                         beginAtZero: true,
-
                         suggestedMax: totalMarks
-
                     }
-
                 },
-
-                plugins: {
-
-                    legend: {
-
-                        display: false
-
-                    }
-
-                }
-
+                plugins: { legend: { display: false } }
             }
-
         });
-
     }
 
-
-    // =========================================================
     // STUDENT SEARCH
-    // =========================================================
-
-    const studentSearch =
-        document.getElementById("studentSearch");
-
+    const studentSearch = document.getElementById("studentSearch");
     if (studentSearch) {
+        studentSearch.addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll("#studentTable tbody tr");
 
-        studentSearch.addEventListener(
-            "keyup",
-            function () {
-
-                const searchValue =
-                    this.value
-                        .toLowerCase()
-                        .trim();
-
-                const rows =
-                    document.querySelectorAll(
-                        "#studentTable tbody tr"
-                    );
-
-                rows.forEach(function (row) {
-
-                    const student =
-                        row.querySelector(".student-name");
-
-                    if (!student) {
-                        return;
-                    }
-
-                    const name =
-                        student.textContent
-                            .toLowerCase();
-
-                    row.style.display =
-                        name.includes(searchValue)
-                            ? ""
-                            : "none";
-
-                });
-
-            }
-        );
-
+            rows.forEach(function (row) {
+                const student = row.querySelector(".student-name");
+                if (!student) return;
+                const name = student.textContent.toLowerCase();
+                row.style.display = name.includes(searchValue) ? "" : "none";
+            });
+        });
     }
 
-
-    // =========================================================
     // SIDEBAR TOGGLE
-    // =========================================================
-
-    const menuToggle =
-        document.getElementById("menu-toggle");
-
-    const wrapper =
-        document.getElementById("wrapper");
-
+    const menuToggle = document.getElementById("menu-toggle");
+    const wrapper = document.getElementById("wrapper");
     if (menuToggle && wrapper) {
-
-        menuToggle.addEventListener(
-            "click",
-            function () {
-
-                wrapper.classList.toggle("toggled");
-
-            }
-        );
-
+        menuToggle.addEventListener("click", function () {
+            wrapper.classList.toggle("toggled");
+        });
     }
 
 </script>
 
 
-<!-- =========================================================
-     CSS
-========================================================== -->
-
 <style>
 
-    body {
-        background: #f5f7fb;
-    }
-
+    body { background: #f5f7fb; }
 
     #page-content-wrapper {
         min-height: 100vh;
         background: #f5f7fb;
     }
 
-
     /* =====================================================
-       INFORMATION
+       BREADCRUMB
     ====================================================== */
+
+    .breadcrumb-bar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .breadcrumb-bar a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-bar a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-bar .sep {
+        color: #adb5bd;
+        font-weight: 600;
+        margin: 0 2px;
+    }
+
+    .breadcrumb-bar .current {
+        color: #212529;
+        font-weight: 600;
+    }
 
     .info-item {
-
         display: flex;
-
         align-items: center;
-
         gap: 15px;
-
     }
-
 
     .info-icon {
-
         width: 48px;
-
         height: 48px;
-
         min-width: 48px;
-
         border-radius: 12px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
         background: #eaf2ff;
-
         color: #0d6efd;
-
         font-size: 21px;
-
     }
-
-
-    /* =====================================================
-       STAT CARD
-    ====================================================== */
 
     .stat-card {
-
         background: #ffffff;
-
         border-radius: 14px;
-
         padding: 22px;
-
         display: flex;
-
         align-items: center;
-
         gap: 16px;
-
         height: 100%;
-
-        box-shadow:
-            0 3px 15px rgba(0, 0, 0, 0.06);
-
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
         transition: 0.2s;
-
     }
 
-
-    .stat-card:hover {
-
-        transform: translateY(-3px);
-
-    }
-
+    .stat-card:hover { transform: translateY(-3px); }
 
     .stat-icon {
-
         width: 55px;
-
         height: 55px;
-
         min-width: 55px;
-
         border-radius: 14px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
         font-size: 23px;
-
     }
 
-
-    .stat-icon.blue,
-    .summary-icon.blue {
-
-        background: #eaf2ff;
-
-        color: #0d6efd;
-
+    .stat-icon.blue, .summary-icon.blue {
+        background: #eaf2ff; color: #0d6efd;
     }
 
-
-    .stat-icon.green,
-    .summary-icon.green {
-
-        background: #eaf7ef;
-
-        color: #198754;
-
+    .stat-icon.green, .summary-icon.green {
+        background: #eaf7ef; color: #198754;
     }
-
 
     .stat-icon.red {
-
-        background: #fff0f1;
-
-        color: #dc3545;
-
+        background: #fff0f1; color: #dc3545;
     }
 
-
-    .stat-icon.orange,
-    .summary-icon.orange {
-
-        background: #fff5df;
-
-        color: #fd7e14;
-
+    .stat-icon.orange, .summary-icon.orange {
+        background: #fff5df; color: #fd7e14;
     }
 
+    .stat-label { font-size: 14px; color: #6c757d; }
 
-    .stat-label {
-
-        font-size: 14px;
-
-        color: #6c757d;
-
-    }
-
-
-    .stat-value {
-
-        font-size: 27px;
-
-        font-weight: 700;
-
-    }
-
-
-    /* =====================================================
-       CHART
-    ====================================================== */
+    .stat-value { font-size: 27px; font-weight: 700; }
 
     .chart-box {
-
         height: 300px;
-
         position: relative;
-
     }
-
-
-    /* =====================================================
-       SUMMARY
-    ====================================================== */
 
     .summary-card {
-
         background: #ffffff;
-
         border-radius: 14px;
-
         padding: 22px;
-
         display: flex;
-
         align-items: center;
-
         gap: 15px;
-
-        box-shadow:
-            0 3px 15px rgba(0, 0, 0, 0.06);
-
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
         height: 100%;
-
     }
-
 
     .summary-icon {
-
         width: 52px;
-
         height: 52px;
-
         min-width: 52px;
-
         border-radius: 12px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
         font-size: 23px;
-
     }
-
-
-    /* =====================================================
-       ANSWERS
-    ====================================================== */
 
     .answer-card {
-
         padding: 20px;
-
         border-radius: 14px;
-
         display: flex;
-
         align-items: center;
-
         gap: 15px;
-
     }
 
-
-    .answer-card.correct {
-
-        background: #eaf7ef;
-
-    }
-
-
-    .answer-card.wrong {
-
-        background: #fff0f1;
-
-    }
-
-
-    .answer-card.unanswered {
-
-        background: #f1f3f5;
-
-    }
-
+    .answer-card.correct    { background: #eaf7ef; }
+    .answer-card.wrong      { background: #fff0f1; }
+    .answer-card.unanswered { background: #f1f3f5; }
 
     .answer-icon {
-
         width: 50px;
-
         height: 50px;
-
         min-width: 50px;
-
         border-radius: 12px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
         font-size: 22px;
-
     }
 
-
-    .answer-card.correct .answer-icon {
-
-        background: #198754;
-
-        color: #ffffff;
-
-    }
-
-
-    .answer-card.wrong .answer-icon {
-
-        background: #dc3545;
-
-        color: #ffffff;
-
-    }
-
-
-    .answer-card.unanswered .answer-icon {
-
-        background: #6c757d;
-
-        color: #ffffff;
-
-    }
-
-
-    /* =====================================================
-       TABLE
-    ====================================================== */
+    .answer-card.correct .answer-icon    { background: #198754; color: #ffffff; }
+    .answer-card.wrong .answer-icon      { background: #dc3545; color: #ffffff; }
+    .answer-card.unanswered .answer-icon { background: #6c757d; color: #ffffff; }
 
     #studentTable thead th {
-
         white-space: nowrap;
-
         font-size: 13px;
-
         color: #495057;
-
         padding: 14px;
-
     }
 
-
-    #studentTable tbody td {
-
-        padding: 14px;
-
-    }
-
+    #studentTable tbody td { padding: 14px; }
 
     .student-avatar {
-
         width: 38px;
-
         height: 38px;
-
         min-width: 38px;
-
         border-radius: 50%;
-
         background: #eaf2ff;
-
         color: #0d6efd;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
     }
-
 
     .student-name {
-
         max-width: 220px;
-
         white-space: nowrap;
-
         overflow: hidden;
-
         text-overflow: ellipsis;
-
     }
 
-
-    /* =====================================================
-       EMPTY
-    ====================================================== */
-
-    .empty-state {
-
-        padding: 30px;
-
-    }
-
-
-    .empty-state i {
-
-        font-size: 50px;
-
-        color: #adb5bd;
-
-    }
-
-
-    /* =====================================================
-       BADGES
-    ====================================================== */
+    .empty-state { padding: 30px; }
+    .empty-state i { font-size: 50px; color: #adb5bd; }
 
     .badge {
-
         padding: 6px 10px;
-
         border-radius: 7px;
-
         font-weight: 600;
-
     }
 
-
 </style>
-
 
 </body>
 </html>

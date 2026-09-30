@@ -6,17 +6,16 @@ import com.itvedant.StudentManagement.reposatory.TestAttemptRepository;
 import com.itvedant.StudentManagement.reposatory.TestRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/tests")
@@ -29,168 +28,19 @@ public class TestAnalysisController {
     private TestAttemptRepository testAttemptRepository;
 
 
-    // =========================================================
-    // VIEW ANALYSIS PAGE
-    // URL:
-    // /admin/tests/view-analysis
-    // =========================================================
-
-    @GetMapping("/view-analysis")
-    public String viewAnalysis(Model model) {
-
-        List<Test> tests = testRepository.findAll();
-
-        /*
-         * Store submitted attempt count for every test.
-         *
-         * Map:
-         * testId -> submitted attempts
-         */
-        Map<Long, Integer> attemptCounts = new HashMap<>();
-
-        /*
-         * Store average percentage for every test.
-         *
-         * Map:
-         * testId -> average percentage
-         */
-        Map<Long, Double> averagePercentages = new HashMap<>();
-
-        /*
-         * Store highest marks for every test.
-         */
-        Map<Long, Integer> highestMarksMap = new HashMap<>();
-
-
-        for (Test test : tests) {
-
-            List<TestAttempt> allAttempts =
-                    testAttemptRepository.findByTestId(test.getId());
-
-
-            // -------------------------------------------------
-            // Only submitted attempts
-            // -------------------------------------------------
-
-            List<TestAttempt> submittedAttempts =
-                    allAttempts.stream()
-                            .filter(this::isSubmitted)
-                            .toList();
-
-
-            // -------------------------------------------------
-            // Attempt count
-            // -------------------------------------------------
-
-            attemptCounts.put(
-                    test.getId(),
-                    submittedAttempts.size()
-            );
-
-
-            // -------------------------------------------------
-            // Average percentage
-            // -------------------------------------------------
-
-            double averagePercentage = 0.0;
-
-            if (!submittedAttempts.isEmpty()
-                    && test.getTotalMarks() != null
-                    && test.getTotalMarks() > 0) {
-
-                double totalPercentage = 0.0;
-
-                for (TestAttempt attempt : submittedAttempts) {
-
-                    int obtained =
-                            attempt.getObtainedMarks() != null
-                                    ? attempt.getObtainedMarks()
-                                    : 0;
-
-                    totalPercentage +=
-                            (obtained * 100.0)
-                                    / test.getTotalMarks();
-                }
-
-                averagePercentage =
-                        totalPercentage / submittedAttempts.size();
-            }
-
-            averagePercentages.put(
-                    test.getId(),
-                    averagePercentage
-            );
-
-
-            // -------------------------------------------------
-            // Highest marks
-            // -------------------------------------------------
-
-            int highestMarks = 0;
-
-            for (TestAttempt attempt : submittedAttempts) {
-
-                int obtained =
-                        attempt.getObtainedMarks() != null
-                                ? attempt.getObtainedMarks()
-                                : 0;
-
-                if (obtained > highestMarks) {
-                    highestMarks = obtained;
-                }
-            }
-
-            highestMarksMap.put(
-                    test.getId(),
-                    highestMarks
-            );
-        }
-
-
-        model.addAttribute("tests", tests);
-        model.addAttribute("attemptCounts", attemptCounts);
-        model.addAttribute("averagePercentages", averagePercentages);
-        model.addAttribute("highestMarksMap", highestMarksMap);
-
-        return "tests/view-analysis";
-    }
-
-
-    // =========================================================
-    // DETAILED TEST ANALYSIS
-    //
-    // URL:
-    // /admin/tests/{testId}/analysis
-    // =========================================================
-
     @GetMapping("/{testId}/analysis")
     public String testAnalysis(
             @PathVariable Long testId,
             Model model) {
 
-        // -----------------------------------------------------
-        // Find test
-        // -----------------------------------------------------
-
         Test test = testRepository.findById(testId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Test not found with ID: " + testId
-                        )
-                );
-
-
-        // -----------------------------------------------------
-        // Get all attempts
-        // -----------------------------------------------------
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Test not found with ID: " + testId
+                ));
 
         List<TestAttempt> allAttempts =
                 testAttemptRepository.findByTestId(testId);
-
-
-        // -----------------------------------------------------
-        // Only submitted attempts
-        // -----------------------------------------------------
 
         List<TestAttempt> attempts =
                 allAttempts.stream()
@@ -202,34 +52,19 @@ public class TestAnalysisController {
                         )
                         .toList();
 
-
-        // -----------------------------------------------------
-        // BASIC STATISTICS
-        // -----------------------------------------------------
-
         int totalAttempts = attempts.size();
-
         int passedAttempts = 0;
         int failedAttempts = 0;
-
         int totalCorrectAnswers = 0;
         int totalWrongAnswers = 0;
         int totalUnanswered = 0;
-
         int highestMarks = 0;
-        int lowestMarks = 0;
-
+        int lowestMarks = Integer.MAX_VALUE;
         double totalObtainedMarks = 0.0;
-
-
-        // -----------------------------------------------------
-        // Calculate statistics
-        // -----------------------------------------------------
 
         for (TestAttempt attempt : attempts) {
 
-            int obtainedMarks =
-                    getObtainedMarks(attempt);
+            int obtainedMarks = getObtainedMarks(attempt);
 
             int correct =
                     attempt.getCorrectAnswers() != null
@@ -246,35 +81,18 @@ public class TestAnalysisController {
                             ? attempt.getUnansweredQuestions()
                             : 0;
 
-
             totalObtainedMarks += obtainedMarks;
-
             totalCorrectAnswers += correct;
             totalWrongAnswers += wrong;
             totalUnanswered += unanswered;
-
-
-            // -------------------------------------------------
-            // Highest
-            // -------------------------------------------------
 
             if (obtainedMarks > highestMarks) {
                 highestMarks = obtainedMarks;
             }
 
-
-            // -------------------------------------------------
-            // Lowest
-            // -------------------------------------------------
-
-            if (lowestMarks == 0 || obtainedMarks < lowestMarks) {
+            if (obtainedMarks < lowestMarks) {
                 lowestMarks = obtainedMarks;
             }
-
-
-            // -------------------------------------------------
-            // Pass / Fail
-            // -------------------------------------------------
 
             int passingMarks =
                     test.getPassingMarks() != null
@@ -288,174 +106,69 @@ public class TestAnalysisController {
             }
         }
 
-
-        // -----------------------------------------------------
-        // Average marks
-        // -----------------------------------------------------
-
-        double averageMarks = 0.0;
-
-        if (totalAttempts > 0) {
-
-            averageMarks =
-                    totalObtainedMarks / totalAttempts;
+        if (attempts.isEmpty()) {
+            lowestMarks = 0;
         }
 
-
-        // -----------------------------------------------------
-        // Average percentage
-        // -----------------------------------------------------
+        double averageMarks = 0.0;
+        if (totalAttempts > 0) {
+            averageMarks = totalObtainedMarks / totalAttempts;
+        }
 
         double averagePercentage = 0.0;
-
         if (test.getTotalMarks() != null
                 && test.getTotalMarks() > 0
                 && totalAttempts > 0) {
-
             averagePercentage =
-                    (averageMarks * 100.0)
-                            / test.getTotalMarks();
+                    (averageMarks * 100.0) / test.getTotalMarks();
         }
-
-
-        // -----------------------------------------------------
-        // Pass percentage
-        // -----------------------------------------------------
 
         double passPercentage = 0.0;
-
         if (totalAttempts > 0) {
-
             passPercentage =
-                    (passedAttempts * 100.0)
-                            / totalAttempts;
+                    (passedAttempts * 100.0) / totalAttempts;
         }
-
-
-        // -----------------------------------------------------
-        // Fail percentage
-        // -----------------------------------------------------
 
         double failPercentage = 0.0;
-
         if (totalAttempts > 0) {
-
             failPercentage =
-                    (failedAttempts * 100.0)
-                            / totalAttempts;
+                    (failedAttempts * 100.0) / totalAttempts;
         }
-
-
-        // -----------------------------------------------------
-        // Topper
-        // -----------------------------------------------------
 
         String topperName = null;
-
         if (!attempts.isEmpty()) {
-
-            topperName =
-                    attempts.get(0).getStudentUsername();
+            topperName = attempts.get(0).getStudentUsername();
+            if (topperName == null || topperName.isBlank()) {
+                topperName = "N/A";
+            }
         }
 
-
-        // -----------------------------------------------------
-        // Model attributes
-        // -----------------------------------------------------
-
         model.addAttribute("test", test);
-
         model.addAttribute("attempts", attempts);
-
-        model.addAttribute(
-                "totalAttempts",
-                totalAttempts
-        );
-
-        model.addAttribute(
-                "passedAttempts",
-                passedAttempts
-        );
-
-        model.addAttribute(
-                "failedAttempts",
-                failedAttempts
-        );
-
-        model.addAttribute(
-                "totalCorrectAnswers",
-                totalCorrectAnswers
-        );
-
-        model.addAttribute(
-                "totalWrongAnswers",
-                totalWrongAnswers
-        );
-
-        model.addAttribute(
-                "totalUnanswered",
-                totalUnanswered
-        );
-
-        model.addAttribute(
-                "highestMarks",
-                highestMarks
-        );
-
-        model.addAttribute(
-                "lowestMarks",
-                lowestMarks
-        );
-
-        model.addAttribute(
-                "averageMarks",
-                averageMarks
-        );
-
-        model.addAttribute(
-                "averagePercentage",
-                averagePercentage
-        );
-
-        model.addAttribute(
-                "passPercentage",
-                passPercentage
-        );
-
-        model.addAttribute(
-                "failPercentage",
-                failPercentage
-        );
-
-        model.addAttribute(
-                "topperName",
-                topperName
-        );
-
+        model.addAttribute("totalAttempts", totalAttempts);
+        model.addAttribute("passedAttempts", passedAttempts);
+        model.addAttribute("failedAttempts", failedAttempts);
+        model.addAttribute("totalCorrectAnswers", totalCorrectAnswers);
+        model.addAttribute("totalWrongAnswers", totalWrongAnswers);
+        model.addAttribute("totalUnanswered", totalUnanswered);
+        model.addAttribute("highestMarks", highestMarks);
+        model.addAttribute("lowestMarks", lowestMarks);
+        model.addAttribute("averageMarks", averageMarks);
+        model.addAttribute("averagePercentage", averagePercentage);
+        model.addAttribute("passPercentage", passPercentage);
+        model.addAttribute("failPercentage", failPercentage);
+        model.addAttribute("topperName", topperName);
 
         return "tests/test-analysis";
     }
 
 
-    // =========================================================
-    // CHECK SUBMITTED
-    // =========================================================
-
     private boolean isSubmitted(TestAttempt attempt) {
-
         return attempt.getStatus() != null
-                && "SUBMITTED".equalsIgnoreCase(
-                        attempt.getStatus()
-                );
+                && "SUBMITTED".equalsIgnoreCase(attempt.getStatus());
     }
 
-
-    // =========================================================
-    // GET OBTAINED MARKS SAFELY
-    // =========================================================
-
     private int getObtainedMarks(TestAttempt attempt) {
-
         return attempt.getObtainedMarks() != null
                 ? attempt.getObtainedMarks()
                 : 0;

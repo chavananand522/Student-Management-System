@@ -39,6 +39,13 @@
 
                 <div>
 
+                    <!-- BREADCRUMB -->
+                    <nav class="breadcrumb-bar mb-2">
+                        <span class="current">Tests</span>
+                        <span class="sep">›</span>
+                        <span class="current">Test Analysis</span>
+                    </nav>
+
                     <h3 class="fw-bold mb-1">
                         <i class="bi bi-bar-chart-line me-2"></i>
                         Test Analysis
@@ -296,7 +303,7 @@
 
                                 <td>
 
-                                    <a th:href="@{/tests/analysis/{id}(id=${test.id})}"
+                                    <a th:href="@{/admin/tests/{testId}/analysis(testId=${test.id})}"
                                        class="btn btn-sm btn-outline-primary">
 
                                         <i class="bi bi-bar-chart-line me-1"></i>
@@ -342,6 +349,44 @@
 <div th:replace="~{fragments/layout::scripts}">
 </div>
 
-</body>
 
+<style>
+
+    /* =====================================================
+       BREADCRUMB
+    ====================================================== */
+
+    .breadcrumb-bar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .breadcrumb-bar a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-bar a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-bar .sep {
+        color: #adb5bd;
+        font-weight: 600;
+        margin: 0 2px;
+    }
+
+    .breadcrumb-bar .current {
+        color: #212529;
+        font-weight: 600;
+    }
+
+</style>
+
+</body>
 </html>
